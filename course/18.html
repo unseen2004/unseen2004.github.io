@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 18: Enums and Structs</title>
+</head>
+<body>
+<h1>Chapter 18: Enums and Structs</h1>
+
+<h2>Program-Defined Types</h2>
+<ul>
+    <li>Enumerated types (including unscoped and scoped enumerations)</li>
+    <li>Class types (including structs, classes, and unions).</li>
+</ul>
+<p>A program-defined type used in only one code file should be defined in that code file as close to the first point of use as possible. A program-defined type used in multiple code files should be defined in a header file with the same name as the program-defined type and then #included into each code file as needed.</p>
+
+<h2>Enumerations</h2>
+<h3>Unscoped Enumerations</h3>
+<pre><code>enum Color
+{
+    red,         // 0
+    green,       // 1
+    yellow = -3, // -3
+    blue,        // trailing comma optional but recommended
+}; // the enum definition must end with a semicolon
+
+enum Animal
+{
+    cat = -3,    // values can be negative
+    dog,         // -2
+    pig,         // -1
+    horse = 5,
+    giraffe = 5, // shares same value as horse
+    chicken,     // 6
+};
+
+Color apple { red };
+Color raspberry { Color::red }; // accessing enumerator from scope of Color
+
+Animal a {}; // value-initialization zero-initializes a to value 0
+
+if (shirt == blue) // if the shirt is blue
+    std::cout &lt;&lt; "Your shirt is blue!";
+</code></pre>
+
+<h3>Scoped Enumerations / Enum Class</h3>
+<pre><code>enum class Color // "enum class" defines this as a scoped enumeration rather than an unscoped enumeration
+{
+    red, // red is considered part of Color's scope region
+};
+
+enum class Fruit
+{
+    banana, // banana is considered part of Fruit's scope region
+};
+
+Color color { Color::red };    // note: red is not directly accessible, we have to use Color::red
+Fruit fruit { Fruit::banana };
+
+if (color == fruit) // compile error: the compiler doesn't know how to compare different types Color and Fruit
+    std::cout &lt;&lt; "color and fruit are equal\n";
+
+std::cout &lt;&lt; static_cast&lt;int&gt;(color) &lt;&lt; '\n';   // explicit conversion to int, will print 1
+</code></pre>
+
+<h3>Using Enumerations</h3>
+<pre><code>#include &lt;optional&gt; // for std::optional
+
+enum Pet
+{
+    cat,   // 0
+    dog,   // 1
+};
+
+constexpr std::optional&lt;Pet&gt; getPetFromString(std::string_view sv)
+{
+    if (sv == "cat")   return cat;
+    if (sv == "dog")   return dog;
+    return {};
+}
+
+std::optional&lt;Pet&gt; pet { getPetFromString(s) };
+
+if (!pet)
+    std::cout &lt;&lt; "You entered an Invalid pet\n";
+</code></pre>
+
+<h3>Scoped Enumerators Int Conversion</h3>
+<pre><code>#include &lt;type_traits&gt; // for std::underlying_type_t
+constexpr auto operator+(Animals a) constexpr
+{
+    return static_cast&lt;std::underlying_type_t&lt;Animals&gt;&gt;(a);
+}
+std::cout &lt;&lt; +Animals::elephant &lt;&lt; '\n'; // convert Animals::elephant to an integer using unary operator
+</code></pre>
+
+<h2>Structs</h2>
+<p>Structs are user-defined types that group variables of different types together.</p>
+
+<h3>Basic Struct</h3>
+<pre><code>struct Employee
+{
+    int id;            // no value-initialized, bad
+    int age {};        // value-initialized by default, 0
+    double wage {232}; // explicit default value
+};
+
+void printEmployee(const Employee&amp; employee) // note pass by reference here
+{
+    std::cout &lt;&lt; "ID:   " &lt;&lt; employee.id &lt;&lt; '\n';
+    std::cout &lt;&lt; "Age:  " &lt;&lt; employee.age &lt;&lt; '\n';
+    std::cout &lt;&lt; "Wage: " &lt;&lt; employee.wage &lt;&lt; '\n';
+}
+
+Employee joe {};
+Employee frank = { 1, 32, 60000.0 }; // copy-list initialization using braced list
+Employee joe { 2, 28, 45000.0 };     // list initialization using braced list (preferred)
+Employee joe { 2, 28 }; // joe.wage will be value-initialized to 0.0
+Employee joe {}; // value-initialize all members
+
+printEmployee(Employee { 14, 32, 24.15 }); // construct a temporary Employee to pass to function (type explicitly specified) (preferred)
+printEmployee({ 15, 28, 18.27 });          // construct a temporary Employee to pass to function (type deduced from parameter)
+</code></pre>
+
+<h3>Nested Struct</h3>
+<pre><code>struct Company
+{
+    struct Employee // accessed via Company::Employee
+    {
+        int id{};
+        int age{};
+        double wage{};
+    };
+
+    int numberOfEmployees{};
+    Employee CEO{}; // Employee is a struct within the Company struct
+};
+
+Company myCompany{ 7, { 1, 32, 55000.0 } }; // Nested initialization list to initialize Employee
+myCompany.CEO.wage;
+</code></pre>
+
+<h3>Returning Structs</h3>
+<pre><code>struct Point3d
+{
+    double x { 0.0 };
+    double y { 0.0 };
+    double z { 0.0 };
+};
+
+Point3d getZeroPoint()
+{
+    return Point3d { 0.0, 0.0, 0.0 }; // return an unnamed Point3d
+}
+
+Point3d getZeroPoint()
+{
+    return { 0.0, 0.0, 0.0 }; // return an unnamed Point3d
+}
+</code></pre>
+
+<h3>Struct Size and Padding</h3>
+<p>The size of a struct will be at least as large as the size of all the variables it contains. You can minimize padding by defining your members in decreasing order of size.</p>
+<pre><code>struct Foo1
+{
+    short a{}; // will have 2 bytes of padding after a
+    int b{};
+    short c{}; // will have 2 bytes of padding after c
+};
+
+struct Foo2
+{
+    int b{};
+    short a{};
+    short c{};
+};
+
+sizeof(Foo1); // 12
+</code></pre>
+</body>
+</html>

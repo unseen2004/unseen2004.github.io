@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: `cin`, `assert`, and `abort`</title>
+</head>
+<body>
+<h1>Chapter 11: <code>cin</code>, <code>assert</code>, and <code>abort</code></h1>
+
+<h2>Introduction to Assertions and Aborts</h2>
+<p>Assertions and aborts are tools used to enforce program correctness and handle critical errors.</p>
+
+<h3>Assertions</h3>
+<p>Assertions are used to verify assumptions made by the program. When an assertion fails, the program is immediately halted.</p>
+
+<pre><code>#include &lt;cassert&gt; // for assert
+
+int testVowel()
+{
+#ifdef NDEBUG
+    // If NDEBUG is defined, asserts are compiled out.
+    // Since this function requires asserts to not be compiled out, we'll terminate the program if this function is called when NDEBUG is defined.
+    std::cerr &lt;&lt; "Tests run with NDEBUG defined (asserts compiled out)";
+    std::abort();
+#endif
+
+    assert(isLowerVowel('a'));
+
+    return 0;
+}
+</code></pre>
+
+<h3>Aborts</h3>
+<p>The <code>std::abort</code> function is used to terminate the program abnormally.</p>
+
+<pre><code>#include &lt;cstdlib&gt; // for std::abort
+
+void terminateProgram()
+{
+    std::cerr &lt;&lt; "Critical error, aborting program.";
+    std::abort();
+}
+</code></pre>
+
+<h3>Usage of <code>std::cerr</code> and <code>std::exit</code></h3>
+<p><code>std::cerr</code> is used for error output and diagnostic information.</p>
+
+<pre><code>std::cout &lt;&lt; "Error: Could not divide by zero\n";
+std::exit(1);
+</code></pre>
+
+<h2>Handling Input with <code>cin</code></h2>
+
+<h3>Ignoring Input</h3>
+<p>To ignore everything up to and including the next <code>'\n'</code> character:</p>
+
+<pre><code>#include &lt;limits&gt; // for std::numeric_limits
+
+std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n');
+</code></pre>
+
+<h3>End of File and Peek</h3>
+<ul>
+    <li><code>std::cin.eof()</code>: Returns true if the last input operation reached the end of the input stream.</li>
+    <li><code>std::cin.peek()</code>: Allows peeking at the next character in the input stream without extracting it.</li>
+</ul>
+
+<h3>Handling Extraction Failures</h3>
+<p>If an extraction fails, future requests for input extraction will silently fail until <code>clear()</code> is called.</p>
+
+<pre><code>if (std::cin.fail()) // same as (!std::cin)
+{
+    std::cin.clear(); // Put us back in 'normal' operation mode
+    std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n'); // Remove the bad input
+}
+</code></pre>
+
+<h3>Example with <code>cin</code></h3>
+
+<pre><code>#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+void getInput()
+{
+    int x;
+    std::cout &lt;&lt; "Enter a number: ";
+    std::cin &gt;&gt; x;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear(); // Put us back in 'normal' operation mode
+        std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n'); // And remove the bad input
+        std::cerr &lt;&lt; "Error: Invalid input\n";
+    }
+    else
+    {
+        std::cout &lt;&lt; "You entered: " &lt;&lt; x &lt;&lt; '\n';
+    }
+}
+</code></pre>
+
+<h2>Static Assertions</h2>
+<p>Static assertions are checked at compile time and cause a compile-time error if the condition is false.</p>
+
+<pre><code>static_assert(sizeof(long) == 8, "long must be 8 bytes");
+static_assert(sizeof(int) &gt;= 4, "int must be at least 4 bytes");
+</code></pre>
+
+<h2>Buffers</h2>
+<p>A buffer is a piece of memory set aside for storing data temporarily while it is moved from one place to another.</p>
+</body>
+</html>

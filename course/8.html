@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8: Bit Manipulation</title>
+</head>
+<body>
+<h1>Chapter 8: Bit Manipulation</h1>
+
+<h2>Introduction to Bit Manipulation</h2>
+<p>Bit manipulation involves the use of bitwise operators to perform operations at the bit level. These operations are efficient and are commonly used in low-level programming, such as device drivers, cryptography, and graphics.</p>
+
+<h2>Using <code>std::bitset</code></h2>
+<pre><code>#include &lt;bitset&gt;
+
+std::bitset&lt;8&gt; mybitset {}; // 8 bits in size means room for 8 flags
+</code></pre>
+
+<h3>Example of Bit Operations</h3>
+<pre><code>#include &lt;bitset&gt; // for std::bitset
+
+std::bitset&lt;8&gt; bits{ 0b0000'0101 }; // 8 bits, initial bit pattern 0000 0101
+bits.set(3);   // set bit position 3 to 1 (now 0000 1101)
+bits.flip(4);  // flip bit 4 (now 0001 1101)
+bits.reset(4); // set bit 4 back to 0 (now 0000 1101)
+
+[[maybe_unused]] constexpr int isHungry { 0 };
+</code></pre>
+
+<h3>Bitset Methods</h3>
+<ul>
+    <li><code>size()</code>: Returns the number of bits in the bitset.</li>
+    <li><code>count()</code>: Returns the number of bits set to <code>true</code>.</li>
+    <li><code>all()</code>: Returns <code>true</code> if all bits are set to <code>true</code>.</li>
+    <li><code>any()</code>: Returns <code>true</code> if any bit is set to <code>true</code>.</li>
+    <li><code>none()</code>: Returns <code>true</code> if no bits are set to <code>true</code>.</li>
+</ul>
+
+<h2>Bitwise Operators</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Operator</th>
+            <th>Symbol</th>
+            <th>Form</th>
+            <th>Operation</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Left shift</td>
+            <td>&lt;&lt;</td>
+            <td><code>x &lt;&lt; y</code></td>
+            <td>Shifts all bits in x left by y bits</td>
+        </tr>
+        <tr>
+            <td>Right shift</td>
+            <td>&gt;&gt;</td>
+            <td><code>x &gt;&gt; y</code></td>
+            <td>Shifts all bits in x right by y bits</td>
+        </tr>
+        <tr>
+            <td>Bitwise NOT</td>
+            <td>~</td>
+            <td><code>~x</code></td>
+            <td>Flips all bits in x</td>
+        </tr>
+        <tr>
+            <td>Bitwise AND</td>
+            <td>&amp;</td>
+            <td><code>x &amp; y</code></td>
+            <td>AND operation on each bit of x and y</td>
+        </tr>
+        <tr>
+            <td>Bitwise OR</td>
+            <td>|</td>
+            <td><code>x | y</code></td>
+            <td>OR operation on each bit of x and y</td>
+        </tr>
+        <tr>
+            <td>Bitwise XOR</td>
+            <td>^</td>
+            <td><code>x ^ y</code></td>
+            <td>XOR operation on each bit of x and y</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Examples</h3>
+<pre><code>#include &lt;bitset&gt;
+std::bitset&lt;4&gt; x { 0b1100 };
+
+std::cout &lt;&lt; (x &gt;&gt; 1) &lt;&lt; '\n'; // 0110
+std::cout &lt;&lt; (x &lt;&lt; 1) &lt;&lt; '\n'; // 1000
+std::cout &lt;&lt; (x &lt;&lt; 3) &lt;&lt; '\n'; // 0000
+
+std::cout &lt;&lt; ~std::bitset&lt;4&gt;{ 0b0100 } &lt;&lt; '\n';
+std::cout &lt;&lt; (std::bitset&lt;4&gt;{ 0b0101 } | std::bitset&lt;4&gt;{ 0b0110 } | std::bitset&lt;4&gt;{ 0b0001 }) &lt;&lt; '\n'; // 0111
+std::cout &lt;&lt; (std::bitset&lt;4&gt;{ 0b0101 } &amp; std::bitset&lt;4&gt;{ 0b0110 }) &lt;&lt; '\n'; // 0100
+std::cout &lt;&lt; (std::bitset&lt;4&gt;{ 0b0001 } &amp; std::bitset&lt;4&gt;{ 0b0011 } &amp; std::bitset&lt;4&gt;{ 0b0111 }) &lt;&lt; '\n'; // 0001
+
+std::bitset&lt;4&gt; bits {0b0101};
+bits &gt;&gt;= 1; // same as bits = bits &gt;&gt; 1
+</code></pre>
+
+<h3>Handling Narrow Integral Types</h3>
+<pre><code>std::uint8_t cneg { ~c }; // error: narrowing conversion from unsigned int to std::uint8_t
+std::uint8_t cneg { static_cast&lt;std::uint8_t&gt;(~c) }; // compiles
+</code></pre>
+<p>Bitwise operators promote operands with narrower integral types to <code>int</code> or <code>unsigned int</code>. Use <code>static_cast</code> to convert the result back to the narrower integral type.</p>
+
+<h2>Bit Masks</h2>
+<p>Bit masks use 0s to mask out bits and 1s to denote bits to be modified.</p>
+
+<h3>Examples</h3>
+<pre><code>// Using binary literals
+constexpr std::uint8_t mask0{ 0b0000'0001 }; // bit 0
+constexpr std::uint8_t mask1{ 0b0000'0010 }; // bit 1
+
+// Using hexadecimal literals
+constexpr std::uint8_t mask0{ 0x01 }; // hex for 0000 0001
+
+// Using bit shifts
+constexpr std::uint8_t mask0{ 1 &lt;&lt; 0 }; // 0000 0001
+constexpr std::uint8_t mask1{ 1 &lt;&lt; 1 }; // 0000 0010
+</code></pre>
+
+<h2>Testing and Modifying Bits</h2>
+
+<h3>Testing a Bit</h3>
+<pre><code>constexpr std::uint8_t mask0{ 0b0000'0001 }; // bit 0
+constexpr std::uint8_t mask1{ 0b0000'0010 }; // bit 1
+std::uint8_t flags{ 0b0000'0101 }; // initial flags
+
+std::cout &lt;&lt; "bit 0 is " &lt;&lt; (static_cast&lt;bool&gt;(flags &amp; mask0) ? "on\n" : "off\n");
+std::cout &lt;&lt; "bit 1 is " &lt;&lt; (static_cast&lt;bool&gt;(flags &amp; mask1) ? "on\n" : "off\n");
+</code></pre>
+
+<h3>Modifying Bits</h3>
+<pre><code>flags |= mask1; // turn on bit 1
+flags |= (mask4 | mask5); // turn on bits 4 and 5
+
+flags &amp;= ~mask2; // turn off bit 2
+flags &amp;= static_cast&lt;std::uint8_t&gt;(~mask2); // turn off bit 2
+flags &amp;= ~(mask4 | mask5); // turn off bits 4 and 5
+
+flags ^= mask2; // flip bit 2
+flags ^= (mask4 | mask5); // flip bits 4 and 5
+</code></pre>
+
+<h2>Using Bitsets for Function Parameters</h2>
+<pre><code>void someFunction(std::bitset&lt;32&gt; options);
+</code></pre>
+
+<h2>Bit Manipulation in Graphics</h2>
+<pre><code>constexpr std::uint32_t redBits{ 0xFF000000 };
+// Isolate the red component and shift into lower 8 bits
+const std::uint8_t red{ static_cast&lt;std::uint8_t&gt;((pixel &amp; redBits) &gt;&gt; 24) };
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Variable Initialization and Macros</title>
+</head>
+<body>
+<h1>Chapter 2: Variable Initialization and Macros</h1>
+
+<h2>Variable Initialization</h2>
+
+<h3>Legal and Illegal Declarations</h3>
+<p>Here are some examples of variable declarations in C++:</p>
+<pre><code>int i;                  // an int
+int *p;                 // an int pointer (pointer to an int)
+int a[];                // an array of ints
+int f();                // a function returning an int
+int **pp;               // a pointer to an int pointer (pointer to a pointer to an int)
+int (*pf)();            // a pointer to a function returning an int
+int *ap[];              // an array of int pointers (array of pointers to ints)
+int aa[][];             // an array of arrays of ints
+int af[]();             // an array of functions returning an int (ILLEGAL)
+int *fp();              // a function returning an int pointer
+int fa()[];             // a function returning an array of ints (ILLEGAL)
+int (**ppa)[];          // a pointer to a pointer to an array of ints
+int (**ppf)();          // a pointer to a pointer to a function returning an int
+int *(*pap)[];          // a pointer to an array of int pointers
+int (*paa)[][];         // a pointer to an array of arrays of ints
+int (*paf)[]();         // a pointer to an array of functions returning an int (ILLEGAL)
+int *(*pfp)();          // a pointer to a function returning an int pointer
+int (*pfa)()[];         // a pointer to a function returning an array of ints (ILLEGAL)
+int (*pff)()();         // a pointer to a function returning a function returning an int (ILLEGAL)
+int **app[];            // an array of pointers to int pointers
+int (*apa[])[];         // an array of pointers to arrays of ints
+int (*apf[])();         // an array of pointers to functions returning an int
+int *aap[][];           // an array of arrays of int pointers
+int *afp[]();           // an array of functions returning int pointers (ILLEGAL)
+int afa[]()[];          // an array of functions returning an array of ints (ILLEGAL)
+int aff[]()();          // an array of functions returning functions returning an int (ILLEGAL)
+int **fpp();            // a function returning a pointer to an int pointer
+int (*fpa())[];         // a function returning a pointer to an array of ints
+int *fap()[];           // a function returning an array of int pointers (ILLEGAL)
+int faa()[][];          // a function returning an array of arrays of ints (ILLEGAL)
+int faf()[]();          // a function returning an array of functions returning an int (ILLEGAL)</code></pre>
+
+<h3>Initialization Types</h3>
+<pre><code>int a;             // Default initialization
+int a = 5;         // Copy initialization
+int b(5);          // Direct initialization
+int c {5};         // List initialization
+int d = {5};       // List initialization (alternative syntax)
+
+[[maybe_unused]] int e {232};  // Variable marked as maybe_unused</code></pre>
+
+<h2>Keywords</h2>
+<p>Refer to the list of C++ keywords here: <a href="https://en.cppreference.com/w/cpp/keyword">C++ Keywords</a></p>
+
+<h2>Operator Arity</h2>
+<ul>
+    <li><strong>Unary (1 operand)</strong>:
+        <pre><code>int x = -6;</code></pre>
+    </li>
+    <li><strong>Binary (2 operands)</strong>:
+        <pre><code>int sum = 3 + 4;</code></pre>
+    </li>
+    <li><strong>Ternary (3 operands)</strong>:
+        <pre><code>int result = (condition) ? true_value : false_value;</code></pre>
+    </li>
+    <li><strong>Nullary (0 operands)</strong>:
+        <pre><code>throw;  // Used to rethrow an exception</code></pre>
+    </li>
+</ul>
+
+<h2>Statements and Expressions</h2>
+<pre><code>int a;          // Declaration statement
+int a = 5;      // Initialization expression
+x = 5;          // Assignment statement (expression)</code></pre>
+
+<h2>Preprocessor and Translation Unit</h2>
+<p>The process of compiling a C++ program involves several steps:</p>
+<ol>
+    <li><strong>Preprocessor</strong>: Processes directives (e.g., #define, #include).</li>
+    <li><strong>Translation Unit</strong>: The result after preprocessing, ready for compilation.</li>
+    <li><strong>Compiler</strong>: Translates the translation unit into machine code.</li>
+</ol>
+
+<h2>Macros</h2>
+
+<h3>Object-like Macros with Substitution Text</h3>
+<pre><code>#define MY_NAME "Alex"
+
+std::cout << "My name is: " << MY_NAME << '\n';</code></pre>
+
+<h3>Conditional Compilation</h3>
+<pre><code>#define PRINT_JOE
+
+int main() {
+#ifdef PRINT_JOE
+    std::cout << "Joe\n";  // Will be compiled since PRINT_JOE is defined
+#endif
+
+#ifdef PRINT_BOB
+    std::cout << "Bob\n";  // Will be excluded since PRINT_BOB is not defined
+#endif
+}</code></pre>
+
+<h3>Using Macros to Comment Code</h3>
+<pre><code>#if 0  // Don't compile anything starting here !!!
+std::cout << "This will not be compiled";
+#endif</code></pre>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 34: Features of Language Versions</title>
+</head>
+<body>
+<h1>Chapter 34: Features of Language Versions</h1>
+
+<h2>C++11</h2>
+<p>C++11 introduced numerous features that have significantly enhanced the language. Some of the key features are:</p>
+
+<h3>1. Move Semantics</h3>
+<ul>
+    <li><strong>Move constructors and move assignment operators</strong> allow resources to be moved rather than copied.</li>
+</ul>
+
+<h3>2. Lambda Expressions</h3>
+<ul>
+    <li><strong>Lambda expressions</strong> provide a concise way to define anonymous function objects.</li>
+</ul>
+
+<h3>3. Smart Pointers</h3>
+<ul>
+    <li><strong><code>std::unique_ptr</code>, <code>std::shared_ptr</code>, and <code>std::weak_ptr</code></strong> for better memory management.</li>
+</ul>
+
+<h3>4. Auto Keyword</h3>
+<ul>
+    <li><strong><code>auto</code> keyword</strong> for type inference.</li>
+</ul>
+
+<h3>5. Range-based for Loop</h3>
+<ul>
+    <li><strong>Range-based for loop</strong> for easier iteration over collections.</li>
+</ul>
+
+<h3>6. nullptr</h3>
+<ul>
+    <li><strong><code>nullptr</code></strong> keyword to represent null pointers.</li>
+</ul>
+
+<h3>7. constexpr</h3>
+<ul>
+    <li><strong><code>constexpr</code></strong> for constant expressions.</li>
+</ul>
+
+<h3>8. Static_assert</h3>
+<ul>
+    <li><strong><code>static_assert</code></strong> for compile-time assertions.</li>
+</ul>
+
+<h3>9. Threading</h3>
+<ul>
+    <li><strong>Thread support library</strong> including <code>std::thread</code>, <code>std::mutex</code>, <code>std::lock_guard</code>, and <code>std::unique_lock</code>.</li>
+</ul>
+
+<h3>10. Other Features</h3>
+<ul>
+    <li><strong>Rvalue references, variadic templates, initializer lists, <code>std::array</code>, <code>std::unordered_map</code>, and <code>std::unordered_set</code></strong>.</li>
+</ul>
+
+<h2>C++14</h2>
+<p>C++14 introduced several improvements and refinements to C++11 features:</p>
+
+<h3>1. Generic Lambdas</h3>
+<ul>
+    <li><strong>Generic lambdas</strong> allow lambdas to accept parameters of different types.</li>
+</ul>
+
+<h3>2. Return Type Deduction</h3>
+<ul>
+    <li><strong>Return type deduction</strong> for normal functions using <code>auto</code>.</li>
+</ul>
+
+<h3>3. Variable Templates</h3>
+<ul>
+    <li><strong>Variable templates</strong> for defining templates for variables.</li>
+</ul>
+
+<h3>4. Relaxed constexpr</h3>
+<ul>
+    <li><strong>Relaxed constraints on <code>constexpr</code></strong> functions, allowing more complex expressions.</li>
+</ul>
+
+<h3>5. Other Enhancements</h3>
+<ul>
+    <li><strong><code>std::make_unique</code>, binary literals, digit separators, and deprecated attribute</strong>.</li>
+</ul>
+
+<h2>C++17</h2>
+<p>C++17 introduced several new features and enhancements:</p>
+
+<h3>1. std::optional</h3>
+<ul>
+    <li><strong><code>std::optional</code></strong> for optional values.</li>
+</ul>
+
+<h3>2. std::variant and std::any</h3>
+<ul>
+    <li><strong><code>std::variant</code> and <code>std::any</code></strong> for type-safe unions and type-erased containers.</li>
+</ul>
+
+<h3>3. Structured Bindings</h3>
+<ul>
+    <li><strong>Structured bindings</strong> for unpacking tuples and other types.</li>
+</ul>
+
+<h3>4. if constexpr</h3>
+<ul>
+    <li><strong><code>if constexpr</code></strong> for compile-time conditions.</li>
+</ul>
+
+<h3>5. std::string_view</h3>
+<ul>
+    <li><strong><code>std::string_view</code></strong> for non-owning views of strings.</li>
+</ul>
+
+<h3>6. Parallel Algorithms</h3>
+<ul>
+    <li><strong>Parallel versions of standard algorithms</strong>.</li>
+</ul>
+
+<h3>7. Filesystem Library</h3>
+<ul>
+    <li><strong>Filesystem library</strong> for file and directory operations.</li>
+</ul>
+
+<h3>8. Other Features</h3>
+<ul>
+    <li><strong>Nested namespaces, <code>std::byte</code>, and <code>std::scoped_lock</code></strong>.</li>
+</ul>
+
+<h2>C++20</h2>
+<p>C++20 introduced major new features and improvements:</p>
+
+<h3>1. Concepts</h3>
+<ul>
+    <li><strong>Concepts</strong> for constraining template parameters.</li>
+</ul>
+
+<h3>2. Ranges</h3>
+<ul>
+    <li><strong>Ranges library</strong> for working with sequences.</li>
+</ul>
+
+<h3>3. Coroutines</h3>
+<ul>
+    <li><strong>Coroutines</strong> for asynchronous programming.</li>
+</ul>
+
+<h3>4. Modules</h3>
+<ul>
+    <li><strong>Modules</strong> for better code organization and faster compilation.</li>
+</ul>
+
+<h3>5. Three-way Comparison</h3>
+<ul>
+    <li><strong>Three-way comparison operator (<code>&lt;=&gt;</code>)</strong> for spaceship operator.</li>
+</ul>
+
+<h3>6. Calendar and Time Zone Library</h3>
+<ul>
+    <li><strong>Calendar and time zone library</strong> for date and time operations.</li>
+</ul>
+
+<h3>7. Expanded constexpr</h3>
+<ul>
+    <li><strong>Expanded <code>constexpr</code></strong> capabilities.</li>
+</ul>
+
+<h3>8. Other Enhancements</h3>
+<ul>
+    <li><strong>Improved <code>constexpr</code> lambdas, <code>std::format</code>, and <code>std::span</code></strong>.</li>
+</ul>
+
+<h2>C++23</h2>
+<p>C++23 introduced further improvements and new features:</p>
+
+<h3>1. Pattern Matching</h3>
+<ul>
+    <li><strong>Pattern matching</strong> for more expressive code.</li>
+</ul>
+
+<h3>2. Standard Library Improvements</h3>
+<ul>
+    <li><strong>Enhanced standard library components</strong>.</li>
+</ul>
+
+<h3>3. More Powerful Lambdas</h3>
+<ul>
+    <li><strong>Lambdas with more powerful capabilities</strong>.</li>
+</ul>
+
+<h3>4. Other Enhancements</h3>
+<ul>
+    <li><strong>Refinements and optimizations to existing features</strong>.</li>
+</ul>
+
+<h2>C++26 (Upcoming)</h2>
+<p>C++26 is expected to introduce new features and enhancements. Some of the anticipated features are:</p>
+
+<h3>1. Enhanced Modules</h3>
+<ul>
+    <li>Further improvements to the <strong>modules</strong> feature.</li>
+</ul>
+
+<h3>2. Improved Coroutines</h3>
+<ul>
+    <li>Enhancements and optimizations to the <strong>coroutines</strong> feature.</li>
+</ul>
+
+<h3>3. Advanced Pattern Matching</h3>
+<ul>
+    <li>More powerful <strong>pattern matching</strong> capabilities.</li>
+</ul>
+
+<h3>4. Reflection</h3>
+<ul>
+    <li><strong>Reflection</strong> capabilities for introspection.</li>
+</ul>
+
+<h3>5. Other Enhancements</h3>
+<ul>
+    <li>Additional improvements and optimizations to existing features.</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>The evolution of C++ from C++11 to C++26 has brought numerous features and improvements, making the language more powerful, expressive, and efficient. Each version has introduced new capabilities that enhance the way developers write and manage C++ code.</p>
+</body>
+</html>

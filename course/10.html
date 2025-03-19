@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: Loops, Goto, and Exit</title>
+</head>
+<body>
+<h1>Chapter 10: Loops, Goto, and Exit</h1>
+
+<h2>Null Statements</h2>
+<p>A null statement is a statement that does nothing. It is represented by a semicolon (<code>;</code>).</p>
+<pre><code>if (x > 10)
+    ; // this is a null statement
+</code></pre>
+
+<h2>Constexpr If Statements</h2>
+<p>Favor <code>constexpr if</code> statements over non-<code>constexpr if</code> statements when the conditional is a constant expression.</p>
+<pre><code>if constexpr (gravity == 9.8) // now using constexpr if
+{
+    // code
+}
+</code></pre>
+
+<h2>Switch Statements</h2>
+<p>Prefer switch statements over if-else chains when there is a choice. The type of the switch expression must be integral or enumerated.</p>
+<pre><code>switch (x) // x type: integral/enumerated
+{
+    int a; // okay: definition is allowed before the case labels
+    int b{ 5 }; // illegal: initialization is not allowed before the case labels
+case 1:
+    int y; // okay but bad practice: definition is allowed within a case
+    y = 4; // okay: assignment is allowed
+    std::cout &lt;&lt; "One";
+case 2:
+    { // note addition of explicit block here
+        int x{ 4 }; // okay, variables can be initialized inside a block inside a case
+        std::cout &lt;&lt; x;
+        break; // break instead of return
+    }
+case 3:
+    std::cout &lt;&lt; "Three";
+    [[fallthrough]]; // intentional fallthrough, execute all future cases
+default:
+    std::cout &lt;&lt; "Unknown";
+    return;
+}
+</code></pre>
+
+<h2>Goto Statements</h2>
+<p>Avoid <code>goto</code> statements unless the alternatives are significantly worse for code readability.</p>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+
+int main()
+{
+    double x{};
+tryAgain: // this is a statement label
+    std::cout &lt;&lt; "Enter a non-negative number: ";
+    std::cin &gt;&gt; x;
+
+    if (x < 0.0)
+        goto tryAgain; // this is the goto statement
+
+    std::cout &lt;&lt; x;
+end:
+    return 0;
+}
+</code></pre>
+
+<h3>Rules for Goto</h3>
+<ul>
+    <li>You can jump only within the bounds of a single function.</li>
+    <li>If you jump forward, you can’t jump forward over the initialization of any variable that is still in scope at the location being jumped to.</li>
+</ul>
+<pre><code>goto skip;   // error: this jump is illegal because...
+int x { 5 }; // this initialized variable is still in scope at statement label 'skip'
+skip:
+x += 3;      // what would this even evaluate to if x wasn't initialized?
+return 0;
+</code></pre>
+
+<h2>Loop Constructs</h2>
+
+<h3>For Loop</h3>
+for (int x{ 0 }, y{ 9 }; x < 10; ++x, --y)
+</code></pre>
+
+<h3>While Loop</h3>
+<pre><code>while (true) // infinite loop
+for (;;) // infinite loop
+</code></pre>
+
+<h2>Break vs Return in Loops</h2>
+<p>A <code>break</code> statement terminates the switch or loop, and execution continues at the first statement beyond the switch or loop. A <code>return</code> statement terminates the entire function that the loop is within, and execution continues at the point where the function was called.</p>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+
+int breakOrReturn()
+{
+    while (true) // infinite loop
+    {
+        std::cout &lt;&lt; "Enter 'b' to break or 'r' to return: ";
+        char ch{};
+        std::cin &gt;&gt; ch;
+
+        if (ch == 'b')
+            break; // execution will continue at the first statement beyond the loop
+
+        if (ch == 'r')
+    }
+
+    // breaking the loop causes execution to resume here
+    std::cout &lt;&lt; "We broke out of the loop\n";
+
+    return 0;
+}
+
+int main()
+{
+    int returnValue{ breakOrReturn() };
+    std::cout &lt;&lt; "Function breakOrReturn returned " &lt;&lt; returnValue &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
+
+<h2>Exit and Abort</h2>
+
+<h3>Using <code>std::exit()</code></h3>
+<pre><code>#include &lt;cstdlib&gt; // for std::exit()
+#include &lt;iostream&gt;
+
+void cleanup()
+{
+    // closing database or network connections,
+    // deallocating any memory you have allocated,
+    // writing information to a log file, etc…
+    std::cout &lt;&lt; "cleanup!\n";
+}
+
+int main()
+{
+    std::cout &lt;&lt; 1 &lt;&lt; '\n';
+    cleanup();
+    // or we can
+    // register cleanup() to be called automatically when std::exit() is called
+    std::atexit(cleanup); // note: we use cleanup rather than cleanup() since we're not making a function call to cleanup() right now
+
+    // The std::exit() function does not clean up local variables in the current function or up the call stack.
+    std::exit(0); // terminate and return status code 0 to operating system
+
+    // The following statements never execute
+    std::cout &lt;&lt; 2 &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
+
+<h3>Using <code>std::abort()</code></h3>
+<p>The <code>std::abort()</code> function causes your program to terminate abnormally. Abnormal termination means the program had some kind of unusual runtime error and the program couldn’t continue to run.</p>
+<pre><code>#include &lt;cstdlib&gt; // for std::abort()
+
+std::abort();
+</code></pre>
+</body>
+</html>

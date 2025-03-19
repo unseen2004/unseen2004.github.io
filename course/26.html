@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 26: Inheritance</title>
+</head>
+<body>
+<h1>Chapter 26: Inheritance</h1>
+
+<h2>Introduction</h2>
+<p>Inheritance is a fundamental concept in object-oriented programming that allows a class (derived class) to inherit properties and behaviors (members and functions) from another class (base class).</p>
+
+<h2>Basic Syntax</h2>
+<pre><code>class BaseballPlayer : public Person
+</code></pre>
+<p><strong>Protected members</strong> can be accessed by members, friends, and derived classes.</p>
+
+<h2>Inheritance Types</h2>
+<p>The default inheritance type is private.</p>
+<table>
+    <thead>
+        <tr>
+            <th>Access specifier in base class</th>
+            <th>Access specifier when inherited publicly</th>
+            <th>Access specifier when inherited privately</th>
+            <th>Access specifier when inherited protectedly</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Public</td>
+            <td>Public</td>
+            <td>Private</td>
+            <td>Protected</td>
+        </tr>
+        <tr>
+            <td>Protected</td>
+            <td>Protected</td>
+            <td>Private</td>
+            <td>Protected</td>
+        </tr>
+        <tr>
+            <td>Private</td>
+            <td>Inaccessible</td>
+            <td>Inaccessible</td>
+            <td>Inaccessible</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example</h3>
+<pre><code>class Derived: public Base
+{
+public:
+    int getValue() const = delete; // mark this function as inaccessible
+    using Base::print;
+    // make all Base::print() functions eligible for overload resolution
+    // you can't change from private because Derived class has no access to private Base members
+};
+</code></pre>
+
+<h3>Accessing Base Class Functions</h3>
+<pre><code>Derived derived;
+
+// We can call the Base::getValue() function directly
+std::cout << derived.Base::getValue();
+
+// Or we can upcast Derived to a Base reference and getValue() will resolve to Base::getValue()
+std::cout << static_cast&lt;Base&amp;&gt;(derived).getValue();
+</code></pre>
+
+<h2>Multiple Inheritance</h2>
+<p>Multiple inheritance allows a class to inherit from more than one base class.</p>
+
+<h3>Example</h3>
+<pre><code>class Teacher : public Person, public Employee
+
+// Specify which function to use in case of ambiguity
+c54G.USBDevice::getID();
+</code></pre>
+<p>Avoid multiple inheritance unless alternatives lead to more complexity.</p>
+
+<h2>Constructor Initialization in Derived Classes</h2>
+<p>When a derived class is instantiated, the base class constructor is called first.</p>
+
+<h3>Example</h3>
+<pre><code>class Derived : public Base
+{
+public:
+    Derived()
+        : Base(params...) // call base constructor
+    {
+        // derived class constructor body
+    }
+};
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>Inheritance allows for code reuse and the creation of a hierarchical class structure. Understanding how to use different types of inheritance and manage access to base class members is crucial for designing robust and maintainable object-oriented systems.</p>
+</body>
+</html>

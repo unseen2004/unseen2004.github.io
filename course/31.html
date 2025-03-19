@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 31: Debugger</title>
+</head>
+<body>
+<h1>Chapter 31: Debugger</h1>
+
+<h2>Introduction</h2>
+<p>Debugging is the process of identifying and fixing errors in your code. These errors can be broadly categorized into syntax errors and semantic (logic) errors.</p>
+
+<h2>Debugging Techniques</h2>
+
+<h3>Using <code>std::cerr</code> for Debugging</h3>
+<p><code>std::cerr</code> provides unbuffered output, making it suitable for debugging purposes as the output is displayed immediately.</p>
+
+<h3>Example</h3>
+<pre><code>#define ENABLE_DEBUG // comment out to disable debugging
+
+#ifdef ENABLE_DEBUG
+std::cerr << "getUserInput() called\n";
+#endif
+
+int getUserInput()
+{
+    return 5;
+}
+
+int main()
+{
+    #ifdef ENABLE_DEBUG
+    std::cerr << "main() started\n";
+    #endif
+
+    int value = getUserInput();
+
+    #ifdef ENABLE_DEBUG
+    std::cerr << "User input: " << value << '\n';
+    #endif
+
+    return 0;
+}
+</code></pre>
+
+<h3>Using Loggers</h3>
+<p>Loggers can be used to provide more sophisticated logging capabilities. <code>std::clog</code> can be redirected to a file, or third-party logging libraries such as <a href="https://github.com/gabime/spdlog">spdlog</a> can be used.</p>
+
+<h3>Example Using <code>std::clog</code></h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+
+int main()
+{
+    std::ofstream logFile("log.txt");
+    std::clog.rdbuf(logFile.rdbuf()); // Redirect std::clog to logFile
+
+    std::clog << "Program started\n";
+
+    int value = 42;
+    std::clog << "Value: " << value << '\n';
+
+    std::clog << "Program ended\n";
+    return 0;
+}
+</code></pre>
+
+<h3>Example Using <code>spdlog</code></h3>
+<pre><code>#include &lt;spdlog/spdlog.h&gt;
+#include &lt;spdlog/sinks/basic_file_sink.h&gt;
+
+int main()
+{
+    auto logger = spdlog::basic_logger_mt("basic_logger", "logs/basic.txt");
+
+    logger->info("Program started");
+
+    int value = 42;
+    logger->info("Value: {}", value);
+
+    logger->info("Program ended");
+    return 0;
+}
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>Using <code>std::cerr</code>, <code>std::clog</code>, or third-party logging libraries can significantly enhance your debugging capabilities, making it easier to identify and fix errors in your code. Proper logging can provide valuable insights into the execution flow and state of your program.</p>
+</body>
+</html>

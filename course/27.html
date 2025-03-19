@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 27: Virtual Functions</title>
+</head>
+<body>
+<h1>Chapter 27: Virtual Functions</h1>
+
+<h2>Introduction</h2>
+<p>A <strong>virtual function</strong> is a special type of member function that, when called, resolves to the most-derived version of the function for the actual type of the object being referenced or pointed to. This enables <strong>runtime polymorphism</strong>, allowing derived classes to override base class functions.</p>
+
+<h3>Basic Example</h3>
+<pre><code>class Base
+{
+public:
+    virtual std::string_view getName() const { return "Base"; } // note addition of virtual keyword
+};
+
+class Derived: public Base
+{
+public:
+    virtual std::string_view getName() const { return "Derived"; }
+};
+
+int main()
+{
+    Derived derived {};
+    Base& rBase{ derived };
+    std::cout << "rBase is a " << rBase.getName() << '\n'; // rbase is a Derived
+}
+</code></pre>
+
+<h2>Polymorphism</h2>
+<ul>
+    <li><strong>Compile-time polymorphism</strong>: Resolved by the compiler (e.g., function overloads, templates).</li>
+</ul>
+
+<h3>Using <code>override</code></h3>
+<p>Using the <code>override</code> specifier ensures that the function is indeed overriding a base class function.</p>
+<pre><code>class A {
+public:
+    virtual std::string_view getName() const { return "A"; }
+};
+
+class B : public A {
+public:
+    std::string_view getName() const override { return "B"; } // Correct override
+};
+</code></pre>
+
+<h3>Using <code>final</code></h3>
+<p>The <code>final</code> specifier prevents further overriding of a virtual function or inheritance from a class.</p>
+<pre><code>class A {
+public:
+    virtual std::string_view getName() const { return "A"; }
+};
+
+class B : public A {
+public:
+    std::string_view getName() const override final { return "B"; } // Cannot be overridden further
+};
+
+class C : public B {
+public:
+    std::string_view getName() const override { return "C"; } // Compile error: B::getName() is final
+};
+</code></pre>
+
+<h3>Virtual Destructors</h3>
+<p>Whenever you are dealing with inheritance, you should make any explicit destructors virtual.</p>
+<pre><code>class Base {
+public:
+    virtual ~Base() = default; // Virtual destructor
+};
+</code></pre>
+
+<h2>Pure Virtual Functions</h2>
+<p>A <strong>pure virtual function</strong> is a virtual function that is declared by using the <code>= 0</code> syntax. Classes with pure virtual functions become abstract base classes and cannot be instantiated.</p>
+<pre><code>class Animal {
+public:
+    virtual std::string_view speak() const = 0; // pure virtual function
+};
+
+class Dog : public Animal {
+public:
+    std::string_view speak() const override { return "Woof"; }
+};
+</code></pre>
+
+<h3>Defining Pure Virtual Functions</h3>
+<p>Pure virtual functions can still have a definition.</p>
+<pre><code>std::string_view Animal::speak() const
+{
+    return "buzz";
+}
+</code></pre>
+
+<h2>Interface Classes</h2>
+<p>An <strong>interface class</strong> is a class that has no member variables, and all of its functions are pure virtual.</p>
+<pre><code>class Interface {
+public:
+    virtual void func1() = 0;
+    virtual void func2() = 0;
+};
+</code></pre>
+
+<h2>Virtual Inheritance</h2>
+<p>To share a base class in multiple inheritance, use virtual inheritance.</p>
+<pre><code>class PoweredDevice {};
+class Scanner : virtual public PoweredDevice {};
+class Printer : virtual public PoweredDevice {};
+class Copier : public Scanner, public Printer {};
+</code></pre>
+
+<h2>Downcasting with <code>dynamic_cast</code></h2>
+<p>If a <code>dynamic_cast</code> fails, the result of the conversion will be a null pointer.</p>
+<pre><code>Base* b = new Derived();
+Derived* d = dynamic_cast&lt;Derived*&gt;(b); // use dynamic cast to convert Base pointer into Derived pointer
+</code></pre>
+<p>Note that there are several cases where downcasting using <code>dynamic_cast</code> will not work:</p>
+<ul>
+    <li>With protected or private inheritance.</li>
+    <li>For classes that do not declare or inherit any virtual functions.</li>
+    <li>In certain cases involving virtual base classes.</li>
+</ul>
+
+<h2>Using <code>static_cast</code></h2>
+<pre><code>if (b->getClassID() == ClassID::derived)
+{
+    Derived* d{ static_cast&lt;Derived*&gt;(b) }; // safe downcast
+}
+</code></pre>
+
+<h2>Virtual Table (vtable)</h2>
+<ul>
+    <li>Any class that uses virtual functions has a <code>__vptr</code>, and thus each object of that class will be bigger by one pointer.</li>
+    <li>The <strong>virtual table</strong> is a lookup table of functions used to resolve function calls in a dynamic/late binding manner.</li>
+</ul>
+
+<h2>Operator Overloading and Virtual Functions</h2>
+<pre><code>friend std::ostream& operator<<(std::ostream& out, const Base& b)
+{
+    // Delegate printing responsibility for printing to virtual member function print()
+    return b.print(out);
+}
+
+// We'll rely on member function print() to do the actual printing
+// Because print() is a normal member function, it can be virtualized
+virtual std::ostream& print(std::ostream& out) const
+{
+    out << "Base";
+    return out;
+}
+</code></pre>
+
+<p>Virtual functions enable <strong>runtime polymorphism</strong>, allowing derived classes to override base class functions. Understanding how to use <code>virtual</code>, <code>override</code>, <code>final</code>, and pure virtual functions is crucial for designing robust and maintainable object-oriented systems.</p>
+</body>
+</html>

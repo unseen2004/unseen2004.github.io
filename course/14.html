@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: Conversion and Alias</title>
+</head>
+<body>
+<h1>Chapter 14: Conversion and Alias</h1>
+
+<h2>Conversion</h2>
+
+<h3>Implicit Conversion</h3>
+<p>Implicit conversions are automatically performed by the compiler when needed.</p>
+<pre><code>double d{ 3 }; // int value 3 implicitly converted to type double
+float doSomething() { return 3.0; } // double value 3.0 implicitly converted to type float
+double division{ 4.0 / 3 }; // int value 3 implicitly converted to type double
+if (5) {} // int value 5 implicitly converted to type bool
+void doSomething(long l) {} doSomething(3); // int value 3 implicitly converted to type long
+
+short s{ 3 }; // there is no short literal suffix, so we'll use a variable for this one
+printInt(s); // numeric promotion of short to int
+printInt('a'); // numeric promotion of char to int
+printInt(true); // numeric promotion of bool to int
+printDouble(4.0f); // numeric promotion of float to double
+</code></pre>
+
+<p><strong>Note</strong>: A wider data type uses more bits, and a narrower data type uses fewer bits.</p>
+
+<h3>Numeric Promotion</h3>
+<ul>
+    <li><code>unsigned char</code>, <code>char8_t</code>, and <code>unsigned short</code> can be converted to <code>int</code> if <code>int</code> can hold the entire range of the type, or <code>unsigned int</code> otherwise.</li>
+    <li><code>char</code> follows either <code>signed char</code> or <code>unsigned char</code> rules based on its default signedness.</li>
+    <li><code>bool</code> can be converted to <code>int</code>, with <code>false</code> becoming 0 and <code>true</code> becoming 1.</li>
+</ul>
+
+<h3>Example of Narrowing Conversion</h3>
+<pre><code>constexpr int n1{ 5 };   // note: constexpr
+unsigned int u1 { n1 };  // okay: conversion is not narrowing due to exclusion clause
+constexpr int n2 { -5 }; // note: constexpr
+unsigned int u2 { n2 };  // compile error: conversion is narrowing due to value change
+
+int x { 3.5 }; // brace-initialization disallows conversions that result in data loss
+</code></pre>
+
+<h3>Floating Point Promotions</h3>
+<pre><code>double d = 10 / 4; // does integer division, initializes d with value 2.0
+double d = 10.0 / 4.0; // does floating point division, initializes d with value 2.5
+</code></pre>
+
+<h3>Type Casting</h3>
+<pre><code>(int)d               // C-style cast, avoid using C-style casts.
+int(d)               // C++ version of C-style cast
+static_cast<int>(d)  // C++-style cast
+</code></pre>
+
+<h3>Using <code>typeid</code></h3>
+<pre><code>#include &lt;typeinfo&gt; // for typeid()
+typeid(i + d).name()
+
+std::cout &lt;&lt; typeid(5u - 10).name() &lt;&lt; ' ' &lt;&lt; 5u - 10 &lt;&lt; '\n'; // 5u means treat 5 as an unsigned integer
+</code></pre>
+
+<h3>Summary</h3>
+<ul>
+    <li>Implicit type conversion is automatically performed.</li>
+    <li>Explicit type conversion happens when the programmer uses a type cast.</li>
+</ul>
+
+<h2>Alias</h2>
+<pre><code>using Distance = double; // define Distance as an alias for type double
+Distance milesToDestination{ 3.4 }; // defines a variable of type double
+</code></pre>
+
+<h3>Example with Header File</h3>
+<pre><code>// file.h
+#ifndef MYTYPES_H
+#define MYTYPES_H
+
+using Miles = long;
+typedef long Miles; // same
+using Speed = long;
+
+#endif
+</code></pre>
+
+<h3>Using Proper Types</h3>
+<pre><code>#ifdef INT_2_BYTES
+using int8_t = char;
+using int16_t = int;
+using int32_t = long;
+#else
+using int8_t = char;
+using int16_t = short;
+using int32_t = int;
+#endif
+
+using VectPairSI = std::vector&lt;std::pair&lt;std::string, int&gt;&gt;; // make VectPairSI an alias for this crazy type
+</code></pre>
+
+<h3>Using <code>auto</code></h3>
+<p>The <code>auto</code> keyword allows the compiler to deduce the type of a variable from its initializer.</p>
+<pre><code>auto var{10};
+auto sum { func(5, 6) }; // func() returns an int, so sum's type will be deduced to int
+
+auto s { "Hello, world" }; // s will be type const char*, not std::string
+using namespace std::literals; // easiest way to access the s and sv suffixes
+auto s1 { "goo"s };  // "goo"s is a std::string literal, so s1 will be deduced as a std::string
+auto s2 { "moo"sv }; // "moo"sv is a std::string_view literal, so s2 will be deduced as a std::string_view
+
+auto foo() { return 5; } // no forward declaration for auto
+auto add(int x, int y) -> int // trailing return syntax
+{
+    return (x + y);
+}
+</body>
+</html>

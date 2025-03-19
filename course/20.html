@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 20: Dynamic Arrays: `std::vector`</title>
+</head>
+<body>
+<h1>Chapter 20: Dynamic Arrays: <code>std::vector</code></h1>
+
+<h2>Basic Usage</h2>
+<pre><code>#include &lt;vector&gt;
+std::vector&lt;int&gt; empty{}; // vector containing 0 int elements
+std::vector&lt;int&gt; primes{ 2, 3, 5, 7 };          // vector containing 4 int elements with values 2, 3, 5, and 7
+std::vector vowels { 'a', 'e', 'i', 'o', 'u' }; // vector containing 5 char elements with values 'a', 'e', 'i', 'o', and 'u'. Uses CTAD
+
+std::vector&lt;int&gt; data(10); // vector containing 10 int elements, value-initialized to 0
+
+primes.size();     // returns length as type `size_type` (alias for `std::size_t`)
+std::size(primes); // C++17, returns length as type `size_type` (alias for `std::size_t`)
+std::ssize(primes); // C++20, returns length as a large signed integral type
+</code></pre>
+
+<pre><code>#include &lt;vector&gt;
+
+struct Foo
+{
+    std::vector&lt;int&gt; v1(8); // compile error: direct initialization not allowed for member default initializers
+    std::vector&lt;int&gt; v{ std::vector&lt;int&gt;(8) }; // ok
+};
+</code></pre>
+
+<ul>
+    <li><strong>Vector</strong> can be <strong>const</strong> but can’t be <strong>constexpr</strong> (use <code>std::array</code> for constexpr).</li>
+    <li><strong>Sign conversions are narrowing conversions, except when constexpr</strong>.</li>
+</ul>
+
+<h2>Accessing Elements</h2>
+<pre><code>primes[2];
+primes.at(3); // print the value of element with index 3
+primes.at(9); // invalid index (throws exception)
+</code></pre>
+
+<ul>
+    <li><code>at()</code> is slower (but safer) than <code>operator[]</code>.</li>
+</ul>
+
+<h2>Passing Vectors to Functions</h2>
+<pre><code>void passByRef(const std::vector&lt;int&gt;&amp; arr); // we must explicitly specify &lt;int&gt; here
+
+void passByRef(const auto&amp; arr); // C++20
+
+template &lt;typename T&gt;
+void passByRef(const T&amp; arr); // will accept any type of object that has an overloaded operator[]
+</code></pre>
+
+<h2>Copy and Move Semantics</h2>
+<ul>
+    <li>Move semantics is an optimization that allows us, under certain circumstances, to inexpensively transfer ownership of some data members from one object to another object (rather than making a more expensive copy).</li>
+    <li>Data members that can’t be moved are copied instead.</li>
+    <li>We can return move-capable types (like <code>std::vector</code> and <code>std::string</code>) by value. Such types will inexpensively move their values instead of making an expensive copy (still better const reference).</li>
+</ul>
+
+<h2>Loops</h2>
+<pre><code>std::size_t length { primes.size() };
+for (std::size_t index{ 0 }; index &lt; length; ++index)
+{
+    // Do something with primes[index]
+}
+</code></pre>
+
+<h3>Using Sign Values in Loops</h3>
+<ul>
+    <li>Type
+        <ul>
+            <li>Normal size: <strong>int</strong></li>
+            <li>Large:
+                <ul>
+                    <li><strong>std::ptrdiff_t</strong></li>
+                    <li>Your own type alias
+                        <pre><code>using Index = std::ptrdiff_t;
+for (Index index{ 0 };;)
+</code></pre>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>Getting length of array
+        <ul>
+            <li>Static cast
+                <pre><code>auto length{ static_cast&lt;Index&gt;(arr.size()) };
+</code></pre>
+            </li>
+            <li><code>std::ssize()</code> C++20
+                <pre><code>auto index{ std::ssize(arr) - 1 }
+</code></pre>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Converting the signed loop variable to an unsigned index</strong>
+        <ul>
+            <li>Converting function
+                <pre><code>template &lt;typename T&gt;
+constexpr std::size_t toUZ(T value)
+{
+    // make sure T is an integral type
+    static_assert(std::is_integral&lt;T&gt;() || std::is_enum&lt;T&gt;());
+
+    return static_cast&lt;std::size_t&gt;(value);
+}
+</code></pre>
+            </li>
+            <li>Operator overloading
+                <pre><code>// SignedArrayView.h
+#ifndef SIGNED_ARRAY_VIEW_H
+#define SIGNED_ARRAY_VIEW_H
+
+#include &lt;cstddef&gt; // for std::size_t and std::ptrdiff_t
+
+// SignedArrayView provides a view into a container that supports indexing
+// allowing us to work with these types using signed indices
+template &lt;typename T&gt;
+class SignedArrayView
+{
+private:
+    T&amp; m_array;
+
+public:
+    using Index = std::ptrdiff_t;
+
+    SignedArrayView(T&amp; array)
+        : m_array{ array } {}
+
+    // Overload operator[] to take a signed index
+    constexpr auto&amp; operator[](Index index) { return m_array[static_cast&lt;typename T::size_type&gt;(index)]; }
+    constexpr const auto&amp; operator[](Index index) const { return m_array[static_cast&lt;typename T::size_type&gt;(index)]; }
+    constexpr auto ssize() const { return static_cast&lt;Index&gt;(m_array.size()); }
+};
+
+#endif
+// main.cpp
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include "SignedArrayView.h"
+
+int main()
+{
+    std::vector arr{ 9, 7, 5, 3, 1 };
+    SignedArrayView sarr{ arr }; // Create a signed view of our std::vector
+
+    for (auto index{ sarr.ssize() - 1 }; index &gt;= 0; --index)
+        std::cout &lt;&lt; sarr[index] &lt;&lt; ' '; // index using a signed type
+
+    return 0;
+}
+</code></pre>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Range-Based For Loops (For-Each Loop)</h2>
+<pre><code>for (int /*auto*/ num : primes) // num same type as primes
+    std::cout &lt;&lt; num; // print the current value of num
+
+for (const auto&amp; word : words) // word is now a const reference
+</code></pre>
+
+<h3>Auto vs Auto&amp; vs Const Auto&amp;</h3>
+<ul>
+    <li><code>auto</code> when you want to modify copies of the elements.</li>
+    <li><code>auto&amp;</code> when you want to modify the original elements.</li>
+    <li><code>const auto&amp;</code> otherwise (when you just need to view the original elements).</li>
+</ul>
+
+<h3>Using Unscoped Enumerators for Indexing</h3>
+<pre><code>namespace Students
+{
+    enum Names : unsigned int // explicitly specifies the underlying type is unsigned int
+    {
+        kenny, // 0
+        kyle, // 1
+        stan, // 2
+        butters, // 3
+        cartman, // 4
+        max_students // 5
+    };
+}
+
+std::vector&lt;int&gt; testScores { 78, 94, 66, 77, 14 };
+testScores[Students::stan] = 76; // we are now updating the test score belonging to stan
+
+Students::Names name { Students::stan }; // non-constexpr
+testScores[name] = 76; // may trigger a sign conversion warning if Student::Names defaults to a signed underlying type, enum Names : unsigned int -&gt; no warning
+
+// Ensure the number of test scores is the same as the number of students
+assert(std::size(testScores) == Students::max_students);
+</code></pre>
+
+<h3>Using Scoped Enumerators for Indexing</h3>
+<pre><code>enum class StudentNames // now an enum class
+{
+    kenny, // 0
+    kyle, // 1
+    stan, // 2
+    butters, // 3
+    cartman, // 4
+    max_students // 5
+};
+
+std::vector&lt;int&gt; testScores(static_cast&lt;int&gt;(StudentNames::max_students)); // use static_cast
+
+// Overload the unary + operator to convert StudentNames to the underlying type
+constexpr auto operator+(StudentNames a) noexcept
+{
+    return static_cast&lt;std::underlying_type_t&lt;StudentNames&gt;&gt;(a);
+}
+
+std::vector&lt;int&gt; testScores(+StudentNames::max_students);
+</code></pre>
+
+<h2>Dynamic Array Operations</h2>
+
+<h3>Resizing</h3>
+<pre><code>v.resize(5);   // resize to 5 elements larger
+v.resize(3);   // resize to 3 elements smaller
+</code></pre>
+
+<p>The length of a vector is how many elements are “in use”. The capacity of a vector is how many elements have been allocated in memory.</p>
+<pre><code>v.capacity();
+</code></pre>
+
+<p>When a <code>std::vector</code> changes the amount of storage it is managing, this process is called <strong>reallocation</strong>, which typically requires every element in the array to be copied. This can be expensive.</p>
+<pre><code>std::vector&lt;int&gt; v(1000); // allocate room for 1000 elements
+v.resize(0);
+v.shrink_to_fit(); // now room for 0, it can be ignored by the compiler
+
+std::vector&lt;int&gt; stack(5); // direct set capacity
+</code></pre>
+
+<h3>Stack Operations</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Operation Name</th>
+            <th>Behavior</th>
+            <th>Required?</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Push</td>
+            <td>Put new element on top of stack</td>
+            <td>Yes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Pop</td>
+            <td>Remove the top element from the stack</td>
+            <td>Yes</td>
+            <td>May return the removed element or void</td>
+        </tr>
+        <tr>
+            <td>Top or Peek</td>
+            <td>Get the top element on the stack</td>
+            <td>Optional</td>
+            <td>Does not remove item</td>
+        </tr>
+        <tr>
+            <td>Empty</td>
+            <td>Determine if stack has no elements</td>
+            <td>Optional</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Size</td>
+            <td>Count of how many elements are on the stack</td>
+            <td>Optional</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>push_back()</td>
+            <td>Push</td>
+            <td>Put new element on top of stack</td>
+            <td>Adds the element to end of vector</td>
+        </tr>
+        <tr>
+            <td>pop_back()</td>
+            <td>Pop</td>
+            <td>Remove the top element from the stack</td>
+            <td>Returns void, removes element at end of vector</td>
+        </tr>
+        <tr>
+            <td>back()</td>
+            <td>Top or Peek</td>
+            <td>Get the top element on the stack</td>
+            <td>Does not remove item</td>
+        </tr>
+        <tr>
+            <td>emplace_back()</td>
+            <td>Push</td>
+            <td>Alternate form of push_back() that can be more efficient</td>
+            <td>Adds element to end of vector</td>
+        </tr>
+        <tr>
+            <td>reserve()</td>
+            <td></td>
+            <td>Changes just the capacity (if necessary)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>resize()</td>
+            <td></td>
+            <td>Changes the length of the vector, and the capacity (if necessary)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>emplace_back()</td>
+            <td>Push</td>
+            <td>When creating a new temporary object to add to the container, or when you need to access an explicit constructor</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3><code>std::vector&lt;bool&gt;</code></h3>
+<p><code>std::vector&lt;bool&gt;</code> is not a vector or container. Favor <code>constexpr std::bitset</code>, <code>std::vector&lt;char&gt;</code>, or 3rd party dynamic bitsets.</p>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Const/Constexpr & String/String_view</title>
+</head>
+<body>
+<h1>Chapter 5: Const/Constexpr & String/String_view</h1>
+
+<h2>Const and Constexpr</h2>
+
+<h3>C-style Strings</h3>
+<pre><code>const char* str = ""; // unmodifiable, can't change -> undefined behavior
+char str[] = ""; // mutable
+</code></pre>
+
+<h3>std::string</h3>
+<pre><code>// Incorrect usage
+std::string str = "a" + "b"; // not allowed
+
+// Correct usage
+std::string str = "a"s + "b" + std::to_string("c") + std::string("d");
+</code></pre>
+
+<h3>Const Type Qualifier</h3>
+<pre><code>int a { 5 };       // not const at all
+const int b { a }; // runtime const (initializer is non-const)
+int const c { 5 }; // compile-time const (initializer is a constant expression)
+</code></pre>
+
+<h3>Object-like Macros</h3>
+<pre><code>#define gravity 9.8
+</code></pre>
+
+<h3>Literal Suffixes</h3>
+<p>Refer to the <a href="https://www.notion.so/Literal-suffixes-table-adf201da48aa423c99931c32c8bb5629?pvs=21">Literal Suffixes Table</a>.</p>
+
+<h3>Constant Expression</h3>
+<p>A constant expression is an expression where everything can be evaluated at compile time.</p>
+
+<h3>Constexpr Variable</h3>
+<pre><code>constexpr double gravity { 9.8 };
+constexpr int myAge { age }; // compile error: age is not a constant expression
+</code></pre>
+
+<h3>Forced Compile-time Evaluation</h3>
+<pre><code>#define GFORCE_CONSTEXPR(expr) []() { constexpr auto x = (expr); return x; }()
+
+int global = GFORCE_CONSTEXPR(constexpr_sqrt(42.0));
+</code></pre>
+
+<h3>Definitions</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Term</th>
+            <th>Definition</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Compile-time constant</td>
+            <td>A value or non-modifiable object whose value must be known at compile time.</td>
+        </tr>
+        <tr>
+            <td>Constexpr</td>
+            <td>Keyword declaring variables as compile-time constants and functions for evaluation.</td>
+        </tr>
+        <tr>
+            <td>Constant expression</td>
+            <td>An expression containing only compile-time constants and supporting operators.</td>
+        </tr>
+        <tr>
+            <td>Runtime expression</td>
+            <td>An expression not classified as a constant expression.</td>
+        </tr>
+        <tr>
+            <td>Runtime constant</td>
+            <td>A value or non-modifiable object not classified as a compile-time constant.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Inline Functions and Variables</h3>
+<pre><code>inline int min(int x, int y) // inline function
+{
+    return (x < y) ? x : y;
+}
+</code></pre>
+
+<h3>Compile-time Evaluation</h3>
+<pre><code>#include &lt;type_traits&gt; // for std::is_constant_evaluated()
+
+constexpr int someFunction()
+{
+    if (std::is_constant_evaluated()) // if evaluating in constant context
+        doSomething();
+    else
+        doSomethingElse();
+}
+</code></pre>
+
+<h3>Immediate Functions (C++20)</h3>
+<pre><code>consteval int greater(int x, int y) // function is now consteval
+consteval auto compileTimeEval(auto value)
+</code></pre>
+
+<h2>Strings and String Views</h2>
+
+<h3>std::string</h3>
+<pre><code>#include &lt;string&gt;
+std::string s{"text"}; // class type
+s.length();
+</code></pre>
+
+<h3>std::getline for Input</h3>
+<pre><code>std::string name{};
+std::cin &gt;&gt; name; // breaks on whitespace
+std::getline(std::cin &gt;&gt; std::ws, name); // ignores leading whitespace
+</code></pre>
+
+<h3>Avoid Passing std::string by Value</h3>
+<pre><code>void doSomething(const std::string&); // pass by reference
+</code></pre>
+
+<h3>String Literals</h3>
+<pre><code>namespace std::literals::string_literals
+using namespace std::string_view_literals;
+
+#include &lt;string_view&gt;
+#include &lt;string&gt;
+
+std::cout &lt;&lt; "foo\n";   // C-style string literal
+std::cout &lt;&lt; "goo\n"s;  // std::string literal
+std::cout &lt;&lt; "moo\n"sv; // std::string_view literal
+
+// std::string_view can use constexpr, std::string can't
+constexpr std::string_view s{ "Hello, world!" }; // s is a string symbolic constant
+</code></pre>
+
+<h3>Dangling std::string_view</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;string_view&gt;
+
+std::string getName()
+{
+    std::string s{"sdasd"};
+    return s;
+}
+
+int main()
+{
+    std::string s { "Alex" };
+    std::string_view name { getName() }; // dangling
+    std::cout &lt;&lt; name &lt;&lt; '\n'; // undefined behavior due to out-of-scope
+    return 0;
+}
+</code></pre>
+
+<h3>std::string_view Guidelines</h3>
+<ul>
+    <li>Do not initialize <code>std::string_view</code> with a <code>std::string</code> literal (causes dangling).</li>
+    <li>Prefer <code>std::string_view</code> over <code>std::string</code> for read-only strings, especially for function parameters.</li>
+    <li>Okay to initialize <code>std::string_view</code> with C-style string literals or <code>std::string_view</code> literals.</li>
+</ul>
+
+<h3>Modifying std::string Invalidates Views</h3>
+<pre><code>std::string s { "Hello, world!" };
+std::string_view sv { s }; // sv is viewing s
+
+s = "Hello, universe!"; // modifies s, invalidates sv
+std::cout &lt;&lt; sv &lt;&lt; '\n'; // undefined behavior
+
+sv = s; // revalidate sv
+</code></pre>
+
+<h3>Changing Views</h3>
+<pre><code>std::string_view sv { "Hello" };
+sv.remove_prefix(1); // removes 'H'
+sv.remove_suffix(1); // removes 'o'
+</code></pre>
+
+<h3>When to Use std::string vs std::string_view</h3>
+<p>Refer to the <a href="https://www.notion.so/Insights-S-SV-a6a0cefcdaf544c9aa7ba62ecc68fa25?pvs=21">Insights on Strings and String Views</a> and <a href="https://www.notion.so/When-use-S-VS-1bb8ed9695e2491f87685e7a47a76e75?pvs=21">When to Use Strings and String Views</a>.</p>
+</body>
+</html>

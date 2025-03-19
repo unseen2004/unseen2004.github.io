@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 29: Exceptions</title>
+</head>
+<body>
+<h1>Chapter 29: Exceptions</h1>
+
+<h2>Introduction</h2>
+<p>Exceptions provide a way to handle errors or exceptional conditions in a program. They allow you to separate error-handling code from regular code, making your programs easier to read and maintain.</p>
+
+<h2>Basic Syntax</h2>
+
+<h3>Throwing and Catching Exceptions</h3>
+<pre><code>try
+{
+    // Statements that may throw exceptions you want to handle go here
+    throw -1; // here's a trivial throw statement
+}
+catch (int x)
+{
+    // Handle an exception of type int here
+    std::cerr << "We caught an int exception with value " << x << '\n';
+}
+</code></pre>
+<ul>
+    <li>A <code>try</code> block must have at least one <code>catch</code> block immediately following it, but may have multiple <code>catch</code> blocks listed in sequence.</li>
+    <li>No type conversion is done for exceptions (so an int exception will not be converted to match a catch block with a double parameter).</li>
+    <li>However, casts from a derived class to one of its parent classes will be performed.</li>
+</ul>
+
+<h3>Catch-All Handler</h3>
+<pre><code>catch (...) // catch-all handler
+{
+    std::cerr << "We caught an exception of unknown type";
+}
+</code></pre>
+
+<h2>Custom Exception Classes</h2>
+<p>You can create classes primarily used to handle exceptions.</p>
+<pre><code>class ArrayException
+{
+private:
+    std::string m_error;
+
+public:
+    ArrayException(std::string_view error)
+        : m_error{ error }
+    {
+    }
+
+    const std::string& getError() const { return m_error; }
+};
+</code></pre>
+<p>Handlers for derived exception classes should be listed before those for base classes.</p>
+
+<h2>Standard Library Exceptions</h2>
+<p><code>std::exception</code> (defined in the <code>&lt;exception&gt;</code> header) is a small interface class designed to serve as a base class to any exception thrown by the C++ standard library.</p>
+<pre><code>catch (const std::exception& exception)
+{
+    std::cerr << "Standard exception: " << exception.what() << '\n';
+}
+</code></pre>
+<p>Throwing a standard exception:</p>
+<pre><code>throw std::runtime_error("Invalid index");
+</code></pre>
+
+<h2>noexcept Specifier</h2>
+<p>The <code>noexcept</code> specifier means the function promises not to throw exceptions itself.</p>
+<pre><code>void doSomething() noexcept; // this function is specified as non-throwing
+</code></pre>
+<ul>
+    <li>Exception objects need to be copyable.</li>
+    <li>When rethrowing the same exception, use the <code>throw</code> keyword by itself.</li>
+</ul>
+
+<h2>Function Try Blocks</h2>
+<p>Use function try blocks when you need a constructor to handle an exception thrown in the member initializer list.</p>
+<pre><code>class B : public A
+{
+public:
+    B(int x) try : A{x} // note addition of try keyword here
+    {
+    }
+    catch (...) // note this is at the same level of indentation as the function itself
+    {
+        // Exceptions from member initializer list or constructor body are caught here
+        std::cerr << "Exception caught\n";
+        throw; // rethrow the existing exception
+    }
+};
+</code></pre>
+
+<h2>Dynamic Memory Management in Try Blocks</h2>
+<p>Ways to ensure that dynamic memory in try blocks will be deallocated if an error occurs:</p>
+<ol>
+    <li>Create a pointer before the try block.</li>
+    <li>Use <code>std::unique_ptr</code>.</li>
+</ol>
+<pre><code>auto* john { new Person("John", 18, PERSON_MALE) };
+std::unique_ptr&lt;Person&gt; upJohn { john }; // upJohn now owns john
+</code></pre>
+
+<h2>Destructors and Exceptions</h2>
+<p>Destructors should not throw exceptions.</p>
+
+<h2>When to Use Exceptions</h2>
+<p>Exceptions are best used when all of the following are true:</p>
+<ul>
+    <li>The error being handled is likely to occur only infrequently.</li>
+    <li>The error is serious and execution could not continue otherwise.</li>
+    <li>The error cannot be handled at the place where it occurs.</li>
+    <li>There isn’t a good alternative way to return an error code back to the caller.</li>
+</ul>
+
+<h2>noexcept in Function Declarations</h2>
+noexcept(true) // true: not throwing, false: potentially throwing
+noexcept(expression) // check if it's potentially throwing
+</code></pre>
+<ul>
+    <li>Always make move constructors, move assignment, and swap functions <code>noexcept</code>.</li>
+    <li>Make copy constructors and copy assignment operators <code>noexcept</code> when you can.</li>
+    <li>Use <code>noexcept</code> on other functions to express a no-fail or no-throw guarantee.</li>
+</ul>
+
+<h2>std::move_if_noexcept</h2>
+<p><code>std::move_if_noexcept</code> will return a movable r-value if the object has a <code>noexcept</code> move constructor, otherwise it will return a copyable l-value.</p>
+
+<h2>Conclusion</h2>
+<p>Exceptions provide a way to handle errors or exceptional conditions in a program. They allow you to separate error-handling code from regular code, making your programs easier to read and maintain.</p>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 15: Function Overloading and Templates</title>
+</head>
+<body>
+<h1>Chapter 15: Function Overloading and Templates</h1>
+
+<h2>Function Overloading</h2>
+<p>Function overloading allows you to define multiple functions with the same name but different parameters.</p>
+
+<h3>Example</h3>
+<pre><code>int add(int x, int y) // integer version
+{
+    return x + y;
+}
+
+double add(double x, double y) // floating point version
+{
+    return x + y;
+}
+</code></pre>
+
+<h3>Overload Resolution</h3>
+<p>Overload resolution is the process of determining which overloaded function to call based on the arguments provided.</p>
+<pre><code>void deg_min_sec2decimal(double deg, double min, double sec, double& dec_deg)
+{
+    dec_deg = (deg + min / 60.0 + sec / 3600.0);
+}
+
+foo(0); // int can be numerically converted to unsigned int or to float
+foo(3.14159); // double can be numerically converted to unsigned int or to float
+// ambiguous result causes error
+</code></pre>
+
+<h3>Deleted Functions</h3>
+<p>You can delete specific overloads to prevent them from being used.</p>
+<pre><code>void printInt(char) = delete; // calls to this function will halt compilation
+void printInt(bool) = delete; // calls to this function will halt compilation
+
+template &lt;typename T&gt;
+void printInt(T x) = delete;
+
+void printInt(int x)
+{
+    std::cout &lt;&lt; x &lt;&lt; '\n';
+}
+
+printInt(97);   // okay
+printInt('a');  // compile error
+printInt(true); // compile error
+</code></pre>
+
+<h3>Default Arguments</h3>
+<p>Functions can have parameters with default arguments.</p>
+<pre><code>void print(int x, int y = 10) // 10 is the default argument
+{
+    std::cout &lt;&lt; "x: " &lt;&lt; x &lt;&lt; '\n';
+    std::cout &lt;&lt; "y: " &lt;&lt; y &lt;&lt; '\n';
+}
+
+print(1, 2); // y will use user-supplied argument 2
+print(3);    // y will use default argument 10
+</code></pre>
+<p><strong>Note</strong>: If a parameter is given a default argument, all subsequent parameters must also be given default arguments.</p>
+
+<h3>Header File Example</h3>
+<pre><code>#ifndef FOO_H
+#define FOO_H
+void print(int x, int y = 4);
+#endif
+</code></pre>
+
+<h2>Templates</h2>
+<h3>Function Templates</h3>
+<pre><code>template &lt;typename T&gt; // this is the template parameter declaration
+T max(T x, T y) // this is the function template definition for max&lt;T&gt;
+{
+    return (x &lt; y) ? y : x;
+}
+
+std::cout &lt;&lt; max&lt;int&gt;(1, 2) &lt;&lt; '\n'; // calls max&lt;int&gt;(int, int)
+std::cout &lt;&lt; max&lt;&gt;(1, 2) &lt;&lt; '\n';    // deduces max&lt;int&gt;(int, int)
+std::cout &lt;&lt; max(1, 2) &lt;&lt; '\n';      // calls max(int, int)
+
+template &lt;typename T&gt;
+int someFcn(T, double){} // Template parameter and double
+</code></pre>
+
+<h3>Template Example in Header File</h3>
+<pre><code>#ifndef ADD_H
+#define ADD_H
+
+template &lt;typename T&gt;
+T addOne(T x) // function template definition
+{
+    return x + 1;
+}
+
+#endif
+</code></pre>
+
+<h3>Auto Templates (C++20)</h3>
+<pre><code>auto max(auto x, auto y)
+{
+    return (x &lt; y) ? y : x;
+}
+</code></pre>
+
+<h3>Non-Type Template Parameters</h3>
+<pre><code>#include &lt;iostream&gt;
+
+template &lt;int N&gt; // declare a non-type template parameter of type int named N
+void print()
+{
+    std::cout &lt;&lt; N &lt;&lt; '\n'; // use value of N here
+}
+
+print&lt;5&gt;(); // 5 is our non-type template argument
+</code></pre>
+
+<h3>Class Templates</h3>
+<pre><code>template &lt;typename T&gt;
+struct Pair
+{
+    T first{};
+    T second{};
+};
+
+template &lt;typename T&gt;
+constexpr T max(Pair&lt;T&gt; p)
+{
+    return (p.first &lt; p.second ? p.second : p.first);
+}
+
+Pair&lt;int&gt; p1{ 5, 6 };
+Pair&lt;double&gt; p2{ 1.2, 3.4 };
+
+std::cout &lt;&lt; max(p2) &lt;&lt; '\n'; // call to max&lt;double&gt; using template argument deduction
+std::cout &lt;&lt; max&lt;int&gt;(p1) &lt;&lt; '\n'; // explicit call to max&lt;int&gt;
+</code></pre>
+
+<h3>Class Template with Multiple Types</h3>
+<pre><code>template &lt;typename T, typename U&gt;
+struct Pair
+{
+    T first{};
+    U second{};
+};
+
+template &lt;typename T, typename U&gt;
+void print(Pair&lt;T, U&gt; p)
+{
+    std::cout &lt;&lt; '[' &lt;&lt; p.first &lt;&lt; ", " &lt;&lt; p.second &lt;&lt; ']';
+}
+
+Pair&lt;int, double&gt; p1{ 1, 2.3 }; // a pair holding an int and a double
+print(p1);
+</code></pre>
+
+<h3>Class Template Argument Deduction (CTAD)</h3>
+<pre><code>#include &lt;utility&gt; // for std::pair
+
+std::pair p1{ 1, 2 }; // CTAD used to deduce std::pair&lt;int, int&gt; from the initializers (C++17)
+
+std::pair p2 { 3.4f, 5.6f }; // deduced to pair&lt;float, float&gt;
+std::pair p3 { 1u, 2u };     // deduced to pair&lt;unsigned int, unsigned int&gt;
+Pair p4;                     // uses default Pair&lt;int, int&gt;
+</code></pre>
+
+<h3>Alias Templates</h3>
+<pre><code>template &lt;typename T&gt;
+using Coord = Pair&lt;T&gt;; // Coord is an alias for Pair&lt;T&gt;
+
+Coord&lt;int&gt; p1 { 1, 2 };     // Pre C++-20: We must explicitly specify all type template arguments
+Coord p2 { 1, 2 };          // In C++20, we can use alias template deduction to deduce the template arguments in cases where CTAD works
+</code></pre>
+
+<h3>Deduction Guide</h3>
+<pre><code>// Here's a deduction guide for our Pair (needed in C++17 only)
+template &lt;typename T, typename U&gt;
+Pair(T, U) -&gt; Pair&lt;T, U&gt;;
+</code></pre>
+</body>
+</html>

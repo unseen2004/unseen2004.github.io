@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Fundamental Data Types</title>
+</head>
+<body>
+<h1>Chapter 4: Fundamental Data Types</h1>
+
+<h2>Introduction</h2>
+<p>In C++, data types are divided into <strong>fundamental</strong> (also known as primitive) and <strong>compound</strong> types. This chapter focuses on the fundamental data types, their sizes, ranges, and usage guidelines.</p>
+
+<h2>Fundamental Data Types</h2>
+
+<h3>Overview</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Minimum Size</th>
+            <th>Typical Size</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Boolean</td>
+            <td>bool</td>
+            <td>1 byte</td>
+            <td>1 byte</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Character</td>
+            <td>char</td>
+            <td>1 byte</td>
+            <td>1 byte</td>
+            <td>Always exactly 1 byte</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>wchar_t</td>
+            <td>1 byte</td>
+            <td>2 or 4 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>char8_t</td>
+            <td>1 byte</td>
+            <td>1 byte</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>char16_t</td>
+            <td>2 bytes</td>
+            <td>2 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>char32_t</td>
+            <td>4 bytes</td>
+            <td>4 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Integer</td>
+            <td>short</td>
+            <td>2 bytes</td>
+            <td>2 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>int</td>
+            <td>2 bytes</td>
+            <td>4 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>long</td>
+            <td>4 bytes</td>
+            <td>4 or 8 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>long long</td>
+            <td>8 bytes</td>
+            <td>8 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Floating Point</td>
+            <td>float</td>
+            <td>4 bytes</td>
+            <td>4 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>double</td>
+            <td>8 bytes</td>
+            <td>8 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>long double</td>
+            <td>8 bytes</td>
+            <td>8, 12, or 16 bytes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Pointer</td>
+            <td>std::nullptr_t</td>
+            <td>4 bytes</td>
+            <td>4 or 8 bytes</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Signed Integers</h2>
+
+<h3>Declaration</h3>
+<pre><code>int a;
+short a;
+signed short a;
+short int a;
+long a;
+long long a;
+</code></pre>
+
+<h3>Range</h3>
+<p>An n-bit signed variable has a range of <code>-(2^{n-1})</code> to <code>2^{n-1} - 1</code>:</p>
+<table>
+    <thead>
+        <tr>
+            <th>Bits</th>
+            <th>Range</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>8</td>
+            <td>-128 to 127</td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>-32,768 to 32,767</td>
+        </tr>
+        <tr>
+            <td>32</td>
+            <td>-2,147,483,648 to 2,147,483,647</td>
+        </tr>
+        <tr>
+            <td>64</td>
+            <td>-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Unsigned Integers</h2>
+
+<h3>Declaration</h3>
+<pre><code>unsigned short us;
+unsigned int ui;
+unsigned long ul;
+unsigned long long ull;
+</code></pre>
+
+<h3>Range</h3>
+<p>An n-bit unsigned variable holds values from 0 to <code>(2^n) - 1</code>:</p>
+<table>
+    <thead>
+        <tr>
+            <th>Bits</th>
+            <th>Range</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>8</td>
+            <td>0 to 255</td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>0 to 65,535</td>
+        </tr>
+        <tr>
+            <td>32</td>
+            <td>0 to 4,294,967,295</td>
+        </tr>
+        <tr>
+            <td>64</td>
+            <td>0 to 18,446,744,073,709,551,615</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example</h3>
+<p>Larger numbers are stored as % 256:</p>
+<p>257 % 256 = 1 (stored)</p>
+
+<h2>Fixed-Width Integers (<code>&lt;cstdint&gt;</code> header)</h2>
+
+<h3>Types and Ranges</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Range</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>std::int8_t</td>
+            <td>1 byte signed</td>
+            <td>-128 to 127</td>
+            <td>Treated like a signed char on many systems.</td>
+        </tr>
+        <tr>
+            <td>std::uint8_t</td>
+            <td>1 byte unsigned</td>
+            <td>0 to 255</td>
+            <td>Treated like an unsigned char on many systems.</td>
+        </tr>
+        <tr>
+            <td>std::int16_t</td>
+            <td>2 byte signed</td>
+            <td>-32,768 to 32,767</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>std::uint16_t</td>
+            <td>2 byte unsigned</td>
+            <td>0 to 65,535</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>std::int32_t</td>
+            <td>4 byte signed</td>
+            <td>-2,147,483,648 to 2,147,483,647</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>std::uint32_t</td>
+            <td>4 byte unsigned</td>
+            <td>0 to 4,294,967,295</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>std::int64_t</td>
+            <td>8 byte signed</td>
+            <td>-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>std::uint64_t</td>
+            <td>8 byte unsigned</td>
+            <td>0 to 18,446,744,073,709,551,615</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Guidelines</h3>
+<ul>
+    <li>Prefer <code>int</code> when size doesn't matter.</li>
+    <li>Prefer <code>std::int#_t</code> for a guaranteed range (fixed-width integers).</li>
+    <li>Prefer <code>std::uint#_t</code> for bit manipulation or well-defined wrap-around behavior.</li>
+    <li>Avoid <code>short</code> and <code>long</code> integers; use fixed-width types instead.</li>
+    <li>Avoid using unsigned types for holding quantities.</li>
+    <li>Avoid 8-bit fixed-width integer types.</li>
+    <li>Avoid fast and least fixed-width types.</li>
+    <li>Avoid compiler-specific fixed-width integers.</li>
+</ul>
+
+<h2><code>std::size_t</code></h2>
+<p>The size of <code>std::size_t</code> imposes a strict upper limit on an object's size.</p>
+
+<h3>Example</h3>
+<pre><code>#include &lt;cstddef&gt;
+int x { 5 };
+std::size_t s { sizeof(x) }; // sizeof returns a value of type std::size_t
+</code></pre>
+
+<h3>Output Size</h3>
+<pre><code>std::cout &lt;&lt; sizeof(std::size_t) &lt;&lt; '\n';
+</code></pre>
+
+<h2>Floating Points</h2>
+
+<h3>Declaration</h3>
+<pre><code>double b { 5.0 }; // 5.0 is a floating point literal (double by default)
+float c { 5.0f }; // 5.0 is a floating point literal (float type)
+</code></pre>
+
+<h3>Precision</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Size</th>
+            <th>Range</th>
+            <th>Significant Digits</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>4 bytes</td>
+            <td>±1.18 x 10^-38 to ±3.4 x 10^38 and 0.0</td>
+            <td>6-9 digits, typically 7</td>
+        </tr>
+        <tr>
+            <td>8 bytes</td>
+            <td>±2.23 x 10^-308 to ±1.80 x 10^308 and 0.0</td>
+            <td>15-18 digits, typically 16</td>
+        </tr>
+        <tr>
+            <td>80-bits</td>
+            <td>±3.36 x 10^-4932 to ±1.18 x 10^4932 and 0.0</td>
+            <td>18-21 digits</td>
+        </tr>
+        <tr>
+            <td>16 bytes</td>
+            <td>±3.36 x 10^-4932 to ±1.18 x 10^4932 and 0.0</td>
+            <td>33-36 digits</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iomanip&gt; // for output manipulator std::setprecision()
+
+std::cout &lt;&lt; std::setprecision(17); // show 17 digits of precision
+std::cout &lt;&lt; 3.33333333333333333333333333333333333333f &lt;&lt; '\n'; // float
+std::cout &lt;&lt; 3.33333333333333333333333333333333333333 &lt;&lt; '\n'; // double
+</code></pre>
+
+<h3>Special Values</h3>
+<pre><code>double posinf { 5.0 / zero }; // positive infinity
+double nan { zero / zero }; // not a number (mathematically invalid)
+</code></pre>
+
+<h2>Boolean Values</h2>
+
+<h3>Input and Output</h3>
+<pre><code>bool b;
+std::cin &gt;&gt; std::boolalpha; // Allow the user to input 'true' or 'false'
+std::cin &gt;&gt; b;
+
+std::cout &gt;&gt; std::boolalpha; // Output bool values as `true` or `false`
+std::cout &lt;&lt; "You entered: " &lt;&lt; b &lt;&lt; '\n';
+</code></pre>
+
+<h3>Initialization</h3>
+<pre><code>bool bNo { 2 }; // error: narrowing conversions disallowed
+bool b1 = 4; // copy initialization allows implicit conversion from int to bool
+// 0 -> false, everything else -> true
+</code></pre>
+
+<h2>Type Conversion</h2>
+
+<h3>Explicit Conversion</h3>
+<p><code>static_cast&lt;new_type&gt;(expression)</code></p>
+<pre><code>static_cast&lt;int&gt;(5.5); // no warnings
+static_cast&lt;int&gt;(ch); // char to int
+</code></pre>
+
+<h2>Character Types</h2>
+
+<h3>ASCII Characters</h3>
+<p>The <code>integer</code> stored by a <code>char</code> variable is interpreted as an <code>ASCII character</code>. <a href="https://www.notion.so/ASCII-table-b7ca199eb5664be5811a5b0b808f248c?pvs=21">ASCII table</a></p>
+
+<h3>Declaration</h3>
+<pre><code>char ch2 { 'a' }; // initialize with code point for 'a' (stored as integer 97) (preferred)
+char ch1 { 97 }; // initialize with integer 97 ('a') (not preferred)
+</code></pre>
+
+<h3>Avoid Multicharacter Literals</h3>
+<p>Avoid multicharacter literals (e.g., <code>'56'</code>).</p>
+</body>
+</html>

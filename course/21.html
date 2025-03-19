@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 21: Fixed-Sized Arrays</title>
+</head>
+<body>
+<h1>Chapter 21: Fixed-Sized Arrays</h1>
+
+<h2>Introduction</h2>
+<p>Fixed-sized arrays in C++ can be implemented using <code>std::array</code> and C-style arrays. This chapter covers both implementations and their usage.</p>
+
+<h2><code>std::array</code></h2>
+<p><code>std::array</code> is a container that encapsulates fixed-size arrays. It provides better type safety and features compared to C-style arrays.</p>
+
+<h3>Basic Usage</h3>
+<pre><code>#include &lt;array&gt;  // for std::array
+
+std::array&lt;int, 5&gt; a;   // Members default initialized (int elements are left uninitialized)
+std::array&lt;int, 5&gt; b{}; // Members value initialized (int elements are zero initialized) (preferred)
+
+// Length must be constexpr, enum, or macro
+constexpr std::array a1 { 9, 7, 5, 3, 1 }; // The type is deduced to std::array&lt;int, 5&gt;
+constexpr auto myArray2 { std::to_array&lt;int&gt;({ 9, 7, 5, 3, 1 }) }; // Specify type only, deduce size
+</code></pre>
+
+<h3>Accessing Elements</h3>
+<pre><code>arr.size();
+std::size(arr);
+std::ssize(arr); // C++20
+
+std::cout &lt;&lt; std::get&lt;3&gt;(arr); // print the value of element with index 3
+// std::cout &lt;&lt; std::get&lt;9&gt;(arr); // invalid index (compile error)
+</code></pre>
+
+<h3>Passing <code>std::array</code> to Functions</h3>
+<pre><code>void passByRef(const std::array&lt;int, 5&gt;&amp; arr);
+
+template &lt;typename T, std::size_t N&gt;
+void passByRef(const std::array&lt;T, N&gt;&amp; arr);
+
+template &lt;std::size_t N&gt;
+void passByRef(const std::array&lt;int, N&gt;&amp; arr); // We've defined the element type as int
+</code></pre>
+
+<h3>Arrays of Compound Types</h3>
+<pre><code>struct House
+{
+    int number{};
+    int stories{};
+    int roomsPerStory{};
+};
+
+std::array&lt;House, 1&gt; houses{};
+houses[0] = { 13, 1, 7 };
+
+constexpr std::array houses { House{ 13, 1, 7 } }; // CTAD
+
+constexpr std::array&lt;House, 3&gt; houses { // initializer for houses
+    { // extra set of braces to initialize the C-style array member with implementation-defined name
+        { 13, 4, 30 }, // initializer for array element 0
+     }
+};
+
+constexpr std::array&lt;House, 3&gt; houses
+{
+    ._Elems{
+        { 13, 1, 7 }
+    }
+};
+</code></pre>
+
+<h3><code>std::reference_wrapper</code></h3>
+<pre><code>#include &lt;functional&gt; // for std::reference_wrapper
+
+int x { 5 };
+int y { 6 };
+int z { 7 };
+
+std::array&lt;std::reference_wrapper&lt;int&gt;, 3&gt; arr { x, y, z };
+arr[1].get() = 5; // modify the object in array element 1
+
+auto ref { std::ref(x) };   // C++11, deduces to std::reference_wrapper&lt;int&gt;
+auto cref { std::cref(x) }; // C++11, deduces to std::reference_wrapper&lt;const int&gt;
+</code></pre>
+
+<h2>C-Style Arrays</h2>
+<p>C-style arrays are the traditional array type in C++, but they have several limitations compared to <code>std::array</code>.</p>
+
+<h3>Basic Usage</h3>
+<pre><code>int testScore[30] {};
+int prime[5] { 2, 3, 5, 7, 11 };
+int prime[] = { 2, 3, 5, 7, 11 }; // no length in []
+
+sizeof(prime); // prints 20 (assuming 4 byte ints)
+
+std::size(prime);    // C++17, returns unsigned integral value 5
+std::ssize(prime);   // C++20, returns signed integral value 5
+
+sizeof(array) / sizeof(array[0]);
+
+template &lt;typename T, std::size_t N&gt;
+constexpr std::size_t length(const T(&)[N]) noexcept
+{ return N; }
+</code></pre>
+
+<h3>Accessing Elements</h3>
+<pre><code>void printElementZero(const int arr[]) // treated the same as const int*
+{
+    std::cout &lt;&lt; arr[0];
+}
+</code></pre>
+
+<h3>Pointer Arithmetic</h3>
+<pre><code>int x {};
+const int* ptr{ &x }; // assume 4 byte ints
+
+ptr;       // 00AFFD80
+(ptr + 1); // 00AFFD84
+(ptr - 1); // 00AFFD76
+
+ptr = &arr[3];
+*(ptr+1), ptr[1]; // arr[4]
+</code></pre>
+
+<h2>C-Style Strings</h2>
+<p>C-style strings are arrays of characters ending with a null terminator (<code>\0</code>).</p>
+
+<h3>Basic Usage</h3>
+<pre><code>const char str2[]{ "123" }; // const char[4], +1 for null terminator
+
+const char name[] { "Alex" };        // const C-style string initialized with C-style string literal
+const char* const color{ "Orange" }; // const pointer to C-style string literal
+
+char rolls[255] {}; // declare array large enough to hold 254 characters + null terminator
+std::cin.getline(rolls, std::size(rolls));
+</code></pre>
+
+<h3>Functions for C-Style Strings</h3>
+<ul>
+    <li><code>strlen()</code> -- returns the length of a C-style string.</li>
+    <li><code>strcpy()</code>, <code>strncpy()</code>, <code>strcpy_s()</code> -- overwrites one C-style string with another.</li>
+    <li><code>strcat()</code>, <code>strncat()</code> -- Appends one C-style string to the end of another.</li>
+    <li><code>strcmp()</code>, <code>strncmp()</code> -- Compares two C-style strings (returns <code>0</code> if equal).</li>
+</ul>
+
+<h2>Multi-Dimensional Arrays</h2>
+
+<h3>C-Style Multi-Dimensional Arrays</h3>
+<pre><code>int a[3][5]{}; // a[row][col], C++ uses row-major order
+int a[][][]{}; // there can be more dimensions
+int array[3][5] // can omit (only) the leftmost length specification
+{
+    { 1, 2, 3, 4, 5 },     // row 0
+    { 6, 7, 8, 9, 10 },    // row 1
+    { 11, 12, 13, 14, 15 } // row 2
+};
+</code></pre>
+
+<h3><code>std::array</code> Multi-Dimensional Arrays</h3>
+<pre><code>std::array&lt;std::array&lt;int, 4&gt;, 3&gt; arr {{  // note double braces
+    { 1, 2, 3, 4 },
+    { 5, 6, 7, 8 },
+    { 9, 10, 11, 12 }}};
+
+// std::array&lt;std::array&lt;int, col&gt;, row&gt; is backwards
+using Array2dint34 = std::array&lt;std::array&lt;int, 4&gt;, 3&gt;;
+
+// An alias template for a two-dimensional std::array
+template &lt;typename T, std::size_t Row, std::size_t Col&gt;
+using Array2d = std::array&lt;std::array&lt;T, Col&gt;, Row&gt;;
+
+arr[0].size(), arr[0][0].size();
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>Fixed-sized arrays in C++ can be implemented using <code>std::array</code> and C-style arrays. <code>std::array</code> provides better type safety and features, while C-style arrays offer more flexibility at the cost of safety and ease of use. Understanding both types and their usage is crucial for writing efficient and maintainable C++ code.</p>
+</body>
+</html>

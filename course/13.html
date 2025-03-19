@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 13: Operator Overloading</title>
+</head>
+<body>
+<h1>Chapter 13: Operator Overloading</h1>
+
+<h2>Introduction</h2>
+<p>Operator overloading allows you to redefine the way operators work with user-defined types like classes and enums. This chapter covers how to overload operators for custom types, with examples including enums and I/O stream operations.</p>
+
+<h2>Example with Enums</h2>
+
+<h3>Enum Definition</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;string_view&gt;
+#include &lt;optional&gt;
+
+enum Color
+{
+    black,
+    red,
+    blue,
+};
+
+constexpr std::string_view getColorName(Color color)
+{
+    switch (color)
+    {
+    case black: return "black";
+    case red:   return "red";
+    case blue:  return "blue";
+    default:    return "???";
+    }
+}
+
+enum Pet
+{
+    cat,
+    dog,
+    pig,
+    whale,
+};
+
+constexpr std::optional&lt;Pet&gt; getPetFromString(std::string_view sv)
+{
+    if (sv == "cat")   return cat;
+    if (sv == "dog")   return dog;
+    if (sv == "pig")   return pig;
+    if (sv == "whale") return whale;
+
+    return {};
+}
+</code></pre>
+
+<h3>Overloading <code>operator&lt;&lt;</code> for Output</h3>
+<p>To overload the <code>&lt;&lt;</code> operator for output, we define a function that takes an <code>std::ostream</code> reference and an enum value.</p>
+<pre><code>// Teach operator&lt;&lt; how to print a Color
+std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, Color color)
+{
+    out &lt;&lt; getColorName(color); // print our color's name to whatever output stream out
+    return out;                 // operator&lt;&lt; conventionally returns its left operand
+}
+</code></pre>
+
+<h3>Overloading <code>operator&gt;&gt;</code> for Input</h3>
+<p>To overload the <code>&gt;&gt;</code> operator for input, we define a function that takes an <code>std::istream</code> reference and an enum reference.</p>
+<pre><code>// pet is an in/out parameter
+std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Pet&amp; pet)
+{
+    std::string s{};
+    in &gt;&gt; s; // get input string from user
+
+    std::optional&lt;Pet&gt; match { getPetFromString(s) };
+    if (match) // if we found a match
+    {
+        pet = *match; // set Pet to the matching enumerator
+        return in;
+    }
+
+    // We didn't find a match, so input must have been invalid
+    // so we will set input stream to fail state
+    in.setstate(std::ios_base::failbit);
+
+    // On an extraction failure, operator&gt;&gt; zero-initializes fundamental types
+    // Uncomment the following line to make this operator do the same thing
+    // pet = {};
+
+    return in;
+}
+</code></pre>
+
+<h3>Main Function</h3>
+<p>The main function demonstrates how to use the overloaded operators.</p>
+<pre><code>int main()
+{
+    Color shirt{ blue };
+    std::cout &lt;&lt; "Your shirt is " &lt;&lt; shirt &lt;&lt; '\n'; // it works!
+
+    std::cout &lt;&lt; "Enter a pet: cat, dog, pig, or whale: ";
+    Pet pet{};
+    std::cin &gt;&gt; pet;
+
+    if (std::cin) // if we found a match
+        std::cout &lt;&lt; "You chose: " &lt;&lt; getPetName(pet) &lt;&lt; '\n';
+    else
+    {
+        std::cin.clear(); // reset the input stream to good
+        std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n');
+        std::cout &lt;&lt; "Your pet was not valid\n";
+    }
+
+    return 0;
+}
+</code></pre>
+</body>
+</html>

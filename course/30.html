@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 30: iostream: Standard Streams</title>
+</head>
+<body>
+<h1>Chapter 30: iostream: Standard Streams</h1>
+
+<h2>Introduction</h2>
+<p>The <code>&lt;iostream&gt;</code> library provides functionality for input and output in C++. The standard streams provided by this library include <code>cin</code>, <code>cout</code>, <code>cerr</code>, and <code>clog</code>.</p>
+
+<h2>Standard Streams</h2>
+<ol>
+    <li><strong>cin</strong>: An <code>istream</code> object tied to the standard input (typically the keyboard).</li>
+    <li><strong>cout</strong>: An <code>ostream</code> object tied to the standard output (typically the monitor).</li>
+    <li><strong>cerr</strong>: An <code>ostream</code> object tied to the standard error (typically the monitor), providing unbuffered output.</li>
+    <li><strong>clog</strong>: An <code>ostream</code> object tied to the standard error (typically the monitor), providing buffered output.</li>
+</ol>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+int main()
+{
+    char buf[10]{};
+    std::cin &gt;&gt; std::setw(10) &gt;&gt; buf;
+    std::cout &lt;&lt; "Buffer content: " &lt;&lt; buf &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+
+<h2>Input Functions</h2>
+<ul>
+    <li><code>cin.get(ch)</code>: Reads a character from the stream, including whitespace except newline.</li>
+    <li><code>cin.get(str, 5)</code>: Reads 4 characters into <code>str</code>, leaving space for the terminator.</li>
+    <li><code>getline()</code>: Extracts newline.</li>
+    <li><code>gcount()</code>: Returns the number of characters extracted by the last unformatted input operation.</li>
+</ul>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+
+int main()
+{
+    char ch;
+    std::cin.get(ch);
+    std::cout &lt;&lt; "Character read: " &lt;&lt; ch &lt;&lt; '\n';
+
+    char str[5];
+    std::cin.get(str, 5);
+    std::cout &lt;&lt; "String read: " &lt;&lt; str &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
+
+<h2>Stream Manipulators</h2>
+
+<h3>Formatting</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+int main()
+{
+    std::cout.setf(std::ios::showpos); // turn on the std::ios::showpos flag
+    std::cout &lt;&lt; 10 &lt;&lt; '\n'; // +10
+    std::cout.unsetf(std::ios::showpos); // turn off the std::ios::showpos flag
+
+    std::cout.setf(std::ios::showpos | std::ios::uppercase); // turn on the std::ios::showpos and std::ios::uppercase flag
+    std::cout &lt;&lt; std::hex &lt;&lt; 27 &lt;&lt; '\n'; // print 27 in hex
+
+    return 0;
+}
+</code></pre>
+
+<h3>Manipulators</h3>
+<ul>
+    <li><code>std::hex</code>, <code>std::dec</code>, <code>std::oct</code>: Set the basefield to hexadecimal, decimal, or octal.</li>
+    <li><code>std::fixed</code>: Uses decimal notation for floating-point numbers.</li>
+    <li><code>std::scientific</code>: Uses scientific notation for floating-point numbers.</li>
+    <li><code>std::setprecision(int)</code>: Sets the precision of floating-point numbers.</li>
+</ul>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+int main()
+{
+    std::cout &lt;&lt; std::fixed &lt;&lt; std::setprecision(2) &lt;&lt; 123.456789 &lt;&lt; '\n'; // 123.46
+    std::cout &lt;&lt; std::scientific &lt;&lt; 123.456789 &lt;&lt; '\n'; // 1.234568e+02
+    std::cout &lt;&lt; std::showpoint &lt;&lt; 123.0 &lt;&lt; '\n'; // 123.000
+    return 0;
+}
+</code></pre>
+
+<h2>Stream Classes for Strings</h2>
+
+<h3><code>std::stringstream</code></h3>
+<pre><code>#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    std::stringstream os;
+    os &lt;&lt; "12345 67.89\n";
+    std::cout &lt;&lt; os.str();
+
+    std::string strValue;
+    os &gt;&gt; strValue; // Read until whitespace
+    std::cout &lt;&lt; "String value: " &lt;&lt; strValue &lt;&lt; '\n';
+
+    int nValue;
+    double dValue;
+    os &gt;&gt; nValue &gt;&gt; dValue;
+    std::cout &lt;&lt; "Int value: " &lt;&lt; nValue &lt;&lt; ", Double value: " &lt;&lt; dValue &lt;&lt; '\n';
+
+    os.str(""); // Erase the buffer
+    os.clear(); // Reset error flags
+
+    return 0;
+}
+</code></pre>
+
+<h2>Stream States and Flags</h2>
+
+<h3>Flags</h3>
+<ul>
+    <li><code>goodbit</code>: Everything is okay.</li>
+    <li><code>badbit</code>: A fatal error occurred.</li>
+    <li><code>eofbit</code>: The stream has reached the end of a file.</li>
+    <li><code>failbit</code>: A non-fatal error occurred.</li>
+</ul>
+
+<h3>Member Functions</h3>
+<ul>
+    <li><code>good()</code>: Returns true if the <code>goodbit</code> is set.</li>
+    <li><code>bad()</code>: Returns true if the <code>badbit</code> is set.</li>
+    <li><code>eof()</code>: Returns true if the <code>eofbit</code> is set.</li>
+    <li><code>fail()</code>: Returns true if the <code>failbit</code> is set.</li>
+    <li><code>clear()</code>: Clears all flags and restores the stream to the <code>goodbit</code> state.</li>
+    <li><code>rdstate()</code>: Returns the currently set flags.</li>
+    <li><code>setstate(state)</code>: Sets the state flag passed in.</li>
+</ul>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+int main()
+{
+    int num;
+    while (true)
+    {
+        std::cout &lt;&lt; "Enter a number: ";
+        std::cin &gt;&gt; num;
+
+        if (std::cin.fail()) // no extraction took place
+        {
+            std::cin.clear(); // reset the state bits back to goodbit
+            std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n'); // clear out the bad input from the stream
+            std::cout &lt;&lt; "Invalid input, please try again.\n";
+            continue; // try again
+        }
+
+        std::cin.ignore(std::numeric_limits&lt;std::streamsize&gt;::max(), '\n'); // clear out any additional input from the stream
+        break;
+    }
+
+    std::cout &lt;&lt; "You entered: " &lt;&lt; num &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+
+<h2>Working with Files</h2>
+
+<h3>Writing to a File</h3>
+<pre><code>#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    std::ofstream outf{ "Sample.txt" };
+
+    if (!outf)
+    {
+        std::cerr &lt;&lt; "Uh oh, Sample.txt could not be opened for writing!\n";
+        return 1;
+    }
+
+    outf &lt;&lt; "This is line 1\n";
+    outf &lt;&lt; "This is line 2\n";
+
+    return 0;
+}
+</code></pre>
+
+<h3>Reading from a File</h3>
+<pre><code>#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main()
+{
+    std::ifstream file{ "Sample.txt" };
+
+    if (!file)
+    {
+        std::cerr &lt;&lt; "Uh oh, Sample.txt could not be opened for reading!\n";
+        return 1;
+    }
+
+    std::string strInput;
+    while (std::getline(file, strInput))
+        std::cout &lt;&lt; strInput &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
+
+<h3>File Modes</h3>
+<pre><code>std::ofstream outf{ "file.txt", std::ios::app };
+
+// other method
+outf.open("Sample.txt", std::ios::app);
+outf.close();
+</code></pre>
+
+<h3>Random File Access</h3>
+<ul>
+    <li><code>seekg()</code>: Sets the position of the next input operation.</li>
+    <li><code>seekp()</code>: Sets the position of the next output operation.</li>
+</ul>
+<pre><code>std::ifstream inf{ "Sample.txt" };
+inf.seekg(14, std::ios::cur); // move forward 14 bytes
+</code></pre>
+
+<h3>Seek Flags</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Ios seek flag</th>
+            <th>Meaning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>beg</td>
+            <td>The offset is relative to the beginning of the file (default)</td>
+        </tr>
+        <tr>
+            <td>cur</td>
+            <td>The offset is relative to the current location of the file pointer</td>
+        </tr>
+        <tr>
+            <td>end</td>
+            <td>The offset is relative to the end of the file</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Regular Expressions</h2>
+
+<h3>Example</h3>
+<pre><code>#include &lt;regex&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    std::string str{ "Hello, World!" };
+    std::regex re{ R"(\w+)" }; // word characters
+
+    std::sregex_iterator begin{ str.begin(), str.end(), re };
+    std::sregex_iterator end;
+
+    for (auto it = begin; it != end; ++it)
+        std::cout &lt;&lt; it->str() &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
+
+<h3>Character Functions</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Function</th>
+            <th>Meaning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>std::isalnum(int)</code></td>
+            <td>Returns non-zero if the parameter is a letter or a digit</td>
+        </tr>
+        <tr>
+            <td><code>std::isalpha(int)</code></td>
+            <td>Returns non-zero if the parameter is a letter</td>
+        </tr>
+        <tr>
+            <td><code>std::iscntrl(int)</code></td>
+            <td>Returns non-zero if the parameter is a control character</td>
+        </tr>
+        <tr>
+            <td><code>std::isdigit(int)</code></td>
+            <td>Returns non-zero if the parameter is a digit</td>
+        </tr>
+        <tr>
+            <td><code>std::isgraph(int)</code></td>
+            <td>Returns non-zero if the parameter is printable character that is not whitespace</td>
+        </tr>
+        <tr>
+            <td><code>std::isprint(int)</code></td>
+            <td>Returns non-zero if the parameter is printable character (including whitespace)</td>
+        </tr>
+        <tr>
+            <td><code>std::ispunct(int)</code></td>
+            <td>Returns non-zero if the parameter is neither alphanumeric nor whitespace</td>
+        </tr>
+        <tr>
+            <td><code>std::isspace(int)</code></td>
+            <td>Returns non-zero if the parameter is whitespace</td>
+        </tr>
+        <tr>
+            <td><code>std::isxdigit(int)</code></td>
+            <td>Returns non-zero if the parameter is a hexadecimal digit (0-9, a-f, A-F)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;cctype&gt;
+#include &lt;string&gt;
+#include &lt;ranges&gt;
+
+bool isValidName(const std::string&amp; name)
+{
+    return std::ranges::all_of(name, [](char ch) {
+        return std::isalpha(ch) || std::isspace(ch);
+    });
+}
+
+int main()
+{
+    std::string name{ "John Doe" };
+    if (isValidName(name))
+        std::cout &lt;&lt; "Valid name\n";
+    else
+        std::cout &lt;&lt; "Invalid name\n";
+
+    return 0;
+}
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>The <code>&lt;iostream&gt;</code> library provides powerful tools for input and output in C++. Understanding how to use standard streams, file streams, and manipulators is crucial for effective C++ programming.</p>
+</body>
+</html>

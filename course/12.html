@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12: Numeral Systems, Scientific Notation, and Escape Sequences</title>
+</head>
+<body>
+<h1>Chapter 12: Numeral Systems, Scientific Notation, and Escape Sequences</h1>
+
+<h2>Numeral Systems</h2>
+
+<h3>Binary, Octal, Decimal, and Hexadecimal</h3>
+<p>In C++, you can represent numbers in different numeral systems.</p>
+
+<h4>Binary</h4>
+<pre><code>#include &lt;bitset&gt;
+
+std::bitset&lt;8&gt; bin1{ 0b1100'0101 }; // binary literal for binary 1100 0101
+</code></pre>
+
+<h4>Octal</h4>
+<pre><code>int x{ 012 }; // 0 before the number means this is octal
+</code></pre>
+
+<h4>Decimal</h4>
+<p>Decimal is the default numeral system.</p>
+
+<h4>Hexadecimal</h4>
+<pre><code>int x{ 0xF }; // 0x before the number means this is hexadecimal
+</code></pre>
+
+<h3>Conversion Table</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Decimal</th>
+            <th>10</th>
+            <th>11</th>
+            <th>12</th>
+            <th>13</th>
+            <th>14</th>
+            <th>15</th>
+            <th>16</th>
+            <th>17</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Hexadecimal</td>
+            <td>A</td>
+            <td>C</td>
+            <td>D</td>
+            <td>E</td>
+            <td>F</td>
+            <td>10</td>
+            <td>11</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Examples</h3>
+<pre><code>int bin = 0b11; // binary 0000 0000 0000 0011
+bin = 0b1; // same as binary 1
+
+int hex = 0xF770; // binary 1111 0111 0111 0000
+int bin2 = 0b11110000; // binary 0000 0000 1111 0000
+</code></pre>
+
+<h3>Digit Separator</h3>
+<pre><code>long value { 2'132'673'462 }; // much easier to read than 2132673462
+</code></pre>
+
+<h3>Formatting Binary Output</h3>
+<pre><code>#include &lt;format&gt; // C++20
+#include &lt;print&gt; // C++23
+
+std::cout &lt;&lt; std::format("{:b}\n", 0b1010);  // C++20, {:b} formats the argument as binary digits
+std::cout &lt;&lt; std::format("{:#b}\n", 0b1010); // C++20, {:#b} formats the argument as 0b-prefixed binary digits
+
+std::println("{:b} {:#b}", 0b1010, 0b1010);  // C++23, format/print two arguments (same as above) and a newline
+</code></pre>
+
+<h2>Scientific Notation</h2>
+<p>Scientific notation is a way to represent numbers that are too large or too small to be conveniently written in decimal form.</p>
+
+<h3>Examples</h3>
+
+<h4>Example 1</h4>
+<pre><code>600.410 → 6.00410e2
+</code></pre>
+
+<h4>Example 2</h4>
+<pre><code>0.0078900 → 7.8900e-3
+</code></pre>
+
+<h4>Detailed Example</h4>
+<pre><code>Start with: 42030 (assuming the trailing zero is significant)
+Slide decimal left 4 spaces: 4.2030e4
+No leading zeros to trim: 4.2030e4
+Keep trailing zeros: 4.2030e4 (5 significant digits)
+</code></pre>
+<pre><code>Start with: 0.0078900
+Slide decimal right 3 spaces: 0007.8900e-3
+Trim leading zeros: 7.8900e-3
+Don't trim trailing zeros: 7.8900e-3 (5 significant digits)
+</code></pre>
+
+<h3>Notation Rules</h3>
+<ul>
+    <li>Keep trailing zeros after a decimal point.</li>
+    <li>Drop trailing zeros if there is no decimal point.</li>
+</ul>
+
+<h2>Escape Sequences</h2>
+<p>Escape sequences are used to represent special characters in a string.</p>
+
+<h3>Table of Escape Sequences</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Escape Sequence</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Alert</td>
+            <td>\a</td>
+            <td>Makes an alert (beep)</td>
+        </tr>
+        <tr>
+            <td>Backspace</td>
+            <td>\b</td>
+            <td>Moves cursor back one space</td>
+        </tr>
+        <tr>
+            <td>Formfeed</td>
+            <td>\f</td>
+            <td>Moves cursor to next logical page</td>
+        </tr>
+        <tr>
+            <td>Newline</td>
+            <td>\n</td>
+            <td>Moves cursor to next line</td>
+        </tr>
+        <tr>
+            <td>Carriage return</td>
+            <td>\r</td>
+            <td>Moves cursor to beginning of line</td>
+        </tr>
+        <tr>
+            <td>Horizontal tab</td>
+            <td>\t</td>
+            <td>Prints a horizontal tab</td>
+        </tr>
+        <tr>
+            <td>Vertical tab</td>
+            <td>\v</td>
+            <td>Prints a vertical tab</td>
+        </tr>
+        <tr>
+            <td>Single quote</td>
+            <td>\'</td>
+            <td>Prints a single quote</td>
+        </tr>
+        <tr>
+            <td>Double quote</td>
+            <td>\"</td>
+            <td>Prints a double quote</td>
+        </tr>
+        <tr>
+            <td>Backslash</td>
+            <td>\\</td>
+            <td>Prints a backslash</td>
+        </tr>
+        <tr>
+            <td>Question mark</td>
+            <td>\?</td>
+            <td>Prints a question mark</td>
+        </tr>
+        <tr>
+            <td>Octal number</td>
+            <td>\number</td>
+            <td>Translates into char represented by octal</td>
+        </tr>
+        <tr>
+            <td>Hex number</td>
+            <td>\xnumber</td>
+            <td>Translates into char represented by hex number</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example Usage</h3>
+<pre><code>std::cout &lt;&lt; "Hello, World!\n"; // Prints "Hello, World!" followed by a newline
+std::cout &lt;&lt; "This is a tab:\tSee?\n"; // Prints a tab between "This is a tab:" and "See?"
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 33: STL Introduction</title>
+</head>
+<body>
+<h1>Chapter 33: STL Introduction</h1>
+
+<h2>What is STL?</h2>
+<p>The Standard Template Library (STL) is a powerful library in C++ that provides a set of common classes and functions for data structures and algorithms. It includes:</p>
+<ul>
+    <li>Containers: Data structures like vectors, lists, and sets.</li>
+    <li>Iterators: Objects used to traverse elements in containers.</li>
+    <li>Algorithms: Functions for operations like searching, sorting, and manipulating data.</li>
+</ul>
+
+<h2>Components of STL</h2>
+
+<h3>1. Containers</h3>
+<p>Containers are data structures that store collections of objects. The main types of containers in STL are:</p>
+<ul>
+    <li><strong>Sequence Containers</strong>: Maintain the order of elements.
+        <ul>
+            <li><code>vector</code>: Dynamic array.</li>
+            <li><code>deque</code>: Double-ended queue.</li>
+            <li><code>list</code>: Doubly linked list.</li>
+        </ul>
+    </li>
+    <li><strong>Associative Containers</strong>: Store elements in a specific order.
+        <ul>
+            <li><code>set</code>: Collection of unique keys, sorted by keys.</li>
+            <li><code>map</code>: Collection of key-value pairs, sorted by keys.</li>
+            <li><code>multiset</code>: Collection of keys, allowing duplicates, sorted by keys.</li>
+            <li><code>multimap</code>: Collection of key-value pairs, allowing duplicates, sorted by keys.</li>
+        </ul>
+    </li>
+    <li><strong>Unordered Containers</strong>: Store elements in no particular order.
+        <ul>
+            <li><code>unordered_set</code>: Collection of unique keys, hashed by keys.</li>
+            <li><code>unordered_map</code>: Collection of key-value pairs, hashed by keys.</li>
+            <li><code>unordered_multiset</code>: Collection of keys, allowing duplicates, hashed by keys.</li>
+            <li><code>unordered_multimap</code>: Collection of key-value pairs, allowing duplicates, hashed by keys.</li>
+        </ul>
+    </li>
+</ul>
+
+<h3>2. Iterators</h3>
+<p>Iterators are objects that point to elements in containers. They provide a way to access and traverse elements in containers.</p>
+<ul>
+    <li><strong>Input Iterators</strong>: Read-only access to a sequence.</li>
+    <li><strong>Output Iterators</strong>: Write-only access to a sequence.</li>
+    <li><strong>Forward Iterators</strong>: Read and write access, can move forward.</li>
+    <li><strong>Bidirectional Iterators</strong>: Read and write access, can move forward and backward.</li>
+    <li><strong>Random Access Iterators</strong>: Read and write access, can move in any direction.</li>
+</ul>
+
+<h3>3. Algorithms</h3>
+<p>Algorithms are functions that perform operations on containers. They are implemented as template functions and work with iterators.</p>
+<ul>
+    <li><strong>Non-modifying Algorithms</strong>: Do not change the elements in the container.
+        <ul>
+            <li><code>find</code>, <code>count</code>, <code>equal</code>, <code>mismatch</code></li>
+        </ul>
+    </li>
+    <li><strong>Modifying Algorithms</strong>: Change the elements in the container.
+        <ul>
+            <li><code>copy</code>, <code>swap</code>, <code>replace</code>, <code>fill</code></li>
+        </ul>
+    </li>
+    <li><strong>Sorting and Searching Algorithms</strong>: Sort and search elements in the container.
+        <ul>
+            <li><code>sort</code>, <code>binary_search</code>, <code>lower_bound</code>, <code>upper_bound</code></li>
+        </ul>
+    </li>
+    <li><strong>Numeric Algorithms</strong>: Perform numeric operations.
+        <ul>
+            <li><code>accumulate</code>, <code>inner_product</code>, <code>partial_sum</code></li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Example Usage</h2>
+
+<h3>Using a Vector Container</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int main()
+{
+    std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    // Display elements
+    for (int val : vec)
+    {
+        std::cout &lt;&lt; val &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; std::endl;
+
+    // Sort elements in descending order
+    std::sort(vec.begin(), vec.end(), std::greater&lt;int&gt;());
+
+    // Display sorted elements
+    for (int val : vec)
+    {
+        std::cout &lt;&lt; val &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; std::endl;
+
+    return 0;
+}
+</code></pre>
+
+<h3>Using an Iterator</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main()
+{
+    std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    // Use an iterator to traverse the vector
+    for (std::vector&lt;int&gt;::iterator it = vec.begin(); it != vec.end(); ++it)
+    {
+        std::cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; std::endl;
+
+    return 0;
+}
+</code></pre>
+
+<h3>Using an Algorithm</h3>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int main()
+{
+    std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    // Find an element
+    auto it = std::find(vec.begin(), vec.end(), 3);
+    if (it != vec.end())
+    {
+        std::cout &lt;&lt; "Element found: " &lt;&lt; *it &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "Element not found" &lt;&lt; std::endl;
+    }
+
+    return 0;
+}
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>The STL is a powerful tool in C++ that provides a wide range of functionalities for managing data structures and algorithms. Understanding and utilizing STL components can greatly enhance your programming efficiency and effectiveness.</p>
+</body>
+</html>

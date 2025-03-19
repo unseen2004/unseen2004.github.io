@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 17: Pointers</title>
+</head>
+<body>
+<h1>Chapter 17: Pointers</h1>
+
+<h2>Introduction to Pointers</h2>
+<p>Pointers are objects that hold a memory address (typically of another variable) as their value.</p>
+
+<h3>Basic Example</h3>
+<pre><code>int x{ 5 };
+std::cout &lt;&lt; x &lt;&lt; '\n';  // print the value of variable x
+std::cout &lt;&lt; &amp;x &lt;&lt; '\n'; // print the memory address of variable x, hexadecimal values
+
+std::cout &lt;&lt; *(&amp;x) &lt;&lt; '\n'; // print the value at the memory address of variable x (parentheses not required, but make it easier to read)
+</code></pre>
+
+<pre><code>int x{ 5 };
+int* ptr { &amp;x }; // a pointer initialized with the address of variable x
+std::cout &lt;&lt; *ptr &lt;&lt; '\n'; // use dereference operator to print the value at the address that ptr is holding
+
+*ptr = 6; // The object at the address held by ptr (x) assigned value 6
+std::cout &lt;&lt; x &lt;&lt; '\n'; // 6
+</code></pre>
+
+<h3>Multiple Pointers Declaration</h3>
+<pre><code>int* ptr1, ptr2;   // incorrect: ptr1 is a pointer to an int, but ptr2 is just a plain int!
+int* ptr3, * ptr4; // correct: ptr3 and ptr4 are both pointers to an int
+</code></pre>
+
+<h3>Pointer Initialization and Usage</h3>
+<pre><code>int x{ 5 };
+int y{ 6 };
+int* ptr { &amp;x }; // ptr points to x
+ptr = &amp;y; // change ptr to point at y
+std::cout &lt;&lt; *ptr &lt;&lt; '\n'; // use dereference operator to print the value at the address that ptr is holding (which is y's address)
+</code></pre>
+
+<h3>Pointer vs Reference</h3>
+<ul>
+    <li>Pointers can be uninitialized; references must be initialized.</li>
+    <li>Pointers are objects; references are not.</li>
+    <li>Pointers can change what they are pointing at; references cannot.</li>
+    <li>Pointers can point to nothing (null); references must always be bound to an object.</li>
+</ul>
+
+<h3>Type of Pointers</h3>
+<pre><code>int x{ 4 };
+std::cout &lt;&lt; typeid(&amp;x).name() &lt;&lt; '\n'; // print the type of &amp;x : int *
+</code></pre>
+
+<h3>Null and Dangling Pointers</h3>
+<pre><code>#include &lt;cstddef&gt; // for NULL
+
+float* ptr2; // ptr2 is uninitialized
+double* ptr1 { NULL }; // ptr1 is a null pointer
+int* ptr3 { nullptr }; // ptr3 is a null pointer
+
+if (ptr3 == nullptr) // explicit test for equivalence
+    std::cout &lt;&lt; "ptr3 is null\n";
+
+if (ptr3) // if ptr3 is not a null pointer
+    std::cout &lt;&lt; *ptr3 &lt;&lt; '\n'; // okay to dereference
+</code></pre>
+
+<h2>Const Pointers</h2>
+<pre><code>const int x { 5 };
+const int* ptr { &amp;x }; // can't change value but can change what's pointing at
+// *ptr = 6; // not allowed: we can't change a const value
+ptr = &amp;y;
+</code></pre>
+
+<h3>Const Pointer to Non-const Value</h3>
+<pre><code>int x{ 5 };
+int* const ptr { &amp;x }; // const after the asterisk means this is a const pointer
+// ptr = &amp;y; // error: once initialized, a const pointer cannot be changed.
+*ptr = 6; // okay: the value being pointed to is non-const
+</code></pre>
+
+<h3>Const Pointer to Const Value</h3>
+<pre><code>const int* const ptr { &amp;value }; // a const pointer to a const value
+</code></pre>
+
+<h2>Passing by Value, Reference, and Address</h2>
+<pre><code>void printByValue(std::string val) // The function parameter is a copy of str
+{
+    std::cout &lt;&lt; val &lt;&lt; '\n'; // print the value via the copy
+}
+
+void printByReference(const std::string&amp; ref) // The function parameter is a reference that binds to str
+{
+    std::cout &lt;&lt; ref &lt;&lt; '\n'; // print the value via the reference
+}
+
+void printByAddress(const std::string* ptr) // The function parameter is a pointer that holds the address of str
+{
+    std::cout &lt;&lt; *ptr &lt;&lt; '\n'; // print the value via the dereferenced pointer
+}
+
+std::string str{ "Hello, world!" };
+
+printByValue(str);      // pass str by value, makes a copy of str
+printByReference(str);  // pass str by reference, does not make a copy of str
+printByAddress(&amp;str);   // pass str by address, does not make a copy of str
+</code></pre>
+
+<h2>Ensuring Valid Pointer</h2>
+<pre><code>void print(int* ptr)
+{
+    assert(ptr); // fail the program in debug mode if a null pointer is passed (since this should never happen)
+
+    if (!ptr) // if ptr is a null pointer, early return back to the caller
+        return;
+    // if we reached this point, we can assume ptr is valid
+}
+</code></pre>
+
+<h2>Optional Parameters</h2>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;optional&gt; // for std::optional (C++17)
+
+void printIDNumber(const int* id = nullptr)
+{
+    if (id)
+        std::cout &lt;&lt; "Your ID number is " &lt;&lt; *id &lt;&lt; ".\n";
+    else
+        std::cout &lt;&lt; "Your ID number is not known.\n";
+}
+
+void printIDNumber(std::optional&lt;const int&gt; id = std::nullopt)
+{
+    if (id)
+        std::cout &lt;&lt; "Your ID number is " &lt;&lt; *id &lt;&lt; ".\n";
+    else
+        std::cout &lt;&lt; "Your ID number is not known.\n";
+}
+</code></pre>
+
+<h2>Using <code>std::optional</code></h2>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;optional&gt; // for std::optional (C++17)
+
+// Our function now optionally returns an int value
+std::optional&lt;int&gt; doIntDivision(int x, int y)
+{
+    if (y == 0)
+        return {}; // or return std::nullopt
+    return x / y;
+}
+
+int main()
+{
+    std::optional&lt;int&gt; result1 { doIntDivision(20, 5) };
+    if (result1) // if the function returned a value
+        std::cout &lt;&lt; "Result 1: " &lt;&lt; *result1 &lt;&lt; '\n'; // get the value
+    else
+        std::cout &lt;&lt; "Result 1: failed\n";
+    return 0;
+}
+</code></pre>
+
+<h3>Working with <code>std::optional</code></h3>
+<pre><code>std::optional&lt;int&gt; o1 { 5 };            // initialize with a value
+std::optional&lt;int&gt; o2 {};               // initialize with no value
+std::optional&lt;int&gt; o3 { std::nullopt }; // initialize with no value
+
+if (o1.has_value()) // call has_value() to check if o1 has a value
+if (o2)             // use implicit conversion to bool to check if o2 has a value
+
+std::cout &lt;&lt; *o1;             // dereference to get value stored in o1 (undefined behavior if o1 does not have a value)
+std::cout &lt;&lt; o2.value();      // call value() to get value stored in o2 (throws std::bad_optional_access exception if o2 does not have a value)
+std::cout &lt;&lt; o3.value_or(42); // call value_or() to get value stored in o3 (or value `42` if o3 doesn't have a value)
+</code></pre>
+
+<h2>Using the Arrow Operator</h2>
+<pre><code>Employee* ptr{ &amp;joe };
+std::cout &lt;&lt; ptr-&gt;id &lt;&lt; '\n'; // Better: use -&gt; to select member from pointer to object
+
+// access via operator.
+std::cout &lt;&lt; (*(*ptr).c).y &lt;&lt; '\n'; // ugly!
+
+// access via operator-&gt;
+std::cout &lt;&lt; ptr -&gt; c -&gt; y &lt;&lt; '\n'; // much nicer
+
+std::cout &lt;&lt; (ptr-&gt;paw).claws &lt;&lt; '\n';
+</code></pre>
+</body>
+</html>

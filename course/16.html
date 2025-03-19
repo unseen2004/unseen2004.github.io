@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16: References</title>
+</head>
+<body>
+<h1>Chapter 16: References</h1>
+
+<h2>Compound Data Types</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Functions</th>
+            <th>Pointer types</th>
+            <th>Pointer to member types</th>
+            <th>Reference types</th>
+            <th>Enumerated types</th>
+            <th>Class types</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Arrays</td>
+            <td>Pointer to object</td>
+            <td>Pointer to data member</td>
+            <td>L-value references</td>
+            <td>Unscoped enumerations</td>
+            <td>Structs</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Pointer to function</td>
+            <td>Pointer to member function</td>
+            <td>R-value references</td>
+            <td>Scoped enumerations</td>
+            <td>Classes</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Unions</td>
+        </tr>
+    </tbody>
+</table>
+
+<ul>
+    <li>Lvalue expressions evaluate to an identifiable object.</li>
+    <li>Rvalue expressions evaluate to a value.</li>
+</ul>
+
+<h3>Examples</h3>
+<pre><code>int return5()
+{
+    return 5;
+}
+
+int x{ 5 }; // 5 is an rvalue expression
+const double d{ 1.2 }; // 1.2 is an rvalue expression
+
+int y { x };          // x is a modifiable lvalue expression
+const double e { d }; // d is a non-modifiable lvalue expression
+int w { x + 1 };               // x + 1 is an rvalue expression
+int q { static_cast&lt;int&gt;(d) }; // the result of static casting d to an int is an rvalue expression
+</code></pre>
+
+<h3>Lvalue and Rvalue Expressions</h3>
+<p>If <code>&amp;(expression);</code> compiles, <code>expression</code> must be an lvalue:</p>
+<pre><code>int x { 5 };
+&amp;x; // compiles: x is an lvalue expression
+&amp;5; // doesn't compile: 5 is an rvalue expression
+</code></pre>
+<ul>
+    <li>Rvalue expressions are those that evaluate to literals or values returned by functions/operators that are discarded at the end of the expression.</li>
+</ul>
+
+<h2>References</h2>
+<p>A reference is essentially identical to the object being referenced. Once a reference has been defined, any operation on the reference is applied to the object being referenced. Reference variables follow the same scoping and duration rules that normal variables do.</p>
+
+<h3>Lvalue Reference Types</h3>
+<pre><code>int x { 5 }; // x is a normal integer variable
+int&amp; ref { x }; // ref is an lvalue reference variable that can now be used as an alias for variable x
+
+std::cout &lt;&lt; x &lt;&lt; '\n';   // print the value of x (5)
+std::cout &lt;&lt; ref &lt;&lt; '\n'; // print the value of x via ref (5)
+
+ref = 7; // the object being referenced (x) now has value 7
+std::cout &lt;&lt; x &lt;&lt; ref &lt;&lt; '\n'; // prints 7
+
+int&amp; invalidRef; // error: references must be initialized
+int&amp; invalidRef { y }; // invalid: can't bind to a non-modifiable lvalue
+int&amp; invalidRef2 { 0 }; // invalid: can't bind to an rvalue
+double y { 6.0 };
+int&amp; invalidRef { y }; // invalid; reference to int cannot bind to double variable
+
+int&amp; ref { x }; // ref is now an alias for x
+ref = y; // assigns 6 (the value of y) to x (the object being referenced by ref)
+// The above line does NOT change ref into a reference to variable y!
+// it changes x to var of y
+</code></pre>
+
+<h3>Lifetime of a Reference</h3>
+<pre><code>int x { 5 };
+{
+    int&amp; ref { x }; // ref is a reference to x
+    std::cout &lt;&lt; ref &lt;&lt; '\n'; // prints value of ref (5)
+} // ref is destroyed here -- x is unaware of this
+std::cout &lt;&lt; x &lt;&lt; '\n'; // prints value of x (5)
+</code></pre>
+<p><strong>Dangling Reference</strong></p>
+<ul>
+    <li>When an object being referenced is destroyed before a reference to it.</li>
+    <li>Accessing a dangling reference leads to undefined behavior.</li>
+</ul>
+
+<h3>References Are Not Objects</h3>
+<pre><code>int var{};
+int&amp; ref1{ var }; // an lvalue reference bound to var
+int&amp; ref2{ ref1 }; // an lvalue reference bound to var
+</code></pre>
+
+<h3>Const References</h3>
+<pre><code>const int x { 5 }; // x is a non-modifiable lvalue
+const int&amp; ref { x }; // okay: ref is a lvalue reference to a const value
+</code></pre>
+
+<h3>Binding to Temporary Objects</h3>
+<pre><code>const double&amp; r1 { 5 }; // temporary double initialized with value 5, r1 binds to temporary
+char c { 'a' };
+const int&amp; r2 { c }; // temporary int initialized with value 'a', r2 binds to temporary
+</code></pre>
+
+<h3>Binding to Rvalues</h3>
+<pre><code>const int&amp; ref { 5 }; // The temporary object holding value 5 has its lifetime extended to match ref
+</code></pre>
+
+<h3>Constexpr Reference</h3>
+<ul>
+    <li>Can only be bound to objects with static duration (either globals or static locals).</li>
+</ul>
+<pre><code>static int s_x { 6 };
+[[maybe_unused]] constexpr int&amp; ref2 { s_x }; // ok, can bind to static local
+
+static const int s_x { 6 }; // a const int
+[[maybe_unused]] constexpr const int&amp; ref2 { s_x }; // needs both constexpr and const
+</code></pre>
+
+<h2>Pass by Value</h2>
+<p>Passing by value involves copying the value, which can be cheap (e.g., int) or expensive (e.g., string).</p>
+<pre><code>void printValue(int y)
+{
+    std::cout &lt;&lt; y &lt;&lt; '\n';
+} // y is destroyed here
+
+int main()
+{
+    int x { 5 };
+    printValue(x); // x is passed by value (copied) into parameter y
+}
+</code></pre>
+
+<h2>Pass by Reference</h2>
+<p>Passing by reference allows functions to modify the original object.</p>
+<pre><code>#include &lt;iostream&gt;
+
+void addOne(int&amp; y) // y is bound to the actual object x
+{
+    ++y; // this modifies the actual object x
+}
+
+int main()
+{
+    int x { 5 };
+    addOne(x); // x has been modified
+}
+</code></pre>
+
+<h3>Const References</h3>
+<pre><code>void printValue(int&amp; y) // y only accepts modifiable lvalues
+{
+    std::cout &lt;&lt; y &lt;&lt; '\n';
+}
+
+void printRef(const int&amp; y) // y is a const reference
+{
+    std::cout &lt;&lt; y &lt;&lt; '\n';
+    // ++y; // not allowed: y is const
+}
+
+int main()
+{
+    int x { 5 };
+    printValue(x); // ok: x is a modifiable lvalue
+    printRef(x); // ok
+
+    const int z { 5 };
+    // printValue(z); // error: z is a non-modifiable lvalue
+    printRef(z); // ok
+
+    // printValue(5); // error: 5 is an rvalue
+    printRef(5); // ok
+}
+</code></pre>
+
+<h3>Mixing Parameters</h3>
+<pre><code>void foo(int a, int&amp; b, const std::string&amp; c) // mix parameters
+</code></pre>
+
+<h2>Passing by Const Reference</h2>
+<p>Passing by const reference is better unless you want to change the referent.</p>
+<ul>
+    <li>Pass fundamental types by value.</li>
+    <li>Pass class/struct types by const reference.</li>
+</ul>
+
+<h3>Common Types to Pass by Value</h3>
+<ul>
+    <li>Enumerated types</li>
+    <li><code>std::string_view</code></li>
+</ul>
+
+<h3>Common Types to Pass by (const) Reference</h3>
+<ul>
+    <li><code>std::string</code></li>
+    <li><code>std::array</code></li>
+    <li><code>std::vector</code></li>
+</ul>
+</body>
+</html>

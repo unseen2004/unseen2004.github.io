@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9: Namespace & Linkage</title>
+</head>
+<body>
+<h1>Chapter 9: Namespace & Linkage</h1>
+
+<h2>Using Namespaces</h2>
+
+<h3>Basic Usage</h3>
+<pre><code>namespace NamespaceIdentifier
+{
+    // content of namespace here
+}
+
+NamespaceIdentifier::function(); // entering namespace
+</code></pre>
+
+<h3>Example</h3>
+<pre><code>// add.h
+#ifndef ADD_H
+#define ADD_H
+
+namespace BasicMath { int add(int x, int y); }
+
+#endif
+
+// add.cpp
+#include "add.h"
+namespace BasicMath
+{
+    int add(int x, int y) // define the function add() inside namespace BasicMath
+    {
+        return x + y;
+    }
+}
+
+// main.cpp
+#include "add.h" // for BasicMath::add()
+
+int main()
+{
+    std::cout &lt;&lt; BasicMath::add(4, 3) &lt;&lt; '\n';
+}
+</code></pre>
+
+<h2>Nested Namespaces</h2>
+<pre><code>namespace Foo
+{
+    namespace Goo // Goo is a namespace inside the Foo namespace
+    {
+        int add(int x, int y) { return x + y; }
+    }
+}
+
+namespace Foo::Goo // Goo is a namespace inside the Foo namespace (C++17 style)
+{
+    int add(int x, int y) { return x + y; }
+}
+</code></pre>
+
+<h3>Using Aliases</h3>
+<pre><code>namespace Active = Foo::Goo; // active now refers to Foo::Goo
+std::cout &lt;&lt; Active::add(1, 2) &lt;&lt; '\n'; // This is really Foo::Goo::add()
+</code></pre>
+
+<h2>Local and Global Variables</h2>
+<pre><code>int x { 2 }; // local variable, no linkage
+{
+    int x { 3 }; // this declaration of x refers to a different object than the previous x
+}
+</code></pre>
+
+<h3>Global Variables</h3>
+<ul>
+    <li>Created when the program starts and destroyed when it ends (static duration).</li>
+    <li>Prefix <code>g_</code> to global variables is good practice.</li>
+</ul>
+
+<h3>Internal Linkage</h3>
+<pre><code>static int g_x{}; // non-constant globals have external linkage by default, but can be given internal linkage via the static keyword
+const int g_y{ 1 }; // const globals have internal linkage by default
+constexpr int g_z{ 2 }; // constexpr globals have internal linkage by default
+</code></pre>
+
+<h3>External Linkage</h3>
+<pre><code>int g_x { 2 }; // non-constant globals are external by default
+extern constexpr int g_z { 3 }; // useless, needed forward declaration in another file
+
+// different file
+extern int g_x; // variable forward declaration
+</code></pre>
+
+<h2>Constants and Namespaces</h2>
+
+<h3>Example 1</h3>
+<pre><code>// constants.h
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+namespace constants // define your own namespace to hold constants
+{
+    constexpr double pi { 3.14159 }; // constants have internal linkage by default
+}
+
+#endif
+</code></pre>
+
+<h3>Example 2</h3>
+<pre><code>// constants.h
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+namespace constants
+{
+    extern constexpr double pi { 3.14159 };
+    extern constexpr double avogadro { 6.0221413e23 };
+}
+
+#endif
+</code></pre>
+
+<h3>Example 3 (Preferred)</h3>
+<pre><code>// constants.h
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+namespace constants
+{
+    inline constexpr double pi { 3.14159 }; // note: now inline constexpr
+    inline constexpr double avogadro { 6.0221413e23 };
+}
+
+#endif
+</code></pre>
+
+<h2>Static Local Variables</h2>
+<pre><code>void incrementAndPrint()
+{
+    static int s_value{ 1 }; // This initializer is only executed once.
+    ++s_value;
+    std::cout &lt;&lt; s_value &lt;&lt; '\n';
+} // s_value is not destroyed here, but becomes inaccessible because it goes out of scope
+
+int main()
+{
+    incrementAndPrint();
+    incrementAndPrint();
+    incrementAndPrint();
+    // Output: 2 3 4
+}
+</code></pre>
+
+<h3>Characteristics</h3>
+<ul>
+    <li>Useful to avoid expensive local object initialization each time a function is called.</li>
+</ul>
+
+<h2>Summary of Variable Types</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Example</th>
+            <th>Scope</th>
+            <th>Duration</th>
+            <th>Linkage</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>int x;</code></td>
+            <td>Block</td>
+            <td>Automatic</td>
+            <td>None</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Static local variable</td>
+            <td><code>static int s_x;</code></td>
+            <td>Block</td>
+            <td>Static</td>
+            <td>None</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Dynamic local variable</td>
+            <td><code>int* x { new int{} };</code></td>
+            <td>Block</td>
+            <td>Dynamic</td>
+            <td>None</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Function parameter</td>
+            <td><code>void foo(int x)</code></td>
+            <td>Block</td>
+            <td>Automatic</td>
+            <td>None</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Internal non-const global variable</td>
+            <td><code>static int g_x;</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>Internal</td>
+            <td>Initialized or uninitialized</td>
+        </tr>
+        <tr>
+            <td>External non-const global variable</td>
+            <td><code>int g_x;</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>External</td>
+            <td>Initialized or uninitialized</td>
+        </tr>
+        <tr>
+            <td>Inline non-const global variable (C++17)</td>
+            <td><code>inline int g_x;</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>External</td>
+            <td>Initialized or uninitialized</td>
+        </tr>
+        <tr>
+            <td>Internal constant global variable</td>
+            <td><code>constexpr int g_x { 1 };</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>Internal</td>
+            <td>Must be initialized</td>
+        </tr>
+        <tr>
+            <td>External constant global variable</td>
+            <td><code>extern const int g_x { 1 };</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>External</td>
+            <td>Must be initialized</td>
+        </tr>
+        <tr>
+            <td>Inline constant global variable (C++17)</td>
+            <td><code>inline constexpr int g_x { 1 };</code></td>
+            <td>Global</td>
+            <td>Static</td>
+            <td>External</td>
+            <td>Must be initialized</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Storage Class Specifiers</h2>
+<ul>
+    <li><code>extern</code></li>
+    <li><code>static</code></li>
+    <li><code>thread_local</code></li>
+    <li><code>mutable</code></li>
+    <li><code>auto</code></li>
+    <li><code>register</code></li>
+</ul>
+
+<h2>Qualified Names</h2>
+<ul>
+    <li><code>using</code></li>
+    <li><code>::</code></li>
+    <li><code>.</code></li>
+    <li><code>-&gt;</code></li>
+</ul>
+
+<h3>Example</h3>
+<pre><code>using std::cout; // this using declaration tells the compiler that cout should resolve to std::cout
+</code></pre>
+
+<h2>Unnamed (Anonymous) Namespaces</h2>
+<pre><code>#include &lt;iostream&gt;
+
+namespace // unnamed namespace
+{
+    void doSomething() // can only be accessed in this file
+    {
+        std::cout &lt;&lt; "v1\n";
+    }
+}
+
+int main()
+{
+    doSomething(); // we can call doSomething() without a namespace prefix
+}
+</code></pre>
+
+<h2>Inline Namespaces</h2>
+<p>Much like an unnamed namespace, anything declared inside an inline namespace is considered part of the parent namespace. However, unlike unnamed namespaces, inline namespaces don’t affect linkage.</p>
+<pre><code>inline namespace V1 // declare an inline namespace named V1
+{
+    void doSomething()
+    {
+         std::cout &lt;&lt; "V1\n";
+    }
+}
+</code></pre>
+
+<h2>Best Practices</h2>
+<ol>
+    <li>Using-directives allow unqualified access to <em>all</em> of the names from a namespace. Avoid using-directives altogether (except <code>using namespace std::literals</code>).</li>
+    <li>Using-declarations are okay to use in .cpp files, after the #includes.</li>
+    <li>Refer to explicit namespace qualifiers over using-statements.</li>
+    <li>Avoid global variables whenever possible. Use local or <code>const</code> global variables if needed.</li>
+    <li>Initialize your static local variables. Static local variables are only initialized the first time the code is executed, not on subsequent calls.</li>
+</ol>
+</body>
+</html>

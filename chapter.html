@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chapter Content</title>
+    <!-- Include marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .nav-buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 8px 12px;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<div id="chapter-content">
+    <!-- The chapter markdown will be rendered here -->
+</div>
+<div class="nav-buttons">
+    <button id="prev-btn">Previous</button>
+    <button id="back-btn">Back to List</button>
+    <button id="next-btn">Next</button>
+</div>
+<script>
+    // Helper to get query parameters from URL
+    function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    }
+
+    const chapterNumber = parseInt(getQueryParam('chapter'), 10);
+    const totalChapters = 34;
+
+    const chapterContentDiv = document.getElementById('chapter-content');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const backBtn = document.getElementById('back-btn');
+
+    // Fetch and render the markdown file for the chapter
+// Add console logs to track the fetch request
+fetch(`course/${chapterNumber}.md`)
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.text();
+    })
+    .then(markdown => {
+        console.log('Markdown content:', markdown);
+        chapterContentDiv.innerHTML = marked.parse(markdown);
+    })
+    .catch(error => {
+        console.error('Error loading chapter:', error);
+        chapterContentDiv.innerHTML = `<p>Error loading chapter ${chapterNumber}: ${error.message}</p>`;
+    });
+
+    // Set up navigation buttons
+    prevBtn.onclick = () => {
+        if (chapterNumber > 1) {
+            window.location.href = `chapter.html?chapter=${chapterNumber - 1}`;
+        }
+    };
+    nextBtn.onclick = () => {
+        if (chapterNumber < totalChapters) {
+            window.location.href = `chapter.html?chapter=${chapterNumber + 1}`;
+        }
+    };
+    backBtn.onclick = () => {
+        window.location.href = 'index.html';
+    };
+
+    // Disable navigation buttons as needed
+    prevBtn.disabled = (chapterNumber <= 1);
+    nextBtn.disabled = (chapterNumber >= totalChapters);
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: Float</title>
+</head>
+<body>
+<h1>Chapter 7: Float</h1>
+
+<h2>Floating-Point Representation</h2>
+<p>Floating-point numbers are represented using three parts: the sign, exponent, and mantissa.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sign</th>
+            <th>Exponent</th>
+            <th>Mantissa</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1 bit (0: +, 1: -)</td>
+            <td>8 bits</td>
+            <td>23 bits</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Example</h3>
+<p>Representation of 1.01011101 × 2^5:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sign</th>
+            <th>Exponent</th>
+            <th>Mantissa</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0</td>
+            <td>10000100</td>
+            <td>01011101000000000000000</td>
+        </tr>
+    </tbody>
+</table>
+
+<ul>
+    <li>The mantissa's leading 1 is dropped because it is always 1.</li>
+    <li>The exponent value is the exponent field minus 127 (e.g., 10000100 = 132 = 127 + 5).</li>
+</ul>
+
+<p><strong>Note</strong>: ^ is not exponential; it is XOR.</p>
+
+<h2>Using the <code>cmath</code> Library</h2>
+<pre><code>#include &lt;cmath&gt;
+
+double x{ std::pow(3.0, 4.0) }; // 3 to the 4th power
+</code></pre>
+
+<h2>Operator Precedence and Associativity</h2>
+<p>Refer to the <a href="https://www.notion.so/Table-of-operator-precedence-and-associativity-9b9447e47ca448529a68dc478a2236ff?pvs=21">Table of Operator Precedence and Associativity</a> for detailed information.</p>
+
+<h2>Ensure Evaluation Order</h2>
+<p>Ensure that the expressions or function calls you write are not dependent on operand evaluation order.</p>
+
+<pre><code>printCalculation(getValue(), getValue(), getValue()); // this line is ambiguous
+
+// Do this instead
+int a{ getValue() }; // will execute first
+int b{ getValue() }; // will execute second
+int c{ getValue() }; // will execute third
+printCalculation(a, b, c); // unambiguous
+</code></pre>
+
+<h2>Modulo and Remainder</h2>
+<p>In mathematics:</p>
+<p>-21 modulo 4 = 3<br>
+-21 remainder 4 = -1</p>
+
+<h2>Pre-increment and Post-increment</h2>
+<pre><code>int x { 5 };
+int y { ++x }; // x is incremented to 6, x is evaluated to 6, and 6 is assigned to y
+
+int x { 5 };
+int y { x++ }; // x is incremented to 6, copy of original x is evaluated to 5, and 5 is assigned to y
+</code></pre>
+
+<h2>Avoid Undefined Behavior</h2>
+<pre><code>int value{ add(x, ++x) }; // undefined behavior: is this 5 + 6, or 6 + 6?
+</code></pre>
+
+<h2>Comma Operator</h2>
+<pre><code>std::cout &lt;&lt; (++x, ++y) &lt;&lt; '\n'; // x evaluated first, y evaluated second, y is printed
+</code></pre>
+
+<h2>Floating-Point Comparisons</h2>
+<p>Avoid using <code>==</code> and <code>!=</code> with floating-point numbers.</p>
+
+<pre><code>std::cout &lt;&lt; std::boolalpha &lt;&lt; (0.3 == 0.2 + 0.1); // prints false
+</code></pre>
+
+<h3>Precision</h3>
+<ul>
+    <li>Float: minimum precision of 6 digits</li>
+    <li>Double: minimum precision of 15 significant digits</li>
+</ul>
+
+<p>Use <code>==</code> and <code>!=</code>:</p>
+<ul>
+    <li>With the same floating type</li>
+    <li>Not exceeding the minimum digits</li>
+</ul>
+
+<h2>Example of Floating-Point Precision</h2>
+<pre><code>#include &lt;iomanip&gt; // for std::setprecision()
+
+std::cout &lt;&lt; std::setprecision(17); // show 17 digits of precision
+std::cout &lt;&lt; 3.33333333333333333333333333333333333333f &lt;&lt; '\n'; // float
+std::cout &lt;&lt; 3.33333333333333333333333333333333333333 &lt;&lt; '\n'; // double
+</code></pre>
+
+<h2>Special Cases in Floating-Point Arithmetic</h2>
+<pre><code>double posinf { 5.0 / 0.0 }; // positive infinity
+double nan { 0.0 / 0.0 };     // not a number (mathematically invalid)
+</code></pre>
+</body>
+</html>

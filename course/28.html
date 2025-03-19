@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 28: Class Templates</title>
+</head>
+<body>
+<h1>Chapter 28: Class Templates</h1>
+
+<h2>Introduction</h2>
+<p>Class templates allow you to define a generic blueprint from which you can create specific instances of classes with different data types.</p>
+
+<h2>Basic Syntax</h2>
+
+<h3>Defining a Class Template</h3>
+<pre><code>template &lt;typename T&gt; // added
+class Array
+{
+private:
+    T* m_array;
+    int m_size;
+
+public:
+    Array(int size)
+        : m_size(size)
+    {
+        m_array = new T[m_size];
+    }
+
+    ~Array()
+    {
+        delete[] m_array;
+    }
+
+    T&amp; operator[](int index)
+    {
+        return m_array[index];
+    }
+
+    int getSize() const
+    {
+        return m_size;
+    }
+};
+</code></pre>
+
+<h3>Member Functions Defined Outside the Class</h3>
+<p>When defining member functions outside the class, you need to repeat the template declaration.</p>
+<pre><code>template &lt;typename T&gt;
+T&amp; Array&lt;T&gt;::operator[](int index)
+{
+    return m_array[index];
+}
+</code></pre>
+
+<h2>Template Implementation Methods</h2>
+<p>When template class is in a header file and the definition of member functions is in a .cpp file:</p>
+<ol>
+    <li><strong>Include .cpp in main</strong>: Not recommended.</li>
+    <li><strong>Put all template functions in .h</strong>: Preferred way.</li>
+    <li><strong>Move .cpp to .ini (inline) and add it to the bottom of .h</strong>: Use header guards.</li>
+    <li><strong>Create a fourth file (.h) that includes .cpp and .h and then include that file in main</strong>: Another way to organize.</li>
+</ol>
+
+<h2>Non-Type Template Parameters</h2>
+<p>A non-type template parameter is a template parameter where the type is predefined and is substituted for a constexpr value passed as an argument.</p>
+<pre><code>template &lt;typename T, int size&gt; // size is an integral non-type parameter
+class StaticArray
+{
+private:
+    T m_array[size];
+
+public:
+    T&amp; operator[](int index)
+    {
+        return m_array[index];
+    }
+
+    int getSize() const
+    {
+        return size;
+    }
+};
+</code></pre>
+
+<h2>Template Specialization</h2>
+
+<h3>Full Specialization</h3>
+<p>Full specialization is a way to provide a specific implementation for a particular type.</p>
+<pre><code>// Primary template
+template &lt;typename T&gt;
+void print(const T&amp; t)
+{
+    std::cout &lt;&lt; t &lt;&lt; '\n';
+}
+
+// Full specialization for type double
+template&lt;&gt;  // template parameter declaration containing no template parameters
+void print&lt;double&gt;(const double&amp; d) // specialized for type double
+{
+    std::cout &lt;&lt; std::scientific &lt;&lt; d &lt;&lt; '\n';
+}
+</code></pre>
+<p>Full specializations are not implicitly inline. If you put a full specialization in a header file, it should be marked as <code>inline</code> to avoid ODR violations when included in multiple translation units.</p>
+
+<h3>Class Template Specialization</h3>
+<p>Class template specializations are treated as completely independent classes.</p>
+<pre><code>template &lt;&gt;
+class Storage8&lt;bool&gt;
+{
+private:
+    unsigned char m_data;
+
+public:
+    void set(int index, bool value)
+    {
+        if (value)
+            m_data |= (1 &lt;&lt; index);
+        else
+            m_data &amp;= ~(1 &lt;&lt; index);
+    }
+
+    bool get(int index) const
+    {
+        return (m_data &amp; (1 &lt;&lt; index)) != 0;
+    }
+};
+</code></pre>
+
+<h3>Function Specialization</h3>
+<p>If you explicitly define some function for a specific type (instead of a template class), the compiler will deduce the template class that is needed for this function.</p>
+<pre><code>template&lt;&gt;
+void Storage&lt;double&gt;::print() // not inline
+{
+    std::cout &lt;&lt; std::scientific &lt;&lt; m_value &lt;&lt; '\n';
+}
+</code></pre>
+
+<h2>Partial Template Specialization</h2>
+<p>Partial template specialization allows you to specialize part of a template.</p>
+
+<h3>Example</h3>
+<pre><code>template &lt;int size&gt; // size is still a template non-type parameter
+void print(const StaticArray&lt;char, size&gt;&amp; array) // we're explicitly defining type char here
+{
+    for (int count{ 0 }; count &lt; size; ++count)
+        std::cout &lt;&lt; array[count];
+}
+
+// Partial specialization of a class template
+template &lt;typename T&gt;
+class Storage&lt;T*&gt; // This is partially specialized for T*
+{
+private:
+    T* m_value;
+
+public:
+    Storage(T* value)
+        : m_value(value)
+    {
+    }
+
+    ~Storage()
+    {
+        delete m_value;
+    }
+
+    void print() const
+    {
+        std::cout &lt;&lt; *m_value &lt;&lt; '\n';
+    }
+};
+</code></pre>
+<p>Functions cannot be partially specialized.</p>
+
+<h2>Conclusion</h2>
+<p>Class templates provide a powerful way to create generic classes that can work with any data type. Understanding how to define templates, specialize them, and use non-type template parameters is crucial for writing flexible and reusable code.</p>
+</body>
+</html>

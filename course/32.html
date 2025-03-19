@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 32: Multithreading</title>
+</head>
+<body>
+<h1>Chapter 32: Multithreading</h1>
+
+<h2>1. Concurrency and Threads</h2>
+
+<h3>Models of Concurrency</h3>
+<ul>
+    <li>Multiple processes with single threads (synchronization by the operating system).</li>
+    <li><strong>Multiple threads within a single process (synchronization by the programmer).</strong> This is the model used in this context.</li>
+</ul>
+
+<h3>Reasons for Using Threads</h3>
+<ul>
+    <li>Division of tasks and responsibilities.</li>
+    <li>Performance.</li>
+</ul>
+
+<h3>Creating Threads in C++</h3>
+<pre><code>#include &lt;thread&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+void func()
+{
+    std::cout &lt;&lt; "Function executed in thread\n";
+}
+
+void f(int i, const std::string&amp; s)
+{
+    std::cout &lt;&lt; "Function executed with params: " &lt;&lt; i &lt;&lt; ", " &lt;&lt; s &lt;&lt; '\n';
+}
+
+int main()
+{
+    std::thread t(func);  // Call function in a new thread
+    t.join();  // Main thread waits for thread t to finish
+    std::thread t2(f, 3, "hello");  // Start f(3, "hello") in a new thread
+    t2.join();  // Main thread waits for thread t2 to finish
+    return 0;
+}
+</code></pre>
+
+<h2>2. Synchronization and Data Protection</h2>
+
+<h3>Mutexes</h3>
+<p>Protect shared resources from concurrent access by multiple threads. Using <code>lock_guard</code> automatically manages locking and unlocking of mutexes.</p>
+<pre><code>#include &lt;mutex&gt;
+#include &lt;list&gt;
+
+std::mutex mtx;
+std::list&lt;int&gt; some_list;
+
+void add_to_list(int new_value)
+{
+    std::lock_guard&lt;std::mutex&gt; guard(mtx);
+    some_list.push_back(new_value);
+}
+</code></pre>
+
+<h3>Deadlock</h3>
+<p>Always lock mutexes in the same order to avoid deadlock.</p>
+
+<h2>3. Condition Variables</h2>
+<p>Condition variables allow synchronization of threads waiting for a specific condition to be met.</p>
+<pre><code>#include &lt;condition_variable&gt;
+#include &lt;mutex&gt;
+#include &lt;queue&gt;
+
+std::queue&lt;int&gt; data_queue;
+std::mutex mtx;
+std::condition_variable cv;
+
+void data_preparation_thread()
+{
+    std::unique_lock&lt;std::mutex&gt; lk(mtx);
+    data_queue.push(42);
+    cv.notify_one();
+}
+
+void data_processing_thread()
+{
+    std::unique_lock&lt;std::mutex&gt; lk(mtx);
+    cv.wait(lk, []{ return !data_queue.empty(); });  // Thread waits for condition
+    int data = data_queue.front();
+    data_queue.pop();
+}
+</code></pre>
+
+<h2>4. <code>std::async</code> and <code>std::future</code></h2>
+<p><code>std::async</code> allows functions to be executed asynchronously, returning a <code>std::future</code> object that can hold the function's result.</p>
+<pre><code>#include &lt;future&gt;
+#include &lt;iostream&gt;
+
+int find_the_answer()
+{
+    return 42;
+}
+
+int main()
+{
+    std::future&lt;int&gt; future_result = std::async(find_the_answer);
+    int result = future_result.get();  // Wait for the result
+    std::cout &lt;&lt; "Result: " &lt;&lt; result &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+
+<h2>5. Atomic Types and Operations</h2>
+<p><strong>Atomic types:</strong> <code>std::atomic&lt;int&gt;</code> ensures that operations on variables are atomic (indivisible).</p>
+<p><strong><code>std::atomic_flag</code>:</strong> Used for simple synchronization mechanisms like spinlock.</p>
+<pre><code>#include &lt;atomic&gt;
+#include &lt;iostream&gt;
+
+std::atomic&lt;int&gt; counter;
+
+void increment_counter()
+{
+    counter.fetch_add(1);  // Safe increment operation
+}
+
+int main()
+{
+    counter = 0;
+    increment_counter();
+    std::cout &lt;&lt; "Counter: " &lt;&lt; counter.load() &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+
+<h2>6. Synchronization with Time Limits</h2>
+<p>Define a maximum wait time in synchronization functions.</p>
+<pre><code>#include &lt;future&gt;
+#include &lt;iostream&gt;
+#include &lt;chrono&gt;
+
+int main()
+{
+    std::future&lt;int&gt; f = std::async([]{ return 42; });
+    if(f.wait_for(std::chrono::milliseconds(100)) == std::future_status::ready) {
+        std::cout &lt;&lt; "Result: " &lt;&lt; f.get() &lt;&lt; '\n';
+    } else {
+        std::cout &lt;&lt; "Timeout\n";
+    }
+    return 0;
+}
+</code></pre>
+
+<h2>7. <code>chrono</code> - Time Operations</h2>
+<p>The <code>&lt;chrono&gt;</code> header allows precise time-related operations.</p>
+<pre><code>#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+
+void do_something()
+{
+    for (volatile int i = 0; i &lt; 100000000; ++i);
+}
+
+int main()
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    do_something();
+    auto stop = std::chrono::high_resolution_clock::now();
+    std::chrono::duration&lt;double&gt; duration = stop - start;
+    std::cout &lt;&lt; "Duration: " &lt;&lt; duration.count() &lt;&lt; " seconds\n";
+    return 0;
+}
+</code></pre>
+
+<h2>8. CSP Paradigm and Actors</h2>
+<p>A model for communication between threads without sharing data — each thread acts independently, and communication occurs through message passing.</p>
+
+<h2>9. Memory Models and Operation Ordering</h2>
+<p>Different memory models and ordering of atomic operations:</p>
+<ul>
+    <li><code>memory_order_relaxed</code>: No additional constraints.</li>
+    <li><code>memory_order_acquire</code>, <code>memory_order_release</code>: Operations related to memory access synchronization.</li>
+    <li><code>memory_order_seq_cst</code>: Global order of operations, most restrictive.</li>
+</ul>
+<p><strong>Memory Fences:</strong> Enforce a specific order of operations.</p>
+<pre><code>std::atomic_thread_fence(std::memory_order_release);
+</code></pre>
+
+<h2>10. Advanced Examples</h2>
+
+<h3>Spinlock Mutex</h3>
+<pre><code>#include &lt;atomic&gt;
+
+class spinlock_mutex {
+    std::atomic_flag flag = ATOMIC_FLAG_INIT;
+public:
+    void lock() {
+        while(flag.test_and_set(std::memory_order_acquire));
+    }
+    void unlock() {
+        flag.clear(std::memory_order_release);
+    }
+};
+</code></pre>
+
+<h3>Example Using <code>std::promise</code></h3>
+<pre><code>#include &lt;future&gt;
+#include &lt;iostream&gt;
+
+void set_promise_value(std::promise&lt;int&gt;&amp; p)
+{
+    p.set_value(42);
+}
+
+int main()
+{
+    std::promise&lt;int&gt; promise;
+    std::future&lt;int&gt; future = promise.get_future();
+    std::thread t(set_promise_value, std::ref(promise));
+    t.join();
+    std::cout &lt;&lt; "Result: " &lt;&lt; future.get() &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+
+<h3>Example Using <code>std::atomic_flag</code></h3>
+<pre><code>#include &lt;atomic&gt;
+#include &lt;iostream&gt;
+
+std::atomic_flag lock_flag = ATOMIC_FLAG_INIT;
+
+void spinlock_lock(std::atomic_flag&amp; lock)
+{
+    while(lock.test_and_set(std::memory_order_acquire));
+}
+
+void spinlock_unlock(std::atomic_flag&amp; lock)
+{
+    lock.clear(std::memory_order_release);
+}
+
+int main()
+{
+    spinlock_lock(lock_flag);
+    std::cout &lt;&lt; "Critical section\n";
+    spinlock_unlock(lock_flag);
+    return 0;
+}
+</code></pre>
+
+<h3>Example Using <code>std::condition_variable</code></h3>
+<pre><code>#include &lt;condition_variable&gt;
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;queue&gt;
+
+std::condition_variable cv;
+std::mutex cv_m;
+std::queue&lt;int&gt; data_queue;
+
+void data_preparation_thread()
+{
+    for (int i = 0; i &lt; 5; ++i)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::lock_guard&lt;std::mutex&gt; lk(cv_m);
+        data_queue.push(i);
+        cv.notify_one();
+    }
+}
+
+void data_processing_thread()
+{
+    while (true)
+    {
+        std::unique_lock&lt;std::mutex&gt; lk(cv_m);
+        cv.wait(lk, []{ return !data_queue.empty(); });
+        int data = data_queue.front();
+        data_queue.pop();
+        lk.unlock();
+        std::cout &lt;&lt; "Processed data: " &lt;&lt; data &lt;&lt; '\n';
+        if (data == 4) break; // Exit condition
+    }
+}
+
+int main()
+{
+    std::thread t1(data_preparation_thread);
+    std::thread t2(data_processing_thread);
+    t1.join();
+    t2.join();
+    return 0;
+}
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>Multithreading in C++ allows for concurrent execution of tasks, improving performance and responsiveness of applications. Understanding synchronization mechanisms such as mutexes, condition variables, atomic operations, and using tools like <code>std::async</code> and <code>std::future</code> is crucial for writing safe and efficient multithreaded code.</p>
+</body>
+</html>

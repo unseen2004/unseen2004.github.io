@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 22: Function Pointers, Dynamic Memory, Lambdas, and Ellipsis</title>
+</head>
+<body>
+<h1>Chapter 22: Function Pointers, Dynamic Memory, Lambdas, and Ellipsis</h1>
+
+<h2>Dynamic Memory Allocation</h2>
+<p>Dynamic memory allocation allows you to request memory from the heap instead of the stack.</p>
+
+<h3>Basic Usage</h3>
+<pre><code>int* ptr{ new int{4} }; // dynamically allocate an integer and assign the address to ptr
+delete ptr; // return the memory pointed to by ptr to the operating system
+ptr = nullptr; // set ptr to be a null pointer
+</code></pre>
+
+<h3>Handling Allocation Failure</h3>
+<pre><code>int* value { new (std::nothrow) int }; // value will be set to a null pointer if the allocation fails
+if (!value) // handle case where new returned null
+{
+    // Handle allocation failure
+}
+</code></pre>
+
+<h3>Memory Leak</h3>
+<p>A memory leak occurs when dynamically allocated memory is not properly deallocated.</p>
+<pre><code>void doSomething() { int* ptr{ new int{} }; } // pointer goes out of scope without delete
+
+int value{ 5 };
+int* ptr{ new int{} }; // allocate memory
+delete ptr; // delete the memory
+ptr = &value; // reassign pointer to address of value
+</code></pre>
+
+<h3>Deleting Arrays</h3>
+<pre><code>int* array{ new int[length]{} }; // dynamically allocate an array
+delete[] array; // deallocate the array
+</code></pre>
+
+<h2>Destructors</h2>
+<p>Destructors are special member functions that are called when an object is destroyed.</p>
+<pre><code>class IntArray
+{
+private:
+    int* m_array;
+
+public:
+    ~IntArray() // destructor
+    {
+        delete[] m_array; // dynamically delete the array we allocated earlier
+    }
+};
+</code></pre>
+
+<h2>Pointers to Pointers</h2>
+<pre><code>int value{ 5 };
+int* ptr{ &value };
+int** ptrptr { &ptr };
+std::cout &lt;&lt; **ptrptr &lt;&lt; '\n'; // dereference to get pointer to int, dereference again to get int value
+</code></pre>
+
+<h2>Two-Dimensional Dynamically Allocated Arrays</h2>
+<pre><code>int** array { new int*[10] }; // allocate an array of 10 int pointers — these are our rows
+for (int count { 0 }; count &lt; 10; ++count)
+// deleting
+for (int count { 0 }; count &lt; 10; ++count)
+    delete[] array[count];
+delete[] array; // this needs to be done last
+</code></pre>
+
+<h2>Void Pointers (Generic Pointers)</h2>
+<pre><code>void* ptr {}; // ptr is a void pointer
+</code></pre>
+<ul>
+    <li>A void pointer can point to objects of any data type.</li>
+    <li>If you need to delete a void pointer, <code>static_cast</code> it back to the appropriate type first.</li>
+    <li>No pointer arithmetic on a void pointer.</li>
+    <li>Dereference of void pointer requires casting.</li>
+</ul>
+<pre><code>int* intPtr{ static_cast&lt;int*&gt;(voidPtr) }; // cast void pointer to an int pointer
+</code></pre>
+
+<h2>Function Pointers</h2>
+<p>Function pointers are pointers that point to functions.</p>
+
+<h3>Basic Usage</h3>
+<pre><code>int foo() { return 5; }
+
+int main()
+{
+    auto fcnPtr{ &foo };
+    (*fcnPtr)(); // call function foo() through fcnPtr. explicit dereference
+    fcnPtr();    // call function foo() through fcnPtr. implicit dereference
+    return 0;
+}
+</code></pre>
+
+<h3>Passing Functions as Arguments (Callback Functions)</h3>
+<pre><code>void sort(bool (*comparisonfnc)(int, int)) {}
+
+bool ascending(int a, int b) { return a &lt; b; }
+
+sort(ascending); // pass function as argument
+</code></pre>
+
+<h3>Using <code>std::function</code></h3>
+<pre><code>#include &lt;functional&gt;
+
+using ValidateFunction = std::function&lt;bool(int, int)&gt;;
+
+bool validate(ValidateFunction fcn);
+</code></pre>
+
+<h2>Command Line Arguments</h2>
+<pre><code>#include &lt;sstream&gt;
+
+int main(int argc, char* argv[])
+{
+    std::stringstream convert{ argv[1] }; // set up a stringstream variable named convert, initialized with the input from argv[1]
+    int myint{};
+    if (!(convert &gt;&gt; myint)) // do the conversion
+        myint = 0; // if conversion fails, set myint to a default value
+}
+</code></pre>
+
+<h2>Ellipsis (Avoid)</h2>
+<p>Ellipsis allows functions to accept a variable number of arguments.</p>
+<pre><code>#include &lt;cstdarg&gt; // needed to use ellipsis
+
+double findAverage(int count, ...)
+{
+    int sum{ 0 };
+    std::va_list list; // declare a va_list
+
+    va_start(list, count); // initialize the va_list
+
+    for (int arg{ 0 }; arg &lt; count; ++arg)
+    {
+        sum += va_arg(list, int); // get values out of the ellipsis
+    }
+
+    va_end(list); // cleanup the va_list
+
+    return static_cast&lt;double&gt;(sum) / count;
+}
+</code></pre>
+
+<h2>Lambdas (Anonymous Functions/Functors)</h2>
+<p>Lambdas are anonymous functions that can be defined within other functions.</p>
+
+<h3>Basic Usage</h3>
+<pre><code>[ captureClause ] ( parameters ) -&gt; returnType
+{
+    statements;
+}
+</code></pre>
+
+<h3>Example</h3>
+<pre><code>auto found{ std::find_if(arr.begin(), arr.end(),
+                         [](std::string_view str) // here's our lambda, no capture clause
+                         {
+                           return str.find("nut") != std::string_view::npos;
+                         }) };
+</code></pre>
+
+<h3>Capturing Variables</h3>
+<pre><code>int x = 5;
+auto lambda = [x]() mutable { x += 2; }; // capture x by value, mutable to modify
+lambda();
+
+auto refLambda = [&x]() { x += 2; }; // capture x by reference
+refLambda();
+
+auto allByValue = [=]() {};  // auto copy capture all needed variables
+auto allByRef = [&]() {};    // auto reference capture all needed variables
+</code></pre>
+
+<h3>Using <code>std::function</code></h3>
+<pre><code>void repeat1(const std::function&lt;void(int)&gt;&amp; fn); // Case 1: use a std::function parameter
+
+template &lt;typename T&gt;
+void repeat2(const T&amp; fn); // Case 2: use a function template with a type template parameter
+
+void repeat3(const auto&amp; fn); // Case 3: use the abbreviated function template syntax (C++20)
+
+void repeat4(void (*fn)(int)); // Case 4: use function pointer (only for lambda with no captures)
+</code></pre>
+
+<h2>Memory Segments</h2>
+<p>The memory that a program uses is typically divided into a few different areas, called segments:</p>
+<ul>
+    <li><strong>Code segment</strong> (text segment): where the compiled program sits in memory.</li>
+    <li><strong>BSS segment</strong> (uninitialized data segment): where zero-initialized global and static variables are stored.</li>
+    <li><strong>Data segment</strong> (initialized data segment): where initialized global and static variables are stored.</li>
+    <li><strong>Heap</strong>: where dynamically allocated variables are allocated from.</li>
+    <li><strong>Call stack</strong>: where function parameters, local variables, and other function-related information are stored.</li>
+</ul>
+
+<h3>Heap</h3>
+<ul>
+    <li>Allocating memory on the heap is comparatively slow.</li>
+    <li>Allocated memory stays allocated until it is specifically deallocated or the application ends.</li>
+    <li>Dynamically allocated memory must be accessed through a pointer. Dereferencing a pointer is slower than accessing a variable directly.</li>
+    <li>Large arrays, structures, or classes can be allocated here.</li>
+</ul>
+
+<h3>Stack</h3>
+<ul>
+    <li>Allocating memory on the stack is comparatively fast.</li>
+    <li>Memory allocated on the stack stays in scope as long as it is on the stack. It is destroyed when it is popped off the stack.</li>
+    <li>All memory allocated on the stack is known at compile time.</li>
+    <li>The stack is relatively small, so it is generally not a good idea to do anything that eats up lots of stack space.</li>
+</ul>
+</body>
+</html>

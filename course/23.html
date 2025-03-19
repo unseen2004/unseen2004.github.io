@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 23: Operator Overloading, Overloaded Typecasts, and Copy Constructor</title>
+</head>
+<body>
+<h1>Chapter 23: Operator Overloading, Overloaded Typecasts, and Copy Constructor</h1>
+
+<h2>Introduction</h2>
+<p>In C++, operators are implemented as functions. This chapter covers how to overload operators, implement overloaded typecasts, and define copy constructors.</p>
+
+<h3>Rules for Operator Overloading</h3>
+<ul>
+    <li>Operators that can’t be overloaded:
+        <ul>
+            <li>conditional (?:),</li>
+            <li>sizeof,</li>
+            <li>scope (::),</li>
+            <li>member selector (.),</li>
+            <li>pointer member selector (.*),</li>
+            <li>typeid,</li>
+            <li>and the casting operators (e.g. (int)var).</li>
+        </ul>
+    </li>
+    <li>You can only overload existing operators.</li>
+    <li>At least one operand in an overloaded operator must be a user-defined type.</li>
+    <li>It is not possible to change the number of operands an operator supports.</li>
+    <li>All operators keep their default precedence and associativity.</li>
+</ul>
+
+<h2>Overloading Operators Using Friend Functions</h2>
+
+<h3>Basic Example</h3>
+<pre><code>class Cents {
+private:
+    int m_cents {};
+public:
+    Cents(int cents) : m_cents{ cents } { }
+    int getCents() const { return m_cents; }
+
+    friend Cents operator+(const Cents&amp; c1, const Cents&amp; c2); // add Cents + Cents using a friend function
+
+    friend Cents operator+(const Cents&amp; c1, const Cents&amp; c2) // overloading inside a class
+    {
+        return Cents { c1.m_cents + c2.m_cents };
+    }
+};
+
+Cents operator+(const Cents&amp; c1, const Cents&amp; c2) // note: this function is not a member function!
+{
+    return Cents { c1.m_cents + c2.m_cents }; // access m_cents directly because this is a friend function
+}
+</code></pre>
+
+<h3>Overloading Operators of Different Types</h3>
+<pre><code>Cents operator+(const Cents&amp; c1, int value)
+{
+    return Cents { c1.m_cents + value };
+}
+
+Cents operator+(int value, const Cents&amp; c1)
+{
+    return Cents { c1.m_cents + value };
+}
+</code></pre>
+
+<h3>Calling Overloaded Operators within Overloaded Operators</h3>
+<pre><code>MinMax operator+(int value, const MinMax&amp; m)
+{
+    return m + value; // call operator+(MinMax, int)
+}
+</code></pre>
+
+<h2>Overloading Operators Using Normal Functions</h2>
+<p>Prefer overloading operators as normal functions instead of friends if it’s possible to do so without adding additional functions.</p>
+
+<h2>Overloading the I/O `&lt;&lt;` and `&gt;&gt;` Operators</h2>
+
+<h3>Example</h3>
+<pre><code>class Point {
+private:
+    double m_x{};
+    double m_y{};
+    double m_z{};
+public:
+    Point(double x=0.0, double y=0.0, double z=0.0): m_x{x}, m_y{y}, m_z{z} {}
+
+    friend std::ostream&amp; operator&lt;&lt; (std::ostream&amp; out, const Point&amp; point);
+};
+
+std::ostream&amp; operator&lt;&lt; (std::ostream&amp; out, const Point&amp; point)
+{
+    out &lt;&lt; "Point(" &lt;&lt; point.m_x &lt;&lt; ", " &lt;&lt; point.m_y &lt;&lt; ", " &lt;&lt; point.m_z &lt;&lt; ')';
+{
+    double x{};
+    double y{};
+    double z{};
+
+    in &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+
+    if (in)
+        point = Point{x, y, z}; // overwrite our existing point
+
+    return in;
+}
+
+Point point{};
+std::cin &gt;&gt; point;
+std::cout &lt;&lt; "You entered: " &lt;&lt; point;
+</code></pre>
+
+<h2>Overloading Operators Using Member Functions</h2>
+
+<h3>Example</h3>
+<pre><code>class Point {
+private:
+    double m_x{};
+    double m_y{};
+    double m_z{};
+public:
+    Point(double x=0.0, double y=0.0, double z=0.0): m_x{x}, m_y{y}, m_z{z} {}
+
+    Point operator+ (int value) const
+    {
+        return Point { m_x + value, m_y, m_z };
+    }
+};
+</code></pre>
+
+<h3>When to Use Which</h3>
+<ul>
+    <li>Use member functions for:
+        <ul>
+            <li>Assignment `=`, subscript `[]`, function call `()`, and member selection `-&gt;` operators.</li>
+            <li>Unary operators.</li>
+            <li>Binary operators that modify their left operand (e.g., `operator+=`), and you can modify the definition of the left operand.</li>
+        </ul>
+    </li>
+    <li>Use friend functions for:
+        <ul>
+            <li>Binary operators that do not modify their left operand (e.g., `operator+`).</li>
+            <li>Binary operators that modify their left operand, but you can’t add members to the class definition of the left operand (e.g., `operator&lt;&lt;`).</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Unary Operators `+`, `-`, `!`, `++`, and `[]`</h2>
+
+<h3>Unary Minus Operator</h3>
+<pre><code>class Cents {
+private:
+    int m_cents {};
+public:
+    Cents(int cents) : m_cents{ cents } { }
+    int getCents() const { return m_cents; }
+
+    Cents operator-() const
+    {
+        return Cents{-m_cents}; // return a new Cents object with the negated value
+    }
+};
+</code></pre>
+
+<h3>Increment Operators</h3>
+<pre><code>class Digit {
+private:
+    int m_digit {};
+public:
+    Digit(int digit) : m_digit{ digit } { }
+
+    Digit&amp; operator++() // No parameter means this is prefix operator++
+    {
+        ++m_digit;
+        return *this;
+    }
+
+    Digit operator++(int) // int parameter means this is postfix operator++
+    {
+        Digit temp{*this}; // Create a temporary variable with our current digit
+        ++(*this); // Use prefix operator to increment this digit
+        return temp; // return saved state
+    }
+};
+</code></pre>
+
+<h3>Subscript Operator `[]`</h3>
+<pre><code>class IntList {
+private:
+    int m_list[10]{};
+public:
+    int&amp; operator[] (int index)
+    {
+        return m_list[index];
+    }
+
+    const int&amp; operator[] (int index) const
+    {
+        return m_list[index];
+    }
+};
+</code></pre>
+
+<h2>Parenthesis Operator `()`</h2>
+
+<h3>Example</h3>
+<pre><code>class Matrix {
+private:
+    double m_data[4][4]{};
+public:
+    double&amp; operator()(int row, int col)
+    {
+        assert(row &gt;= 0 &amp;&amp; row &lt; 4);
+        assert(col &gt;= 0 &amp;&amp; col &lt; 4);
+        return m_data[row][col];
+    }
+};
+</code></pre>
+
+<h2>Overloaded Typecasts</h2>
+
+<h3>Example</h3>
+<pre><code>class Cents {
+private:
+    int m_cents {};
+public:
+    Cents(int cents) : m_cents{ cents } { }
+
+    operator int() const { return m_cents; } // overloaded int cast
+};
+</code></pre>
+
+<h2>Assignment Operator `=`</h2>
+
+<h3>Example</h3>
+<pre><code>class Fraction {
+private:
+    int m_numerator{};
+    int m_denominator{};
+public:
+    Fraction(int numerator = 0, int denominator = 1)
+        : m_numerator{ numerator }, m_denominator{ denominator } { }
+
+    Fraction&amp; operator= (const Fraction&amp; fraction)
+    {
+        if (this == &amp;fraction)
+            return *this;
+
+        m_numerator = fraction.m_numerator;
+        m_denominator = fraction.m_denominator;
+        return *this;
+    }
+};
+</code></pre>
+
+<h3>Deleting the Copy Constructor</h3>
+<pre><code>class Fraction {
+public:
+    Fraction(const Fraction &amp;copy) = delete;
+};
+</code></pre>
+
+<p>The default copy constructor and default assignment operators do shallow copies, which is fine for classes that contain no dynamically allocated variables. Classes with dynamically allocated variables need to have a copy constructor and assignment operator that do a deep copy.</p>
+
+</body>
+</html>

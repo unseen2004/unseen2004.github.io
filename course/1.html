@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Compiler</title>
+</head>
+<body>
+    <h1>Chapter 1: Compiler</h1>
+
+    <h2>Introduction to Compiler and Interpreter</h2>
+
+    <h3>Compiler:</h3>
+    <ul>
+        <li><strong>Characteristics</strong>:
+            <ul>
+                <li>Does not need to be installed on other devices.</li>
+                <li>Runs once to produce an executable file.</li>
+                <li>No source code distribution is needed.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <p><strong>Process</strong>:</p>
+    <ul>
+        <li>High-Level Code → Compiler (translating to machine code/assembly) → Linker → Executable (file)</li>
+        <li>Executable → Hardware → Result</li>
+    </ul>
+
+    <h3>Interpreter:</h3>
+    <ul>
+        <li><strong>Characteristics</strong>:
+            <ul>
+                <li>Needs to be installed on every device where the code runs.</li>
+                <li>Runs every time the code is executed.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <p><strong>Process</strong>:</p>
+    <ul>
+        <li>High-Level Code → Interpreter → Hardware → Result</li>
+    </ul>
+
+    <h2>Options to Run Code</h2>
+
+    <h3>Build</h3>
+    <p><strong>Description</strong>: Compiles all <em>modified</em> code files in the project or workspace/solution and then links the object files into an executable. If no code files have been modified since the last build, this option does nothing.</p>
+    <p><strong>Usage</strong>:</p>
+    <pre><code>make build  # Example command (depends on the build system)</code></pre>
+
+    <h3>Clean</h3>
+    <p><strong>Description</strong>: Removes all cached objects and executables so the next time the project is built, all files will be recompiled and a new executable produced.</p>
+    <p><strong>Usage</strong>:</p>
+    <pre><code>make clean  # Example command (depends on the build system)</code></pre>
+
+    <h3>Rebuild</h3>
+    <p><strong>Description</strong>: Combines the actions of "clean" and "build" to ensure a complete rebuild of the project.</p>
+    <p><strong>Usage</strong>:</p>
+    <pre><code>make rebuild  # Example command (depends on the build system)</code></pre>
+
+    <h3>Compile</h3>
+    <p><strong>Description</strong>: Recompiles a single code file regardless of whether it has been cached previously. This option does not invoke the linker or produce an executable.</p>
+    <p><strong>Usage</strong>:</p>
+    <pre><code>g++ -c file.cpp  # Example command for compiling a single file</code></pre>
+
+    <h3>Run/Start</h3>
+    <p><strong>Description</strong>: Executes the executable from a prior build. Some IDEs (e.g., Visual Studio) will invoke a "build" before doing a "run" to ensure you are running the latest version of your code.</p>
+    <p><strong>Usage</strong>:</p>
+    <pre><code>./executable  # Example command to run the executable</code></pre>
+
+    <h2>Additional Information</h2>
+
+    <h3>Compiler vs Interpreter</h3>
+
+    <p><strong>Compiler</strong>:</p>
+    <ul>
+        <li>Translates the entire program into machine code before execution.</li>
+        <li>Faster execution time since the translation is done once.</li>
+        <li>Examples: GCC, Clang, MSVC.</li>
+    </ul>
+
+    <p><strong>Interpreter</strong>:</p>
+    <ul>
+        <li>Translates and executes the code line-by-line.</li>
+        <li>Slower execution time due to continuous translation.</li>
+        <li>Examples: Python interpreter, Ruby interpreter.</li>
+    </ul>
+
+    <h3>Example Code Snippet</h3>
+
+    <p>Here's a simple example of a C++ program and the steps to compile and run it using GCC:</p>
+
+    <pre><code>// hello.cpp
+#include &lt;iostream&gt;
+
+int main() {
+    std::cout &lt;&lt; "Hello, World!" &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+
+    <p><strong>Steps to Compile and Run:</strong></p>
+
+    <p><strong>1. Compile</strong>:</p>
+    <pre><code>g++ -o hello hello.cpp</code></pre>
+
+    <p><strong>2. Run</strong>:</p>
+    <pre><code>./hello</code></pre>
+</body>
+</html>

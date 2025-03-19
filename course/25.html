@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 25: Relationships Between Objects</title>
+</head>
+<body>
+<h1>Chapter 25: Relationships Between Objects</h1>
+
+<h2>Introduction</h2>
+<p>In object-oriented programming, relationships between objects can be categorized into three main types: composition, aggregation, and association. Each type of relationship has specific properties and use cases.</p>
+
+<h2>Relationship Types</h2>
+
+<h3>Composition</h3>
+<ul>
+    <li><strong>Relationship type</strong>: Whole/part</li>
+    <li><strong>Members can belong to multiple classes</strong>: No</li>
+    <li><strong>Members’ existence managed by class</strong>: Yes</li>
+    <li><strong>Directionality</strong>: Unidirectional</li>
+    <li><strong>Relationship verb</strong>: Part-of</li>
+</ul>
+
+<h3>Aggregation</h3>
+<ul>
+    <li><strong>Relationship type</strong>: Whole/part</li>
+    <li><strong>Members can belong to multiple classes</strong>: Yes</li>
+    <li><strong>Members’ existence managed by class</strong>: No</li>
+    <li><strong>Directionality</strong>: Unidirectional</li>
+    <li><strong>Relationship verb</strong>: Has-a</li>
+</ul>
+
+<h3>Association</h3>
+<ul>
+    <li><strong>Relationship type</strong>: Otherwise unrelated</li>
+    <li><strong>Members can belong to multiple classes</strong>: Yes</li>
+    <li><strong>Members’ existence managed by class</strong>: No</li>
+    <li><strong>Directionality</strong>: Unidirectional or bidirectional</li>
+    <li><strong>Relationship verb</strong>: Uses-a</li>
+</ul>
+
+<h2>std::reference_wrapper</h2>
+<p><code>std::reference_wrapper</code> is a class that acts like a reference but also allows assignment and copying, making it compatible with containers like <code>std::vector</code>.</p>
+
+<h3>Example</h3>
+<pre><code>#include &lt;functional&gt; // for std::reference_wrapper
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    std::string tom = "Tom";
+    std::string berta = "Berta";
+    std::vector&lt;std::reference_wrapper&lt;std::string&gt;&gt; names{ tom, berta };
+
+    // Accessing the referenced objects
+    std::cout &lt;&lt; names[0].get() &lt;&lt; '\n'; // prints "Tom"
+    std::cout &lt;&lt; names[1].get() &lt;&lt; '\n'; // prints "Berta"
+
+    return 0;
+}
+</code></pre>
+
+<h2>Value Containers vs Reference Containers</h2>
+<p><strong>Value containers</strong> are compositions that store copies of the objects they are holding (and thus are responsible for creating and destroying those copies).</p>
+<p><strong>Reference containers</strong> are aggregations that store pointers or references to other objects (and thus are not responsible for creation or destruction of those objects).</p>
+
+<h3>Example: Value Container</h3>
+<pre><code>#include &lt;vector&gt;
+#include &lt;string&gt;
+
+class Library
+{
+private:
+    std::vector&lt;std::string&gt; books; // value container
+
+public:
+    Library(const std::initializer_list&lt;std::string&gt;&amp; bookList)
+        : books(bookList) {}
+
+    void addBook(const std::string&amp; book)
+    {
+        books.push_back(book);
+    }
+
+    const std::vector&lt;std::string&gt;&amp; getBooks() const
+    {
+        return books;
+    }
+};
+</code></pre>
+
+<h3>Example: Reference Container</h3>
+<pre><code>#include &lt;vector&gt;
+#include &lt;functional&gt; // for std::reference_wrapper
+#include &lt;string&gt;
+
+class Library
+{
+private:
+    std::vector&lt;std::reference_wrapper&lt;std::string&gt;&gt; books; // reference container
+
+public:
+    Library(const std::initializer_list&lt;std::reference_wrapper&lt;std::string&gt;&gt;&amp; bookList)
+        : books(bookList) {}
+
+    void addBook(std::string&amp; book)
+    {
+        books.push_back(book);
+    }
+
+    const std::vector&lt;std::reference_wrapper&lt;std::string&gt;&gt;&amp; getBooks() const
+    {
+        return books;
+    }
+};
+</code></pre>
+
+<h2>Using std::initializer_list</h2>
+<p><code>std::initializer_list</code> allows classes to be initialized using list initialization.</p>
+
+<h3>Example</h3>
+<pre><code>#include &lt;algorithm&gt; // for std::copy
+#include &lt;initializer_list&gt; // for std::initializer_list
+#include &lt;iostream&gt;
+
+class IntArray
+{
+private:
+    int* m_data;
+    int m_length;
+
+public:
+    IntArray(int length)
+        : m_length(length)
+    {
+        m_data = new int[length];
+    }
+
+    IntArray(std::initializer_list&lt;int&gt; list)
+        : IntArray(static_cast&lt;int&gt;(list.size())) // use delegating constructor to set up initial array
+    {
+        std::copy(list.begin(), list.end(), m_data); // initialize our array from the list
+    }
+
+    ~IntArray()
+    {
+        delete[] m_data;
+    }
+
+    void print() const
+    {
+        for (int i = 0; i < m_length; ++i)
+            std::cout &lt;&lt; m_data[i] &lt;&lt; ' ';
+        std::cout &lt;&lt; '\n';
+    }
+};
+
+int main()
+{
+    IntArray array{ 1, 2, 3, 4, 5 };
+    array.print(); // prints: 1 2 3 4 5
+    return 0;
+}
+</code></pre>
+
+<h2>Conclusion</h2>
+<p>Understanding the relationships between objects is crucial for designing robust and maintainable object-oriented systems. Composition, aggregation, and association each have specific properties and use cases that dictate how objects interact and manage their lifetimes. Using containers like <code>std::vector</code> and tools like <code>std::reference_wrapper</code> and <code>std::initializer_list</code> can help manage these relationships effectively.</p>
+</body>
+</html>
