@@ -10,14 +10,14 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Font Awesome (with fallback) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onerror="this.onerror=null;this.href='assets/vendor/boxicons/css/boxicons.min.css';">
+    
+    <!-- AOS Animation Library (optional) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" onerror="this.onerror=null;">
 </head>
 <body>
     <!-- Navigation -->
@@ -420,9 +420,9 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" onerror="console.log('Particles.js not loaded, using CSS fallback')"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" onerror="console.log('AOS not loaded, using CSS fallback')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" onerror="console.log('Typed.js not loaded, using CSS fallback')"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

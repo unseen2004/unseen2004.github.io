@@ -5,17 +5,27 @@
 // ============================================
 // Initialize AOS (Animate On Scroll)
 // ============================================
-AOS.init({
-    duration: 1000,
-    easing: 'ease-out',
-    once: true,
-    offset: 100
-});
+if (typeof AOS !== 'undefined') {
+    AOS.init({
+        duration: 1000,
+        easing: 'ease-out',
+        once: true,
+        offset: 100
+    });
+} else {
+    // Fallback: Add visible class to all AOS elements
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-aos]').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+    });
+}
 
 // ============================================
 // Particles.js Configuration
 // ============================================
-if (document.getElementById('particles-js')) {
+if (typeof particlesJS !== 'undefined' && document.getElementById('particles-js')) {
     particlesJS('particles-js', {
         particles: {
             number: {
@@ -94,7 +104,7 @@ if (document.getElementById('particles-js')) {
 // ============================================
 // Typed.js - Typing Animation
 // ============================================
-if (document.querySelector('.typing-text')) {
+if (typeof Typed !== 'undefined' && document.querySelector('.typing-text')) {
     const typed = new Typed('.typing-text', {
         strings: [
             'C++ Enjoyer',
@@ -110,6 +120,29 @@ if (document.querySelector('.typing-text')) {
         showCursor: true,
         cursorChar: '|'
     });
+} else if (document.querySelector('.typing-text')) {
+    // Fallback: Simple CSS animation for typing effect
+    const typingText = document.querySelector('.typing-text');
+    const strings = [
+        'C++ Enjoyer',
+        'Rust Enthusiast',
+        'Algorithm Designer',
+        'ML Explorer',
+        'Cybersecurity Researcher'
+    ];
+    let currentIndex = 0;
+    
+    function changeText() {
+        typingText.style.opacity = '0';
+        setTimeout(() => {
+            typingText.textContent = strings[currentIndex];
+            typingText.style.opacity = '1';
+            currentIndex = (currentIndex + 1) % strings.length;
+        }, 500);
+    }
+    
+    typingText.textContent = strings[0];
+    setInterval(changeText, 3000);
 }
 
 // ============================================
