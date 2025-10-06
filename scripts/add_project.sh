@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# add_project.sh - Automate adding a new project (card + page) and optional git commit/push.
+# add_project.sh - Add a project card (and optionally a detail page) to index.html
+# Supports external link cards via --url (skips page generation).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 INDEX_FILE="$ROOT_DIR/index.html"
 PROJECTS_DIR="$ROOT_DIR/projects"
-DEFAULT_IMAGE="assets/img/CPlusPlus1.jpg"
+DEFAULT_IMAGE="assets/img/placeholder.png"
 
-CATEGORY="filter-app"
-DO_GIT=1
-DRY_RUN=0
-DESCRIPTION=""
 NAME=""
 SLUG=""
 IMAGE=""
+CATEGORY="filter-app"
+DESCRIPTION=""
 ALT=""
+EXTERNAL_URL=""
+SKIP_PAGE=0
+DO_GIT=1
+DRY_RUN=0
 
 usage() {
   cat <<EOF
@@ -24,31 +27,33 @@ Usage: $0 --name "Project Title" --slug my-slug [options]
 
 Required:
   --name STRING
-  --slug STRING              (^[A-Za-z0-9_-]+$)
+  --slug STRING                (^[A-Za-z0-9_-]+$)
 
 Optional:
-  --image PATH_OR_URL        (default: $DEFAULT_IMAGE)
+  --image PATH_OR_URL          (default: $DEFAULT_IMAGE)
   --category filter-app|filter-project
-  --alt "Alt text"           (default derived from name)
-  --description "Short sentence"
-  --no-git                   Skip git add/commit/push
-  --dry-run                  Show actions only
-  --help
+  --description "Short text"
+  --alt "Alt text"             (default: derived from name)
+  --url https://...            (external link; skips page creation)
+  --no-git                     Skip git add/commit/push
+  --dry-run                    Show actions only
+  --help                       Show help
 
-Env:
-  GIT_PUSH=0  same as --no-git
+Examples:
+  bash scripts/add_project.sh --name "Neon Ray" --slug neon-ray
+  bash scripts/add_project.sh --name "Slice Orch" --slug slice-orch --url https://github.com/unseen2004/slice_orch --image assets/img/slice_orch.png --category filter-project
 EOF
 }
 
-# Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) NAME="$2"; shift 2;;
     --slug) SLUG="$2"; shift 2;;
     --image) IMAGE="$2"; shift 2;;
     --category) CATEGORY="$2"; shift 2;;
-    --alt) ALT="$2"; shift 2;;
     --description) DESCRIPTION="$2"; shift 2;;
+    --alt) ALT="$2"; shift 2;;
+    --url) EXTERNAL_URL="$2"; SKIP_PAGE=1; shift 2;;
     --no-git) DO_GIT=0; shift;;
     --dry-run) DRY_RUN=1; shift;;
     --help|-h) usage; exit 0;;
@@ -56,113 +61,140 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Env override
-if [[ -n "${GIT_PUSH:-}" && "${GIT_PUSH}" == "0" ]]; then
-  DO_GIT=0
-fi
-
 # Validate
+[[ -f "$INDEX_FILE" ]] || { echo "Error: index.html not found" >&2; exit 1; }
 if [[ -z "$NAME" || -z "$SLUG" ]]; then
-  echo "Error: --name and --slug are required" >&2; exit 1
+  echo "Error: --name and --slug required" >&2
+  exit 1
 fi
 if [[ ! "$SLUG" =~ ^[A-Za-z0-9_-]+$ ]]; then
-  echo "Error: slug must match ^[A-Za-z0-9_-]+$" >&2; exit 1
+  echo "Error: slug must match ^[A-Za-z0-9_-]+$" >&2
+  exit 1
 fi
-[[ -f "$INDEX_FILE" ]] || { echo "Error: index.html not found at $INDEX_FILE" >&2; exit 1; }
-grep -q 'PROJECTS-START' "$INDEX_FILE" || { echo "Error: PROJECTS-START marker missing" >&2; exit 1; }
-grep -q 'PROJECTS-END' "$INDEX_FILE" || { echo "Error: PROJECTS-END marker missing" >&2; exit 1; }
-if grep -q "projects/$SLUG.html" "$INDEX_FILE"; then
-  echo "Error: Project with slug '$SLUG' already exists" >&2; exit 1
+if [[ -z "$IMAGE" ]]; then
+  IMAGE="$DEFAULT_IMAGE"
+fi
+if [[ -z "$ALT" ]]; then
+  ALT="$NAME image"
+fi
+if [[ -n "$EXTERNAL_URL" && ! "$EXTERNAL_URL" =~ ^https?:// ]]; then
+  echo "Error: --url must start with http:// or https://" >&2
+  exit 1
 fi
 
-# Defaults
-[[ -n "$IMAGE" ]] || IMAGE="$DEFAULT_IMAGE"
-[[ -n "$ALT" ]] || ALT="$NAME screenshot"
+# Escape helper
+esc_html() {
+  local s="$1"
+  s="${s//&/&amp;}"
+  s="${s//</&lt;}"
+  s="${s//>/&gt;}"
+  s="${s//\"/&quot;}"
+  printf '%s' "$s"
+}
+
+ESC_NAME="$(esc_html "$NAME")"
+ESC_DESC="$(esc_html "$DESCRIPTION")"
+ESC_ALT="$(esc_html "$ALT")"
 
 PROJECT_PAGE="$PROJECTS_DIR/$SLUG.html"
 
-# Escape description for HTML (very light)
-ESC_DESC="${DESCRIPTION//&/&amp;}"
-ESC_DESC="${ESC_DESC//</&lt;}"
-ESC_DESC="${ESC_DESC//>/&gt;}"
-ESC_DESC="${ESC_DESC//\"/&quot;}"
-
-# Build card snippet cleanly
-build_card() {
-  printf '\n<div class="col-lg-4 col-md-6 portfolio-item %s">\n' "%s"
-  printf '  <center><h4>%s</h4></center>\n' "%s"
-  printf '  <div class="portfolio-wrap">\n'
-  printf '    <img src="%s" class="img-fluid" alt="%s">\n' "%s" "%s"
-  printf '    <div class="portfolio-info">\n'
-  if [[ -n "%s" ]]; then
-    printf '      <p style="font-size:12px;line-height:1.3;margin:4px 8px 8px;">%s</p>\n' "%s"
-  fi
-  printf '      <div class="portfolio-links">\n'
-  printf '        <a href="projects/%s.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>\n' "%s"
-  printf '      </div>\n'
-  printf '    </div>\n'
-  printf '  </div>\n'
-  printf '</div>\n'
-}
-
-CARD_SNIPPET="$(build_card \
-  "$CATEGORY" \
-  "$NAME" \
-  "$IMAGE" "$ALT" \
-  "$ESC_DESC" "$ESC_DESC" \
-  "$SLUG")"
-
-# Page content
-read -r -d '' PAGE_CONTENT <<EOF || true
-<!DOCTYPE html>
-<html lang="en">
+PAGE_CONTENT="<!DOCTYPE html>
+<html lang=\"en\">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>$NAME</title>
-<link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-<link href="../assets/css/style.css" rel="stylesheet">
-<style>
- body{background:#010e1b;padding:18px;color:#eee;font-family:'Open Sans',sans-serif;}
- .project-header{margin-bottom:18px;}
- .project-header h1{font-size:26px;margin:0 0 6px;}
- .meta{font-size:12px;letter-spacing:1px;opacity:.65;text-transform:uppercase;}
- .content{font-size:14px;line-height:1.55;}
- .preview-img{max-width:100%;border:1px solid rgba(255,255,255,.08);border-radius:8px;margin:12px 0 18px;}
- a.back{display:inline-block;margin-top:10px;font-size:12px;}
-</style>
+<meta charset=\"UTF-8\">
+<title>$ESC_NAME</title>
+<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">
+<link rel=\"stylesheet\" href=\"../assets/css/style.css\">
 </head>
 <body>
-  <div class="project-header">
-    <h1>$NAME</h1>
-    <div class="meta">Updated: $(date +%Y-%m-%d)</div>
-  </div>
-  <img src="../$IMAGE" alt="$ALT" class="preview-img">
-  <div class="content">
-    <p>${ESC_DESC:-This project page was auto-generated. Edit <code>projects/$SLUG.html</code> to add more details.}</p>
-  </div>
-  <a class="back" href="../index.html#portfolio">← Back to portfolio</a>
+<main style=\"padding:32px;max-width:860px;margin:0 auto;font-family:Arial,sans-serif;\">
+  <h1>$ESC_NAME</h1>
+  $( [[ -n "$DESCRIPTION" ]] && printf '<p>%s</p>' "$ESC_DESC" )
+  <p><a href=\"../index.html\">&larr; Back</a></p>
+</main>
 </body>
 </html>
+"
+
+# Build card snippet (kept compact)
+build_card_external() {
+  cat <<EOF
+
+<div class="col-lg-4 col-md-6 portfolio-item $CATEGORY">
+  <center><h4>$ESC_NAME</h4></center>
+  <div class="portfolio-wrap">
+    <img src="$IMAGE" class="img-fluid" alt="$ESC_ALT">
+    <div class="portfolio-info">
+$( [[ -n "$DESCRIPTION" ]] && printf '      <p style="font-size:12px;line-height:1.3;margin:4px 8px 8px;">%s</p>\n' "$ESC_DESC" )
+      <div class="portfolio-links">
+        <a href="$EXTERNAL_URL" target="_blank" rel="noopener" class="external-link" title="Open external link">
+          <i class="bx bx-link-external"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 EOF
+}
+
+build_card_internal() {
+  cat <<EOF
+
+<div class="col-lg-4 col-md-6 portfolio-item $CATEGORY">
+  <center><h4>$ESC_NAME</h4></center>
+  <div class="portfolio-wrap">
+    <img src="$IMAGE" class="img-fluid" alt="$ESC_ALT">
+    <div class="portfolio-info">
+$( [[ -n "$DESCRIPTION" ]] && printf '      <p style="font-size:12px;line-height:1.3;margin:4px 8px 8px;">%s</p>\n' "$ESC_DESC" )
+      <div class="portfolio-links">
+        <a href="projects/$SLUG.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe"
+           class="venobox" title="Project Details">
+          <i class="bx bx-info-circle"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+EOF
+}
+
+if grep -q "projects/$SLUG.html" "$INDEX_FILE"; then
+  echo "Error: A card referencing projects/$SLUG.html already exists" >&2
+  exit 1
+fi
+
+CARD_SNIPPET=""
+if [[ $SKIP_PAGE -eq 1 ]]; then
+  CARD_SNIPPET="$(build_card_external)"
+else
+  CARD_SNIPPET="$(build_card_internal)"
+fi
 
 if [[ $DRY_RUN -eq 1 ]]; then
-  echo "[DRY-RUN] Would create: $PROJECT_PAGE"
-  echo "[DRY-RUN] Would inject card:"
+  if [[ $SKIP_PAGE -eq 0 ]]; then
+    echo "[DRY-RUN] Would create: $PROJECT_PAGE"
+  else
+    echo "[DRY-RUN] External link mode: no page creation."
+  fi
+  echo "[DRY-RUN] Would inject card snippet:"
   echo "----------"
   printf "%s" "$CARD_SNIPPET"
   echo "----------"
 else
-  mkdir -p "$PROJECTS_DIR"
-  printf "%s" "$PAGE_CONTENT" >"$PROJECT_PAGE"
-  echo "Created: $PROJECT_PAGE"
-  # Inject before PROJECTS-END
+  if [[ $SKIP_PAGE -eq 0 ]]; then
+    mkdir -p "$PROJECTS_DIR"
+    printf "%s" "$PAGE_CONTENT" > "$PROJECT_PAGE"
+    echo "Created page: $PROJECT_PAGE"
+  else
+    echo "External link: skipping page creation."
+  fi
+
+  # Inject card before PROJECTS-END marker
   TMP="${INDEX_FILE}.tmp"
   awk -v snip="$CARD_SNIPPET" '
-    BEGIN{done=0}
     /PROJECTS-END/ && !done { printf "%s", snip; done=1 }
     { print }
+    END { if(!done) { printf "%s", snip } }
   ' "$INDEX_FILE" > "$TMP" && mv "$TMP" "$INDEX_FILE"
   echo "Updated index.html"
 fi
@@ -173,11 +205,14 @@ if [[ $DO_GIT -eq 1 ]]; then
       echo "[DRY-RUN] Would git add/commit/push"
     else
       pushd "$ROOT_DIR" >/dev/null
-      git add "projects/$SLUG.html" "$INDEX_FILE"
+      git add "$INDEX_FILE"
+      if [[ $SKIP_PAGE -eq 0 ]]; then
+        git add "projects/$SLUG.html"
+      fi
       if git diff --cached --quiet; then
-        echo "No changes staged; skipping commit"
+        echo "No git changes to commit"
       else
-        git commit -m "Add project: $NAME" || true
+        git commit -m "Add project: $SLUG"
         BRANCH=$(git rev-parse --abbrev-ref HEAD)
         git push origin "$BRANCH" || echo "Warning: git push failed"
       fi
