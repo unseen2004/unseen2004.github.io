@@ -66,6 +66,9 @@
 </head>
 
 <body>
+<!-- Hacker Matrix Background Canvas -->
+<canvas id="matrix-bg" aria-hidden="true"></canvas>
+<button id="hacker-toggle" aria-pressed="true" aria-label="Toggle hacker animations">⚡ Hacker Mode: ON</button>
 
 <!-- Google Tag Manager (noscript) -->
 <noscript>
@@ -78,7 +81,7 @@
 
     <div class="container">
 
-        <h1><a href="index.html">Maksymilian Kulakowski</a></h1>
+        <h1><a href="index.html" class="hacker-glow">Maksymilian Kulakowski</a></h1>
         <h2 style="color:#fff">I'm <span class="typing" style="color:#12D640"></span></h2>
         <nav class="nav-menu d-none d-lg-block">
             <ul>
@@ -106,23 +109,27 @@
 </header><!-- End Header -->
 
 <!-- ======= About Section ======= -->
-<section id="about" class="about">
+<section id="about" class="about futuristic">
 
     <!-- ======= About Me ======= -->
-    <div class="about-me container">
+    <div class="about-me container about-future-panel">
 
-        <div class="section-title">
-            <h2>About</h2>
+        <div class="section-title glitch">
+            <h2 data-text="About"><span class="jp-label">私について</span> About</h2>
         </div>
+
+        <div class="kanji-floating" aria-hidden="true">
+            <span>技</span><span>術</span><span>未</span><span>来</span>
+        </div>
+        <div id="code-stream" class="code-stream" aria-hidden="true"></div>
 
         <div class="row">
             <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
-                <p>I'm a student of Algorithmic Computer Science at Wroclaw University of Science and Technology.
-                    I primarily use C++ and Java.
-                    Currently, I'm focusing on GPU programming, GCP, Functional Programming in JS, concurrent
-                    programming in Go, ML, and contributing to open-source projects.
+                <p class="about-intro neon-text">I'm a student of Algorithmic Computer Science at Wroclaw University of Science and Technology.<br>
+                    I primarily use C++ and Java. Currently exploring GPU programming, GCP, Functional Programming in JS, concurrent programming in Go, ML, Rust, cybersecurity fundamentals, and modern decentralized/Web3 paradigms.<br>
+                    I enjoy 競技プログラミング (competitive programming) and studying languages: 日本語 (Japanese) & Deutsch (German). Constantly iterating—未来志向 (future‑oriented) engineering mindset.
                 </p>
-                <div class="row">
+                <div class="row mini-facts">
                     <div class="col-lg-6">
                         <ul>
                             <li><i class="icofont-rounded-right"></i> <strong>Birthday:</strong> 13 August</li>
@@ -142,57 +149,89 @@
     <!-- ======= Interests ======= -->
     <div class="interests container">
 
-        <div class="section-title">
-            <h2>Interests</h2>
+        <div class="section-title sub-title-future">
+            <h2><span class="jp-label-sm">興味</span> Interests</h2>
         </div>
 
-        <div class="row">
+        <div class="row futuristic-interests">
+            <!-- existing interests kept -->
             <div class="col-lg-3 col-md-4">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-global-line" style="color: #ffbb2c;"></i>
                     <h3>Software Development</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-database-2-line" style="color: #5578ff;"></i>
                     <h3>Machine Learning</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-file-list-3-line" style="color: #e80368;"></i>
                     <h3>Algorithms</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4 mt-lg-0">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-server-line" style="color: #1c7d32;"></i>
                     <h3>Backend</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-code-s-slash-fill" style="color: #28a745;"></i>
                     <h3>Software Engineering</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-gamepad-line" style="color: #f1081f;"></i>
                     <h3>Game Development</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-function-line" style="color: #47aeff;"></i>
                     <h3>Math</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 mt-4">
-                <div class="icon-box">
+                <div class="icon-box fx-float">
                     <i class="ri-translate" style="color: #ffc107;"></i>
                     <h3>Japanese</h3>
+                </div>
+            </div>
+            <!-- new interests -->
+            <div class="col-lg-3 col-md-4 mt-4">
+                <div class="icon-box fx-float neon-border">
+                    <i class="ri-flag-line" style="color:#d4d4d4;"></i>
+                    <h3>German</h3>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 mt-4">
+                <div class="icon-box fx-float neon-border">
+                    <i class="ri-cpu-line" style="color:#ff6b3d;"></i>
+                    <h3>Rust</h3>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 mt-4">
+                <div class="icon-box fx-float neon-border">
+                    <i class="ri-shield-keyhole-line" style="color:#ff3df2;"></i>
+                    <h3>Cybersecurity</h3>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 mt-4">
+                <div class="icon-box fx-float neon-border">
+                    <i class="ri-trophy-line" style="color:#ffd23d;"></i>
+                    <h3>Competitive Programming</h3>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 mt-4">
+                <div class="icon-box fx-float neon-border">
+                    <i class="ri-ethereum-line" style="color:#63eda3;"></i>
+                    <h3>Web3</h3>
                 </div>
             </div>
         </div>
@@ -1224,16 +1263,147 @@
 <script src="assets/vendor/typed.js/typed.min.js"></script>
 <script type="text/javascript">
     var typed = new Typed('.typing', {
-        strings: ["CS Student", "C++ enjoyer", "ML Enthusiast",],
+        strings: ["CS Student", "C++ enjoyer", "ML Enthusiast", "Rust learner", "Cybersecurity Explorer", "Web3 Curious", "Hacker Mode"],
         loop: true,
         typeSpeed: 65,
-        backSpeed: 65
+        backSpeed: 40,
+        backDelay: 1200
     });
 </script>
 
 <!-- Template Main JS File -->
 <script src="assets/js/main.js"></script>
+<script>
+// Lightweight random float animation for kanji characters
+(function(){
+  const container = document.querySelector('.kanji-floating');
+  if(!container) return;
+  container.querySelectorAll('span').forEach((el, idx)=>{
+    el.style.animationDelay = (idx * 1.2)+'s';
+  });
+})();
+</script>
+<script>
+// Hacker / Matrix Background + Code Stream + Random Jitter (with visibility optimization)
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('matrix-bg');
+  const toggleBtn = document.getElementById('hacker-toggle');
+  let hackerOn = true;
+  let ctx, w, h, columns, charSize = 14, drops = [], animationId, codeInterval;
 
+  function resize(){
+    if(!canvas) return;
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    columns = Math.floor(w / charSize);
+    drops = Array(columns).fill(1 + Math.random()*50);
+  }
+
+  function randChar(){
+    const katakana = 'アイウエオカキクケコサシスセソタチツテトナニヌネノﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾜｦﾝ';
+    const hex = '0123456789ABCDEF';
+    const pools = [katakana, hex];
+    const p = pools[Math.random()*pools.length|0];
+    return p[Math.random()*p.length|0];
+  }
+
+  function draw(){
+    if(!hackerOn) return; // stop drawing when off
+    ctx.fillStyle = 'rgba(0, 10, 20, 0.18)';
+    ctx.fillRect(0,0,w,h);
+    ctx.font = charSize+'px monospace';
+    for(let i=0;i<columns;i++){
+      if(Math.random() < 0.02) continue; // random skip for subtle flicker + perf
+      const char = randChar();
+      ctx.fillStyle = Math.random() < 0.05 ? '#63eda3' : '#12d640';
+      ctx.fillText(char, i * charSize, drops[i] * charSize);
+      if(drops[i]*charSize > h && Math.random() > 0.965){
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+    animationId = requestAnimationFrame(draw);
+  }
+
+  function startMatrix(){
+    if(prefersReduced || !canvas) return;
+    ctx = canvas.getContext('2d');
+    resize();
+    cancelAnimationFrame(animationId);
+    draw();
+  }
+
+  window.addEventListener('resize', resize);
+
+  // Code Stream (floating random code chips)
+  const codeStreamEl = document.getElementById('code-stream');
+  function spawnCode(){
+    if(!hackerOn || prefersReduced || !codeStreamEl || document.hidden) return;
+    const span = document.createElement('span');
+    const tokens = ['fn','std::','unsafe','0x'+(Math.random()*0xFFFFFF|0).toString(16), 'lambda','async','await','チェック','暗号','def','struct','impl','Σ','∑','∇','λ'];
+    span.textContent = tokens[Math.random()*tokens.length|0];
+    span.style.left = (Math.random()*90+5)+'%';
+    span.style.animationDuration = (6 + Math.random()*6)+'s';
+    codeStreamEl.appendChild(span);
+    setTimeout(()=> span.remove(), 12000);
+  }
+  function startCodeStream(){
+    clearInterval(codeInterval);
+    codeInterval = setInterval(spawnCode, 900);
+  }
+
+  // Random jitter animation assignment for interest cards
+  function initJitter(){
+    document.querySelectorAll('.icon-box.fx-float').forEach(box => {
+      if(!box.classList.contains('jitter')){
+        box.classList.add('jitter');
+      }
+      box.style.setProperty('--jitter-delay', (Math.random()*4)+'s');
+      box.style.setProperty('--jitter-scale', (1 + Math.random()*0.015).toString());
+    });
+  }
+
+  function updateToggleVisual(){
+    toggleBtn.textContent = '⚡ Hacker Mode: ' + (hackerOn ? 'ON' : 'OFF');
+    toggleBtn.setAttribute('aria-pressed', hackerOn?'true':'false');
+    document.body.classList.toggle('hacker-off', !hackerOn);
+    if(!hackerOn){
+      cancelAnimationFrame(animationId);
+      ctx && ctx.clearRect(0,0,w,h);
+      clearInterval(codeInterval);
+    } else {
+      startMatrix();
+      startCodeStream();
+    }
+  }
+
+  toggleBtn.addEventListener('click', ()=>{
+    hackerOn = !hackerOn;
+    updateToggleVisual();
+  });
+
+  // Pause on tab hidden for perf
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){
+      cancelAnimationFrame(animationId);
+      clearInterval(codeInterval);
+    } else if(hackerOn){
+      startMatrix();
+      startCodeStream();
+    }
+  });
+
+  if(!prefersReduced){
+    startMatrix();
+    startCodeStream();
+  } else {
+    document.body.classList.add('reduced-motion');
+  }
+  initJitter();
+  updateToggleVisual();
+})();
+</script>
 </body>
 
 </html>
