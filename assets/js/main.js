@@ -7,10 +7,31 @@
 !(function($) {
   "use strict";
 
-  // Nav Menu
+  // Nav Menu (modified for compact-header smooth scroll)
   $(document).on('click', '.nav-menu a, .mobile-nav a', function(e) {
+    const isCompact = $('body').hasClass('compact-header');
+    const hash = this.hash;
+    if(isCompact) {
+      if(hash && $(hash).length) {
+        e.preventDefault();
+        const offset = 60; // offset for header height
+        const top = $(hash).offset().top - offset;
+        $('html, body').animate({ scrollTop: top < 0 ? 0 : top }, 500, 'swing');
+        // update active state
+        $('.nav-menu .active, .mobile-nav .active').removeClass('active');
+        $(this).closest('li').addClass('active');
+        // close mobile nav if open
+        if ($('body').hasClass('mobile-nav-active')) {
+          $('body').removeClass('mobile-nav-active');
+          $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+          $('.mobile-nav-overly').fadeOut();
+        }
+      }
+      return; // skip legacy logic
+    }
+
+    // legacy single-section logic (kept for non-compact mode)
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-      var hash = this.hash;
       var target = $(hash);
       if (target.length) {
         e.preventDefault();
@@ -42,15 +63,32 @@
           $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
           $('.mobile-nav-overly').fadeOut();
         }
-
         return false;
-
       }
     }
   });
 
-  // Activate/show sections on load with hash links
-  if (window.location.hash) {
+  // Scroll spy for compact mode
+  function updateActiveOnScroll(){
+    if(!$('body').hasClass('compact-header')) return;
+    const scrollPos = $(window).scrollTop();
+    const offset = 120; // threshold region
+    let currentId = '#header';
+    $('section[id]').each(function(){
+      const top = $(this).offset().top - offset;
+      if(scrollPos >= top) currentId = '#' + this.id;
+    });
+    const selector = `.nav-menu a[href='${currentId}']`;
+    if(!$(selector).parent().hasClass('active')){
+      $('.nav-menu .active').removeClass('active');
+      $(selector).parent().addClass('active');
+    }
+  }
+  $(window).on('scroll', updateActiveOnScroll);
+  $(window).on('load', updateActiveOnScroll);
+
+  // Activate/show sections on load with hash links (skip if compact)
+  if (!$('body').hasClass('compact-header') && window.location.hash) {
     var initial_nav = window.location.hash;
     if ($(initial_nav).length) {
       $('#header').addClass('header-top');

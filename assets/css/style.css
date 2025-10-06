@@ -306,6 +306,19 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/*==============================================================
+# Compact Header Mode (to show skills without initial scroll)
+==============================================================*/
+body.compact-header #header { height:auto; min-height:0; padding:64px 0 24px; display:block; }
+body.compact-header #header .container { padding-top:0; }
+body.compact-header section { position:relative; top:0; bottom:auto; opacity:1; }
+body.compact-header section .container { padding-top:10px; }
+body.compact-header #skills { margin-top:10px; }
+body.compact-header #header h1 { margin-top:0; }
+body.compact-header #header { overflow:visible; }
+/* reduce large vertical gap for interests & skills when compact */
+body.compact-header #about.about { margin-top:0; }
+
 /*--------------------------------------------------------------
 # Sections General
 --------------------------------------------------------------*/
@@ -622,6 +635,77 @@ section .container {
   transition: .9s;
   background-color: #1c7d32;
 }
+
+/*==============================================================
+# Skills Modern (Hacker + Japanese aesthetic)
+==============================================================*/
+#skills.skills-modern { position:relative; z-index:4; }
+#skills.skills-modern .section-title h2 { display:inline-block; position:relative; }
+#skills.skills-modern .section-title.glitch h2 { animation: hueShift 14s linear infinite; }
+#skills.skills-modern .section-title.glitch h2:before, #skills.skills-modern .section-title.glitch h2:after { content: attr(data-text); position:absolute; inset:0; mix-blend-mode:screen; opacity:.16; }
+#skills.skills-modern .section-title.glitch h2:before { transform:translate(2px,1px); color:#63eda3; }
+#skills.skills-modern .section-title.glitch h2:after { transform:translate(-2px,-1px); color:#ff2d55; }
+
+.skills-panels { display:grid; gap:34px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); margin-top:10px; position:relative; }
+.skill-panel { position:relative; padding:26px 24px 30px; border:1px solid rgba(255,255,255,0.08); border-radius:18px; background:linear-gradient(135deg,rgba(8,22,38,0.75) 0%,rgba(6,18,36,0.55) 50%,rgba(12,36,56,0.45) 100%); box-shadow:0 0 0 1px rgba(255,255,255,0.05),0 10px 28px -12px rgba(0,0,0,0.85),0 0 40px -12px rgba(99,237,163,0.22); overflow:hidden; backdrop-filter:blur(8px) saturate(140%); -webkit-backdrop-filter:blur(8px) saturate(140%); }
+.skill-panel:before { content:""; position:absolute; inset:0; background: repeating-linear-gradient(90deg,rgba(255,255,255,0.03) 0 2px, transparent 2px 140px); opacity:.3; pointer-events:none; mix-blend-mode:overlay; }
+.skill-panel:after { content:""; position:absolute; left:-40%; top:-40%; width:180%; height:180%; background:radial-gradient(circle at 70% 30%,rgba(255,45,85,0.12),transparent 65%),radial-gradient(circle at 25% 80%,rgba(99,237,163,0.18),transparent 60%); mix-blend-mode:screen; opacity:.55; animation: panelGlow 18s ease-in-out infinite; }
+@keyframes panelGlow { 0%,100% { transform:rotate(0deg) scale(1); opacity:.45;} 50% { transform:rotate(180deg) scale(1.08); opacity:.75;} }
+body.hacker-off .skill-panel:after { animation-play-state:paused; }
+
+.panel-title { font-size:18px; text-transform:uppercase; letter-spacing:1px; font-weight:600; margin:0 0 14px; display:flex; align-items:center; gap:10px; color:#63eda3; position:relative; }
+.panel-title span[class^="ri-"] { font-size:22px; color:#ff2d55; filter:drop-shadow(0 0 6px rgba(255,45,85,0.4)); }
+
+.lang-level-groups, .other-groups { display:flex; flex-direction:column; gap:20px; }
+.level-group, .other-group { position:relative; padding:14px 14px 18px; border:1px solid rgba(255,255,255,0.06); border-radius:12px; background:linear-gradient(145deg,rgba(255,255,255,0.05),rgba(0,0,0,0.2)); overflow:hidden; }
+.level-group:before, .other-group:before { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0)); pointer-events:none; }
+.level-heading, .other-heading { font-size:13px; font-weight:700; letter-spacing:1.5px; margin:0 0 10px; text-transform:uppercase; background:linear-gradient(90deg,#63eda3,#12d640,#ff2d55); -webkit-background-clip:text; color:transparent; filter:drop-shadow(0 0 4px rgba(99,237,163,0.35)); position:relative; }
+
+.badges { display:flex; flex-wrap:wrap; gap:12px; align-items:flex-start; }
+.skill-badge { --badgeHue:140; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; width:92px; min-height:92px; padding:10px 8px 11px; border-radius:14px; background:linear-gradient(135deg,rgba(10,30,45,0.75) 0%,rgba(6,22,38,0.55) 55%,rgba(14,50,70,0.45) 100%); border:1px solid rgba(255,255,255,0.06); text-align:center; font-size:12px; font-weight:500; letter-spacing:.5px; color:#d9fff0; cursor:default; box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 4px 14px -6px rgba(0,0,0,0.85); transition:transform .55s cubic-bezier(.19,1,.22,1), box-shadow .5s ease, border-color .4s ease, background .6s; overflow:hidden; isolation:isolate; }
+.skill-badge img, .skill-badge i { width:34px; height:34px; object-fit:contain; filter:drop-shadow(0 0 4px rgba(99,237,163,0.35)); }
+.skill-badge[data-level="good"] { --badgeHue:140; }
+.skill-badge[data-level="mid"] { --badgeHue:90; }
+.skill-badge[data-level="some"] { --badgeHue:20; }
+.skill-badge.flat { background:linear-gradient(135deg,rgba(34,34,34,0.6),rgba(10,10,10,0.55)); }
+.skill-badge:before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 70% 20%,rgba(255,45,85,0.18),transparent 60%), linear-gradient(145deg, rgba(99,237,163,0.15), rgba(255,45,85,0.15)); opacity:.0; mix-blend-mode:screen; transition:opacity .55s; pointer-events:none; }
+.skill-badge:after { content:""; position:absolute; inset:0; background:conic-gradient(from 0deg, rgba(255,45,85,0.0), rgba(255,45,85,0.55) 25%, rgba(255,45,85,0.0) 55%, rgba(99,237,163,0.6) 75%, rgba(99,237,163,0.0) 100%); opacity:0; filter:blur(12px); transform:scale(1.25); transition:opacity .65s; pointer-events:none; }
+.skill-badge:hover { transform:translateY(-8px) rotate3d(1,0,0,12deg) scale(1.06); box-shadow:0 14px 34px -14px rgba(0,0,0,0.85),0 0 0 1px rgba(255,45,85,0.35),0 0 22px -4px rgba(255,45,85,0.65); border-color:rgba(255,45,85,0.45); }
+.skill-badge:hover:before { opacity:1; }
+.skill-badge:hover:after { opacity:.9; animation: spinGlow 4.8s linear infinite; }
+@keyframes spinGlow { to { transform:scale(1.25) rotate(360deg);} }
+
+/* subtle idle pulse to differentiate levels */
+.skill-badge[data-level]:not(:hover) { animation: levelPulse 9s ease-in-out infinite; animation-delay: calc(var(--badgeHue) * 1ms); }
+@keyframes levelPulse { 0%,100% { box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 4px 14px -6px rgba(0,0,0,0.85); filter:brightness(1); }
+ 50% { box-shadow:0 0 0 1px rgba(255,255,255,0.07),0 4px 18px -6px rgba(0,0,0,0.9),0 0 22px -8px rgba(255,45,85,0.35); filter:brightness(1.08); } }
+body.hacker-off .skill-badge[data-level] { animation-play-state:paused; }
+
+/* Floating red Japanese characters */
+.kanji-skill-float { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+.kanji-skill-float span { position:absolute; color:rgba(255,45,85,0.14); font-family:"Poppins", sans-serif; font-weight:600; text-shadow:0 0 6px rgba(255,45,85,0.45),0 0 22px rgba(255,45,85,0.3); animation:kanjiSkillDrift 18s linear infinite; user-select:none; will-change:transform,opacity; }
+@keyframes kanjiSkillDrift { 0% { transform:translate3d(0,0,0) scale(1); opacity:.15; }
+ 25% { transform:translate3d(-20px,10px,0) scale(1.08); opacity:.3; }
+ 50% { transform:translate3d(10px,25px,0) scale(.95); opacity:.23; }
+ 75% { transform:translate3d(-15px,40px,0) scale(1.1); opacity:.32; }
+ 100% { transform:translate3d(0,0,0) scale(1); opacity:.15; } }
+body.hacker-off .kanji-skill-float span { animation-play-state:paused; }
+
+/* scanline accent over each group */
+.level-group .scanline, .other-group .scanline { position:absolute; left:0; top:0; height:2px; width:100%; background:linear-gradient(90deg,transparent,rgba(255,45,85,0.8),transparent); animation:scanSlide 7s linear infinite; mix-blend-mode:screen; }
+@keyframes scanSlide { 0% { transform:translateX(-100%);} 100% { transform:translateX(100%);} }
+body.hacker-off .level-group .scanline, body.hacker-off .other-group .scanline { animation-play-state:paused; }
+
+/* responsive adjustments */
+@media (max-width: 680px) { .skills-panels { grid-template-columns:1fr; } .skill-badge { width:86px; min-height:86px; } }
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .skill-panel:after, .skill-badge[data-level], .skill-badge:hover, .kanji-skill-float span, .level-group .scanline, .other-group .scanline { animation:none !important; }
+}
+
+/* Ensure layering: badges above kanji */
+.skills-panels, .skill-panel, .skill-panel * { position:relative; z-index:1; }
 
 /*--------------------------------------------------------------
 # Interests
