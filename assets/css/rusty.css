@@ -1,0 +1,224 @@
+/* Rusty Cyberpunk Theme Overrides */
+
+:root {
+    --rust-primary: #ff6b3d;
+    --rust-secondary: #2d2d2d;
+    --rust-dark: #0a0a0a;
+    --rust-text: #e0e0e0;
+    --rust-accent: #ff3d3d;
+    /* Redder accent */
+    --rust-gold: #d4af37;
+}
+
+body {
+    background-color: var(--rust-dark);
+    color: var(--rust-text);
+}
+
+body::before {
+    background: #050505;
+    /* Darker background */
+}
+
+a {
+    color: var(--rust-primary);
+}
+
+a:hover {
+    color: var(--rust-accent);
+}
+
+/* Header Overrides */
+#header h1 a,
+#header h1 a:hover {
+    color: var(--rust-text);
+    text-shadow: 2px 2px 0px var(--rust-primary);
+}
+
+#header h2 {
+    color: var(--rust-primary);
+}
+
+#header h2 span {
+    color: var(--rust-gold);
+    border-bottom-color: var(--rust-primary);
+}
+
+.nav-menu a:hover,
+.nav-menu .active>a,
+.nav-menu li:hover>a {
+    color: var(--rust-primary);
+}
+
+.nav-menu a:before {
+    background-color: var(--rust-primary);
+}
+
+/* Social Links */
+#header .social-links a:hover {
+    background: var(--rust-primary);
+}
+
+/* Section Titles */
+.section-title h2 {
+    color: var(--rust-text);
+}
+
+.section-title h2::after {
+    background: var(--rust-primary);
+}
+
+.section-title p {
+    color: var(--rust-primary);
+}
+
+/* About Section - Futuristic Panel Override */
+.about-future-panel {
+    background: linear-gradient(135deg, rgba(40, 10, 5, 0.85) 0%, rgba(20, 5, 5, 0.75) 60%, rgba(10, 2, 2, 0.65) 100%);
+    border-color: rgba(255, 107, 61, 0.3);
+    box-shadow: 0 0 0 1px rgba(255, 107, 61, 0.1), 0 8px 24px -6px rgba(0, 0, 0, 0.8), 0 0 32px -8px rgba(255, 107, 61, 0.25);
+}
+
+.about-future-panel:before {
+    background: repeating-linear-gradient(90deg, rgba(255, 107, 61, 0.05) 0 2px, transparent 2px 120px), linear-gradient(180deg, rgba(255, 107, 61, 0.1), rgba(0, 0, 0, 0));
+}
+
+.about-future-panel:after {
+    background: radial-gradient(circle at 80% 20%, rgba(255, 107, 61, 0.3), transparent 60%);
+}
+
+.kanji-floating span {
+    color: rgba(255, 107, 61, 0.1);
+    filter: drop-shadow(0 0 4px rgba(255, 107, 61, 0.4));
+}
+
+.neon-text {
+    text-shadow: 0 0 4px rgba(255, 107, 61, 0.55), 0 0 18px rgba(255, 107, 61, 0.25);
+}
+
+.neon-text strong {
+    color: var(--rust-primary);
+}
+
+/* Skills Section */
+.skill-panel {
+    background: linear-gradient(135deg, rgba(30, 10, 5, 0.85) 0%, rgba(20, 5, 5, 0.75) 50%, rgba(10, 2, 2, 0.65) 100%);
+    border-color: rgba(255, 107, 61, 0.2);
+    box-shadow: 0 0 0 1px rgba(255, 107, 61, 0.1), 0 10px 28px -12px rgba(0, 0, 0, 0.95), 0 0 40px -12px rgba(255, 107, 61, 0.22);
+}
+
+.skill-panel:after {
+    background: radial-gradient(circle at 70% 30%, rgba(255, 61, 61, 0.2), transparent 65%), radial-gradient(circle at 25% 80%, rgba(255, 107, 61, 0.25), transparent 60%);
+}
+
+.panel-title {
+    color: var(--rust-primary);
+}
+
+.panel-title span[class^="ri-"] {
+    color: var(--rust-accent);
+    filter: drop-shadow(0 0 6px rgba(255, 61, 61, 0.4));
+}
+
+.level-heading,
+.other-heading {
+    background: linear-gradient(90deg, var(--rust-primary), var(--rust-gold), var(--rust-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 4px rgba(255, 107, 61, 0.35));
+}
+
+.skill-badge {
+    background: linear-gradient(135deg, rgba(40, 15, 10, 0.85) 0%, rgba(25, 10, 5, 0.75) 55%, rgba(15, 5, 2, 0.65) 100%);
+    border-color: rgba(255, 107, 61, 0.15);
+    color: #ffe0d0;
+}
+
+.skill-badge:hover {
+    border-color: rgba(255, 61, 61, 0.55);
+    box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 61, 61, 0.45), 0 0 22px -4px rgba(255, 61, 61, 0.75);
+}
+
+.skill-badge:before {
+    background: radial-gradient(circle at 70% 20%, rgba(255, 61, 61, 0.25), transparent 60%), linear-gradient(145deg, rgba(255, 107, 61, 0.2), rgba(255, 61, 61, 0.2));
+}
+
+.skill-badge:after {
+    background: conic-gradient(from 0deg, rgba(255, 61, 61, 0.0), rgba(255, 61, 61, 0.65) 25%, rgba(255, 61, 61, 0.0) 55%, rgba(255, 107, 61, 0.7) 75%, rgba(255, 107, 61, 0.0) 100%);
+}
+
+.skills .progress-bar {
+    background-color: var(--rust-primary);
+}
+
+/* Glitch Effect Colors */
+.glitch h2:before {
+    color: var(--rust-primary);
+}
+
+.glitch h2:after {
+    color: var(--rust-accent);
+}
+
+.jp-label,
+.jp-label-sm {
+    background: linear-gradient(90deg, var(--rust-primary), var(--rust-gold) 55%, var(--rust-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 6px rgba(255, 107, 61, 0.35));
+}
+
+/* Interests */
+.interests .icon-box {
+    background: rgba(20, 5, 5, 0.8);
+    border-color: rgba(255, 107, 61, 0.2);
+}
+
+.interests .icon-box:hover {
+    background: rgba(40, 10, 5, 0.9);
+    border-color: var(--rust-primary);
+    box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 107, 61, 0.35), 0 0 18px -4px rgba(255, 107, 61, 0.65);
+}
+
+.interests .icon-box i {
+    color: var(--rust-primary) !important;
+    /* Force override colors */
+}
+
+/* Counts */
+.counts .count-box {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.counts .count-box i {
+    color: var(--rust-primary);
+}
+
+/* Portfolio/Projects */
+.portfolio-info {
+    background: rgba(20, 5, 5, 0.9) !important;
+    border: 1px solid rgba(255, 107, 61, 0.3);
+}
+
+/* Contact */
+.contact .info-box {
+    background: rgba(20, 5, 5, 0.8);
+    border-top: 3px solid var(--rust-primary);
+}
+
+.contact .info-box i {
+    color: var(--rust-primary);
+}
+
+.contact .social-links a:hover {
+    background: var(--rust-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb {
+    background: var(--rust-primary);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--rust-dark);
+}
