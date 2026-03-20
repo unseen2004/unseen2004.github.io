@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Projects by Maksymilian Kułakowski – compilers, games, and systems programming.">
+  <title>Projects – Maksymilian Kułakowski</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay"></div>
+  <button class="mobile-toggle" aria-label="Toggle navigation">☰</button>
+
+  <div class="page-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        Maksymilian Kułakowski
+        <span>Software Engineer</span>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html">Me</a></li>
+        <li><a href="projects.html" class="active">Projects</a></li>
+        <li><a href="research.html">Research</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="https://github.com/unseen2004" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/maksymilian-kulakowski" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="main-content">
+      <div class="content-container">
+
+        <div class="page-header">
+          <h1 class="page-title">Projects</h1>
+          <p class="page-subtitle">A selection of things I've built.</p>
+        </div>
+
+        <section class="section">
+          <div class="project-card">
+            <h3>Compiler for Custom Imperative Language</h3>
+            <p class="project-tech">C · Yacc · Lex</p>
+            <p>Built a compiler-to-VM pipeline targeting high-performance execution.</p>
+            <a href="https://github.com/unseen2004/compiler" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Turn-Based CLI Game</h3>
+            <p class="project-tech">Rust · Tokio · Axum · Ratatui · Serde</p>
+            <p>Turn-based tactics game with a Rust server and a terminal client.</p>
+            <a href="https://github.com/unseen2004/cli_game" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Flappy Bird</h3>
+            <p class="project-tech">Java 21 · Project Panama FFM · SDL2 · OpenGL 3.3</p>
+            <p>Classic Flappy Bird clone using Java's Foreign Function & Memory API for native SDL2 and OpenGL bindings. Cross-platform with custom shaders and SDL2_mixer audio.</p>
+            <a href="https://github.com/unseen2004/stereorepo/tree/main/flappyBird" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Endless Runner (2D Infinite Running Game)</h3>
+            <p class="project-tech">C++ · Raylib · CMake</p>
+            <p>Modular C++17 game with object-oriented design and cross-platform builds.</p>
+            <a href="https://github.com/unseen2004/endlessRunner" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Chinese Checkers</h3>
+            <p class="project-tech">Java · JavaFX · Spring Boot</p>
+            <p>Digital Chinese Checkers with a visually appealing interface and multiplayer client-server architecture.</p>
+            <a href="https://github.com/unseen2004/chineseCheckers" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

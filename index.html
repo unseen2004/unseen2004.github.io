@@ -1,457 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src =
-        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-5BB8W2X');</script>
-  <!-- End Google Tag Manager -->
-  <link rel="icon" type="image/png" href="/my_img.png" />
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>Personal Portfolio</title>
-  <meta content="" name="descriptison">
-  <meta content="" name="keywords">
-
-  <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-    rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/rusty.css" rel="stylesheet">
-
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169007209-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'UA-169007209-3');
-  </script>
-
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-  <!-- =======================================================
-    * Template Name: Personal - v2.1.0
-    * Template URL: https://bootstrapmade.com/personal-free-resume-bootstrap-template/
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Maksymilian Kułakowski – Software Engineer focused on Web3, HFT, LLM, and quantum computing research.">
+  <title>Maksymilian Kułakowski</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+<body>
+  <div class="overlay"></div>
+  <button class="mobile-toggle" aria-label="Toggle navigation">☰</button>
 
-<body class="compact-header">
-  <!-- Hacker Matrix Background Canvas -->
-  <canvas id="matrix-bg" aria-hidden="true"></canvas>
-  <button id="hacker-toggle" aria-pressed="true" aria-label="Toggle hacker animations">⚡ Hacker Mode: ON</button>
-
-  <!-- Google Tag Manager (noscript) -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BB8W2X" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe>
-  </noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- ======= Header ======= -->
-  <header id="header" class="header-tops">
-
-    <div class="container">
-
-      <h1><a href="index.html" class="hacker-glow">Maksymilian Kulakowski</a></h1>
-      <h2 style="color:#fff">I'm <span class="typing" style="color:#12D640"></span></h2>
-      <nav class="nav-menu d-none d-lg-block">
-        <ul>
-          <li class="active"><a href="#header"> <span>Home</span></a></li>
-          <li><a href="#about"><span>About</span></a></li>
-          <!-- Removed C++ mini-course nav item -->
-          <!-- <li><a href="#experience"> <span>C++ mini-Course</span></a></li> -->
-        </ul>
-      </nav><!-- .nav-menu -->
-
-      <div class="social-links">
-        <a href="https://www.linkedin.com/in/maksymilian-kulakowski/" target="_blank" class="linkedin"><i
-            class="bx bxl-linkedin"></i></a>
-        <a href="https://github.com/unseen2004" target="_blank" class="github"><i class="bx bxl-github"></i></a>
-        <a href="mailto:maksymiliankulakowski@gmail.com" target="_blank" class="gmail">
-          <i class="fab fa-google"></i>
-        </a>
-        </a>
+  <div class="page-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        Maksymilian Kułakowski
+        <span>Software Engineer</span>
       </div>
-
-    </div>
-  </header><!-- End Header -->
-
-
-
-  <!-- ======= About Section ======= -->
-  <section id="about" class="about futuristic">
-
-    <!-- ======= About Me ======= -->
-    <div class="about-me container about-future-panel">
-
-      <div class="section-title glitch">
-        <h2 data-text="About"><span class="jp-label">私について</span> Infooo</h2>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="active">Me</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="research.html">Research</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="https://github.com/unseen2004" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/maksymilian-kulakowski" target="_blank" rel="noopener">LinkedIn</a>
       </div>
+    </nav>
 
-      <div class="kanji-floating" aria-hidden="true">
-        <span>技</span><span>術</span><span>未</span><span>来</span>
-      </div>
-      <div id="code-stream" class="code-stream" aria-hidden="true"></div>
+    <!-- Main -->
+    <main class="main-content">
+      <div class="content-container">
 
-      <div class="row">
-        <ul class="about-intro neon-text" style="list-style: none; padding: 0;">
-          In future there will be my notes about quantum computing, web3 and other interesting research topics.
-        </ul>
-        <div class="row mini-facts">
-          <div class="col-lg-6">
-            <ul>
-            </ul>
+        <!-- Hero -->
+        <section class="hero">
+          <img src="photo.jpg" alt="Maksymilian Kułakowski" class="hero-photo">
+          <div class="hero-info">
+            <h1>Maksymilian Kułakowski</h1>
           </div>
-          <div class="col-lg-6">
-            <ul>
-            </ul>
-          </div>
-        </div>
+        </section>
+
+        <!-- About -->
+        <section class="section">
+          <p>I'm interested in <strong>Web3</strong>, <strong>HFT</strong>, <strong>LLM</strong>, and <strong>quantum computing research</strong>. <br>I enjoy learning new things, programming (go, rust) and doing research.</p>
+          <p style="margin-top: 0.8rem;">If you want to get in touch, go ahead.</p>
+        </section>
+
+        <!-- Locations -->
+        <section class="section">
+          <h2 class="section-title">Locations</h2>
+          <ul class="detail-list">
+            <li><span class="label">Poland</span><span class="value">Wrocław, Warsaw</span></li>
+            <li><span class="label">Germany</span><span class="value">Munich, Berlin</span></li>
+            <li><span class="label">Switzerland</span><span class="value">Zürich</span></li>
+          </ul>
+        </section>
+
+        <!-- Contact -->
+        <section class="section">
+          <h2 class="section-title">Contact</h2>
+          <ul class="contact-list">
+            <li><span class="contact-label">Email</span> <a href="mailto:maksymiliankulakowski@gmail.com">maksymiliankulakowski@gmail.com</a></li>
+            <li><span class="contact-label">GitHub</span> <a href="https://github.com/unseen2004" target="_blank" rel="noopener">unseen2004</a></li>
+            <li><span class="contact-label">LinkedIn</span> <a href="https://www.linkedin.com/in/maksymilian-kulakowski" target="_blank" rel="noopener">Maksymilian Kułakowski</a></li>
+          </ul>
+        </section>
+
       </div>
-    </div>
+    </main>
+  </div>
 
-    </div><!-- End About Me -->
-
-
-
-  <!-- Start Experience Section -->
-  <section id="experience" class="services">
-    <div class="container">
-      <div class="section-title">
-        <h2>Work History</h2>
-      </div>
-      <div class="row">
-        <div class="col-lg-12" data-aos="fade-up">
-          <div class="icon-box"
-            style="padding: 20px; background: rgba(255,255,255,0.05); border-left: 4px solid var(--rust-primary);">
-            <div class="d-flex justify-content-between">
-              <h4 class="title" style="margin-bottom: 5px;"><a href="https://www.nokia.com/" target="_blank">Software
-                  Engineering Intern @ Nokia</a></h4>
-              <span style="color: var(--rust-primary); font-weight: bold;">2025-08 - Present</span>
-            </div>
-            <h5 style="color: #ccc; font-size: 16px; margin-bottom: 15px;">Wrocław</h5>
-            <ul style="list-style: none; padding-left: 0; color: #e0e0e0;">
-              <li><i class="icofont-rounded-right" style="color:var(--rust-primary)"></i> Fine-tuning large-scale models
-                in a high-end, multi-GPU environment.</li>
-              <li><i class="icofont-rounded-right" style="color:var(--rust-primary)"></i> Developing custom Python
-                scripts and utilities.</li>
-              <li><i class="icofont-rounded-right" style="color:var(--rust-primary)"></i> Studying 5G and related
-                communication technologies.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End Experience Section -->
-
-  <!-- ======= Education Section ======= -->
-  <section id="education" class="services">
-    <div class="container">
-      <div class="section-title">
-        <h2>Education</h2>
-      </div>
-      <div class="row">
-        <div class="col-lg-12" data-aos="fade-up">
-          <div class="icon-box"
-            style="padding: 20px; background: rgba(255,255,255,0.05); border-left: 4px solid var(--rust-primary);">
-            <div class="d-flex justify-content-between">
-              <h4 class="title" style="margin-bottom: 5px;">BSc in Algorithmic Computer Science</h4>
-              <span style="color: var(--rust-primary); font-weight: bold;">2023-10 - Present</span>
-            </div>
-            <h5 style="color: #ccc; font-size: 16px; margin-bottom: 10px;">Wrocław University of Science and Technology
-            </h5>
-            <p style="color: #e0e0e0;">Year 3</p>
-            <p style="color: #e0e0e0;"><i class="icofont-rounded-right" style="color:var(--rust-primary)"></i> Member of
-              a Nable (Qubit) Science Club (Quantum informatics research)</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End Education Section -->
-
-
-
-
-  <!-- Start Links section -->
-  <section id="links" class="services">
-    <div class="container">
-      <div class="section-title">
-        <h2>Resume & Links</h2>
-      </div>
-      <div class="row">
-        <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-          <a href="https://drive.google.com/file/d/1iHBNV2UkH5LkhAP-1hYRZ2Ez_BQ6g4S7/view?usp=sharing" target="_blank">
-            <div class="icon"><i class="icofont-page"></i></div>
-          </a>
-          <h4 class="title"><a href="https://drive.google.com/file/d/1iHBNV2UkH5LkhAP-1hYRZ2Ez_BQ6g4S7/view?usp=sharing"
-              target="_blank">Resume</a></h4>
-          <p class="description" style="color:#fff;">The link contains downloadable resume</p>
-        </div>
-        <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up">
-          <a href="https://github.com/unseen2004" target="_blank">
-            <div class="icon"><i class="icofont-link"></i></div>
-          </a>
-          <h4 class="title"><a href="https://github.com/unseen2004" target="_blank">Github</a></h4>
-          <p class="description" style="color:#fff;"> The github repository contains my personal projects.</p>
-        </div>
-        <!-- <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-              <a href="https://techingenious.herokuapp.com/" target="_blank"><div class="icon"><i class="icofont-page"></i></div></a>
-              <h4 class="title"><a href="https://techingenious.herokuapp.com/" target="_blank">Blog</a></h4>
-              <p class="description" style="color:#fff;">Blog containing articles on AI, coding, development</p>
-            </div> -->
-      </div>
-    </div>
-  </section> <!--End Links Section -->
-
-
-  <!-- Start Contact Section -->
-
-  <section id="contacts" class="contact">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Contact</h2>
-      </div>
-
-      <div class="row mt-2">
-
-        <div class="col-md-6 mt-4 mt-md-0 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bx-share-alt"></i>
-            <h3>Social Profiles</h3>
-            <div class="social-links">
-              <a href="https://www.linkedin.com/in/maksymilian-kulakowski/" target="_blank" class="linkedin"><i
-                  class="bx bxl-linkedin"></i></a>
-              <a href="https://github.com/unseen2004" target="_blank" class="github"><i class="bx bxl-github"></i></a>
-              <a href="maksymiliankulakowski@gmail.com" target="_blank" class="google"><i class="bx bxl-google"></i></a>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 mt-4 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bx-envelope"></i>
-            <h3>Email</h3>
-            <p>maksymiliankulakowski@gmail.com</p>
-          </div>
-        </div>
-      </div>
-      <!-- <div id="sfczmlqxr5caww28rswrt8849ghbekgnh3j" ></div><script type="text/javascript" src="https://counter1.stat.ovh/private/counter.js?c=zmlqxr5caww28rswrt8849ghbekgnh3j&down=async" async></script><noscript><a href="https://www.freecounterstat.com" title="free web counter"><img src="https://counter1.stat.ovh/private/freecounterstat.php?c=zmlqxr5caww28rswrt8849ghbekgnh3j" border="0" title="free web counter" alt="free web counter" style="visibility: none;"></a></noscript> -->
-    </div>
-  </section>
-
-  <!-- End Contact Section -->
-
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/jquery/jquery.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/waypoints/jquery.waypoints.min.js"></script>
-  <script src="assets/vendor/counterup/counterup.min.js"></script>
-  <script src="assets/vendor/owl.carousel/owl.carousel.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/venobox/venobox.min.js"></script>
-  <script src="assets/vendor/typed.js/typed.min.js"></script>
-  <script type="text/javascript">
-    var typed = new Typed('.typing', {
-      strings: ["CS Student", "Rustacean 🦀", "Cyberpunk Fan", "Backend Dev", "Security Researcher", "Web3 Explorer", "System Architect"],
-      loop: true,
-      typeSpeed: 65,
-      backSpeed: 40,
-      backDelay: 1200
-    });
-  </script>
-
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script>
-    // Lightweight random float animation for kanji characters
-    (function () {
-      const container = document.querySelector('.kanji-floating');
-      if (!container) return;
-      container.querySelectorAll('span').forEach((el, idx) => {
-        el.style.animationDelay = (idx * 1.2) + 's';
-      });
-    })();
-  </script>
-  <script>
-    // Hacker / Matrix Background + Code Stream + Random Jitter (with visibility optimization)
-    (function () {
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const canvas = document.getElementById('matrix-bg');
-      const toggleBtn = document.getElementById('hacker-toggle');
-      let hackerOn = true;
-      let ctx, w, h, columns, charSize = 14, drops = [], animationId, codeInterval;
-
-      function resize() {
-        if (!canvas) return;
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        columns = Math.floor(w / charSize);
-        drops = Array(columns).fill(1 + Math.random() * 50);
-      }
-
-      function randChar() {
-        const katakana = 'アイウエオカキクケコサシスセソタチツテトナニヌネノﾊﾋﾌﾍﾎﾏﾟﾑﾒﾓﾔﾕﾖﾜｦﾝ';
-        const hex = '0123456789ABCDEF';
-        const pools = [katakana, hex];
-        const p = pools[Math.random() * pools.length | 0];
-        return p[Math.random() * p.length | 0];
-      }
-
-      function draw() {
-        if (!hackerOn) return; // stop drawing when off
-        ctx.fillStyle = 'rgba(0, 10, 20, 0.18)';
-        ctx.fillRect(0, 0, w, h);
-        ctx.font = charSize + 'px monospace';
-        for (let i = 0; i < columns; i++) {
-          if (Math.random() < 0.02) continue; // random skip for subtle flicker + perf
-          const char = randChar();
-          ctx.fillStyle = Math.random() < 0.05 ? '#ff3d3d' : '#ff6b3d';
-          ctx.fillText(char, i * charSize, drops[i] * charSize);
-          if (drops[i] * charSize > h && Math.random() > 0.965) {
-            drops[i] = 0;
-          }
-          drops[i]++;
-        }
-        animationId = requestAnimationFrame(draw);
-      }
-
-      function startMatrix() {
-        if (prefersReduced || !canvas) return;
-        ctx = canvas.getContext('2d');
-        resize();
-        cancelAnimationFrame(animationId);
-        draw();
-      }
-
-      window.addEventListener('resize', resize);
-
-      // Code Stream (floating random code chips)
-      const codeStreamEl = document.getElementById('code-stream');
-      function spawnCode() {
-        if (!hackerOn || prefersReduced || !codeStreamEl || document.hidden) return;
-        const span = document.createElement('span');
-        const tokens = ['fn', 'std::', 'unsafe', '0x' + (Math.random() * 0xFFFFFF | 0).toString(16), 'lambda', 'async', 'await', 'チェック', '暗号', 'def', 'struct', 'impl', 'Σ', '∑', '∇', 'λ'];
-        span.textContent = tokens[Math.random() * tokens.length | 0];
-        span.style.left = (Math.random() * 90 + 5) + '%';
-        span.style.animationDuration = (6 + Math.random() * 6) + 's';
-        codeStreamEl.appendChild(span);
-        setTimeout(() => span.remove(), 12000);
-      }
-      function startCodeStream() {
-        clearInterval(codeInterval);
-        codeInterval = setInterval(spawnCode, 900);
-      }
-
-      // Random jitter animation assignment for interest cards
-      function initJitter() {
-        document.querySelectorAll('.icon-box.fx-float').forEach(box => {
-          if (!box.classList.contains('jitter')) {
-            box.classList.add('jitter');
-          }
-          box.style.setProperty('--jitter-delay', (Math.random() * 4) + 's');
-          box.style.setProperty('--jitter-scale', (1 + Math.random() * 0.015).toString());
-        });
-      }
-
-      function updateToggleVisual() {
-        toggleBtn.textContent = '⚡ Hacker Mode: ' + (hackerOn ? 'ON' : 'OFF');
-        toggleBtn.setAttribute('aria-pressed', hackerOn ? 'true' : 'false');
-        document.body.classList.toggle('hacker-off', !hackerOn);
-        if (!hackerOn) {
-          cancelAnimationFrame(animationId);
-          ctx && ctx.clearRect(0, 0, w, h);
-          clearInterval(codeInterval);
-        } else {
-          startMatrix();
-          startCodeStream();
-        }
-      }
-
-      toggleBtn.addEventListener('click', () => {
-        hackerOn = !hackerOn;
-        updateToggleVisual();
-      });
-
-      // Pause on tab hidden for perf
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          cancelAnimationFrame(animationId);
-          clearInterval(codeInterval);
-        } else if (hackerOn) {
-          startMatrix();
-          startCodeStream();
-        }
-      });
-
-      if (!prefersReduced) {
-        startMatrix();
-        startCodeStream();
-      } else {
-        document.body.classList.add('reduced-motion');
-      }
-      initJitter();
-      updateToggleVisual();
-    })();
-  </script>
-
-  <script>
-    // Inject floating red kanji characters into skills section
-    (function () {
-      const section = document.querySelector('#skills.skills-modern .kanji-skill-float');
-      if (!section) return;
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const kanjiChars = ['錆', '炎', '速', '智', '力', '構', '未', '来', '核', '侍', '忍', '夢', '紅', '錬'];
-      const COUNT = 10;
-      for (let i = 0; i < COUNT; i++) {
-        const span = document.createElement('span');
-        span.textContent = kanjiChars[Math.random() * kanjiChars.length | 0];
-        span.style.left = (Math.random() * 90 + 2) + '%';
-        span.style.top = (Math.random() * 85 + 5) + '%';
-        const size = Math.random() * 72 + 28; // 28 - 100px
-        span.style.fontSize = size + 'px';
-        span.style.animationDuration = (14 + Math.random() * 16) + 's';
-        span.style.animationDelay = (Math.random() * -20) + 's';
-        if (prefersReduced) span.style.animation = 'none';
-        section.appendChild(span);
-      }
-    })();
-  </script>
-
+  <script src="script.js"></script>
+</body>
 </html>
