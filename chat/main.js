@@ -10,7 +10,7 @@ const sendBtn = document.getElementById('send-btn');
 const statusSpan = document.getElementById('status');
 
 // Your AWS Relay Address (Secure WSS)
-const RELAY_ADDR = "/dns4/maks-relay.duckdns.org/tcp/443/wss/p2p/12D3KooWBN8pY3dYdE2XmFWefvRdo8vy5N3aQHgQyiQYN6vEYYha";
+const RELAY_ADDR = "/dns4/maks-relay.duckdns.org/tcp/443/wss/p2p/12D3KooWGUMaygJft6EXAxCSMoxmjyJKhkyEuv2qT3W8oTXA1zXY";
 
 function addMessage(sender, content, type = 'received') {
     const div = document.createElement('div');
