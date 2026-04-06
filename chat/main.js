@@ -43,25 +43,22 @@ async function main() {
             addMessage(sender.substring(0, 8) + '…', content, 'received');
         };
 
-        // Start the background chat process automatically
-        start_chat(RELAY_ADDR, onMessage).catch(err => {
-            console.error('Chat error:', err);
-            statusSpan.textContent = 'Offline';
-            isConnected = false;
-            input.disabled = true;
-            sendBtn.disabled = true;
-        });
-
-        // We assume connection intent is successful
+        // Start the background chat process and AWAIT it
+        await start_chat(RELAY_ADDR, onMessage);
+        
         isConnected = true;
         statusSpan.textContent = 'Online';
         statusSpan.style.color = '#45a0cc';
         input.disabled = false;
         sendBtn.disabled = false;
+        console.log('Connected to Relay successfully');
 
     } catch (err) {
-        console.error('Init Failed:', err);
-        statusSpan.textContent = 'Error';
+        console.error('Connection Failed:', err);
+        statusSpan.textContent = 'Offline';
+        statusSpan.style.color = '#cc4545';
+        input.disabled = true;
+        sendBtn.disabled = true;
     }
 
     const sendMessageAction = () => {
