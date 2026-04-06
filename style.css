@@ -321,6 +321,20 @@ a:hover {
   font-weight: 600;
   color: var(--text-heading);
   margin-bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+}
+
+.project-id {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-right: 0.6rem;
+  font-weight: 500;
+  background: var(--bg-inline-code);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
 }
 
 .project-card .project-tech {
