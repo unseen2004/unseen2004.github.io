@@ -7,8 +7,6 @@ const messagesDiv = document.getElementById('messages');
 const chatWindow = document.getElementById('chat-window');
 const input = document.getElementById('input');
 const sendBtn = document.getElementById('send-btn');
-const relayInput = document.getElementById('relay-addr');
-const connectBtn = document.getElementById('connect-btn');
 const statusSpan = document.getElementById('status');
 
 // Your AWS Relay Address
@@ -31,71 +29,40 @@ function addMessage(sender, content, type = 'received') {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-/**
- * Fetches history from the relay's inbox. 
- * Note: Since the relay returns HTML, we attempt to parse it or just link to it.
- * Browsers may block this due to CORS unless the relay sends 'Access-Control-Allow-Origin'.
- */
-async function fetchHistory() {
-    console.log('Fetching history from http://maks-relay.duckdns.org:8080/inbox');
-    // If CORS is an issue, the user can always click the 'History' link at the top.
-}
-
 async function main() {
-    // Set default value in the input field
-    relayInput.value = RELAY_ADDR;
-
     try {
+        statusSpan.textContent = 'Initializing...';
         await init();
         console.log('WASM Initialized');
-    } catch (err) {
-        console.error('WASM Init Failed:', err);
-        statusSpan.textContent = 'Init Failed';
-        return;
-    }
-
-    connectBtn.onclick = async () => {
-        let addr = relayInput.value.trim();
-        if (!addr) addr = RELAY_ADDR;
-
-        connectBtn.disabled = true;
-        relayInput.disabled = true;
+        
         statusSpan.textContent = 'Connecting...';
+        
+        const onMessage = (peerId, sender, content) => {
+            localPeerId = peerId;
+            if (sender === localPeerId) return;
+            addMessage(sender.substring(0, 8) + '…', content, 'received');
+        };
 
-        try {
-            const onMessage = (peerId, sender, content) => {
-                localPeerId = peerId;
-                if (sender === localPeerId) return;
-                addMessage(sender.substring(0, 8) + '…', content, 'received');
-            };
+        // Start the background chat process automatically
+        start_chat(RELAY_ADDR, onMessage).catch(err => {
+            console.error('Chat error:', err);
+            statusSpan.textContent = 'Offline';
+            isConnected = false;
+            input.disabled = true;
+            sendBtn.disabled = true;
+        });
 
-            // Start the background chat process
-            start_chat(addr, onMessage).catch(err => {
-                console.error('Chat error:', err);
-                statusSpan.textContent = 'Error: ' + err;
-                connectBtn.disabled = false;
-                relayInput.disabled = false;
-                isConnected = false;
-                input.disabled = true;
-                sendBtn.disabled = true;
-            });
+        // We assume connection intent is successful
+        isConnected = true;
+        statusSpan.textContent = 'Online';
+        statusSpan.style.color = '#45a0cc';
+        input.disabled = false;
+        sendBtn.disabled = false;
 
-            // We assume connection success if start_chat doesn't throw immediately
-            isConnected = true;
-            statusSpan.textContent = 'Connected';
-            statusSpan.style.color = '#45a0cc';
-            input.disabled = false;
-            sendBtn.disabled = false;
-            
-            fetchHistory();
-
-        } catch (err) {
-            console.error('Connection failed:', err);
-            statusSpan.textContent = 'Failed';
-            connectBtn.disabled = false;
-            relayInput.disabled = false;
-        }
-    };
+    } catch (err) {
+        console.error('Init Failed:', err);
+        statusSpan.textContent = 'Error';
+    }
 
     const sendMessageAction = () => {
         const content = input.value.trim();
@@ -106,7 +73,7 @@ async function main() {
                 input.value = '';
             } catch (err) {
                 console.error('Send error:', err);
-                alert('Failed to send message: ' + err);
+                alert('Failed to send: ' + err);
             }
         }
     };

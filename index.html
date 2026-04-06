@@ -50,16 +50,14 @@
 
         <!-- P2P Chat -->
         <section class="section">
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <h2 class="section-title" style="flex: 1;">P2P Chat</h2>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.2rem;">
+            <div style="display: flex; align-items: baseline; gap: 0.8rem;">
+              <h2 class="section-title" style="margin-bottom: 0;">P2P Chat</h2>
+              <span id="status" style="font-size: 0.72rem; color: var(--text-muted); font-family: 'Source Code Pro', monospace;">Initializing...</span>
+            </div>
             <a href="http://maks-relay.duckdns.org:8080/inbox" target="_blank" style="font-size: 0.8rem; color: var(--text-muted);">History (Inbox)</a>
           </div>
           <div id="p2p-chat-container" class="chat-card">
-            <div id="setup">
-                <input type="text" id="relay-addr" placeholder="/ip4/13.53.174.94/tcp/8001/ws/p2p/...">
-                <button id="connect-btn">Connect</button>
-                <span id="status">Disconnected</span>
-            </div>
             <div id="app">
                 <div id="chat-window"><div id="messages"></div></div>
                 <div id="controls">
