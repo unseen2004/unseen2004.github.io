@@ -307,12 +307,30 @@ a:hover {
 
 /* ---------- Project Cards ---------- */
 .project-card {
-  padding: 1rem 0;
+  padding: 0;
   border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition);
+}
+
+.project-card:hover {
+  background-color: var(--sidebar-active-bg);
 }
 
 .project-card:last-child {
   border-bottom: none;
+}
+
+.project-link {
+  display: block;
+  padding: 1rem;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+}
+
+.project-link:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 .project-card h3 {
@@ -348,10 +366,6 @@ a:hover {
   font-size: 0.92rem;
   color: var(--text-primary);
   margin-bottom: 0.35rem;
-}
-
-.project-card .project-link {
-  font-size: 0.85rem;
 }
 
 /* ---------- Contact List ---------- */
