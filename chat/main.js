@@ -54,18 +54,22 @@ async function main() {
         }, 15000);
 
         try {
-            await start_chat(RELAY_ADDR, onMessage);
-            clearTimeout(connectionTimeout);
-            
+            // Start the background process (do not await, it runs forever)
+            start_chat(RELAY_ADDR, onMessage).catch(err => {
+                console.error('Chat background error:', err);
+                statusSpan.textContent = 'Offline';
+                isConnected = false;
+            });
+
+            // If it didn't throw an error immediately, we are initializing
             isConnected = true;
             statusSpan.textContent = 'Online';
             statusSpan.style.color = '#45a0cc';
             input.disabled = false;
             sendBtn.disabled = false;
-            console.log('Connected successfully!');
+            console.log('Chat initialization started...');
         } catch (e) {
-            clearTimeout(connectionTimeout);
-            throw e; // Pass to the catch block below
+            throw e; 
         }
 
     } catch (err) {
