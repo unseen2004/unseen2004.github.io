@@ -1,0 +1,282 @@
+<!-- Java Panel -->
+<div class="cs-lang-panel" id="panel-java" data-lang="java">
+
+  <div class="cs-section"><details open>
+    <summary>Variables &amp; Types <span class="cs-badge">basics</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">int x = 10;            long ll = (long)1e18;
+double pi = 3.14;      char c = 'a';
+boolean flag = true;    String s = "hello";
+
+// Wrapper classes (for collections)
+Integer  Long  Double  Character  Boolean
+
+// Conversion
+Integer.parseInt("42")       // string -> int
+Long.parseLong("42")
+String.valueOf(42)           // int -> string
+Integer.toString(42)
+(char)('a' + 3)              // 'd'
+Character.isDigit(c)  Character.isLetter(c)
+Character.toLowerCase(c)
+
+// Limits
+Integer.MAX_VALUE  Integer.MIN_VALUE
+Long.MAX_VALUE
+
+// Comparing objects
+s1.equals(s2)      // NOT ==
+Integer.compare(a, b)
+Objects.equals(a, b)  // null-safe</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Strings <span class="cs-badge">essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">String s = "Hello World";
+s.length()                 // size
+s.charAt(0)                // 'H'
+s.substring(1, 4)          // "ell" (start, end)
+s.indexOf("lo")            // 3 (-1 if not found)
+s.contains("lo")           // true
+s.startsWith("He")         s.endsWith("ld")
+s.toLowerCase()            s.toUpperCase()
+s.trim()                   s.strip()  // Java 11+
+s.split(" ")               // String[]
+String.join(" ", arr)
+s.replace("H", "J")
+s.toCharArray()            // char[]
+s.equals("Hello World")   // comparison (NOT ==)
+
+// StringBuilder (mutable, for loops)
+StringBuilder sb = new StringBuilder();
+sb.append("hello");
+sb.insert(0, "oh ");
+sb.reverse();
+sb.deleteCharAt(0);
+String result = sb.toString();
+
+// Char operations
+c - '0'    // char -> int
+c - 'a'    // char -> 0-25
+(char)(i + 'a')  // int -> char</code></pre>
+      <div class="cs-tip"><strong>LC Tip:</strong> Always use <code>StringBuilder</code> for string concatenation in loops. <code>String +=</code> in a loop is O(n²).</div>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>List, Array <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// Array
+int[] arr = {1, 2, 3};
+int[] arr = new int[10];           // zeros
+int[][] grid = new int[rows][cols];
+arr.length                         // size (field, not method)
+Arrays.sort(arr);
+Arrays.fill(arr, 0);
+Arrays.copyOf(arr, newLen);
+Arrays.equals(a, b);
+
+// ArrayList (dynamic)
+List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(1);              list.add(0, 99);  // insert at idx
+list.get(0);              list.set(0, 42);
+list.remove(0);           // by index
+list.remove(Integer.valueOf(42));  // by value
+list.size()  list.isEmpty()  list.contains(1)
+list.indexOf(42)
+Collections.sort(list);
+Collections.reverse(list);
+list.sort((a, b) -&gt; a - b);          // ascending
+list.sort((a, b) -&gt; b - a);          // descending
+list.sort(Comparator.comparingInt(a -&gt; a[1]));  // by field
+
+// List -> Array and back
+int[] arr = list.stream().mapToInt(i-&gt;i).toArray();
+List&lt;Integer&gt; list = Arrays.stream(arr).boxed().collect(Collectors.toList());</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Map, Set <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// HashMap - O(1) avg
+Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+map.put("key", 42);
+map.get("key")                     // null if missing
+map.getOrDefault("key", 0)         // default value
+map.containsKey("key")  map.containsValue(42)
+map.remove("key");
+map.size()
+
+// Iterate
+for (Map.Entry&lt;String, Integer&gt; e : map.entrySet()) {
+    e.getKey();  e.getValue();
+}
+map.forEach((k, v) -&gt; System.out.println(k + "=" + v));
+
+// Useful methods
+map.putIfAbsent("key", 0);
+map.merge("key", 1, Integer::sum);     // freq count!
+map.computeIfAbsent("key", k -&gt; new ArrayList&lt;&gt;());
+
+// TreeMap - O(log n), sorted keys
+TreeMap&lt;Integer, String&gt; tm = new TreeMap&lt;&gt;();
+tm.firstKey()  tm.lastKey()
+tm.floorKey(x)   tm.ceilingKey(x)   // <= x, >= x
+
+// HashSet - O(1) avg
+Set&lt;Integer&gt; set = new HashSet&lt;&gt;();
+set.add(1);  set.remove(1);  set.contains(1);
+
+// TreeSet - O(log n), sorted
+TreeSet&lt;Integer&gt; ts = new TreeSet&lt;&gt;();
+ts.first()  ts.last()  ts.floor(x)  ts.ceiling(x)</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Stack, Queue, Heap <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// Stack (use Deque)
+Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+stack.push(1);   stack.pop();   stack.peek();
+
+// Queue
+Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+q.offer(1);      q.poll();     q.peek();
+
+// Deque (double-ended)
+Deque&lt;Integer&gt; dq = new ArrayDeque&lt;&gt;();
+dq.offerFirst(0);  dq.offerLast(1);
+dq.pollFirst();    dq.pollLast();
+
+// PriorityQueue (min-heap by default)
+PriorityQueue&lt;Integer&gt; minPQ = new PriorityQueue&lt;&gt;();
+PriorityQueue&lt;Integer&gt; maxPQ = new PriorityQueue&lt;&gt;(Collections.reverseOrder());
+minPQ.offer(3);  minPQ.poll();  minPQ.peek();
+minPQ.size()     minPQ.isEmpty()
+
+// Custom comparator
+PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a[1] - b[1]);</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Sorting &amp; Searching <span class="cs-badge">algorithms</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// Sort
+Arrays.sort(arr);                           // primitives
+Arrays.sort(arr, (a, b) -&gt; b - a);         // ⚠️ only Object[]
+Collections.sort(list);
+
+// Binary search (array must be sorted)
+int idx = Arrays.binarySearch(arr, target); // negative if not found
+int idx = Collections.binarySearch(list, target);
+
+// Manual binary search
+int lo = 0, hi = arr.length - 1;
+while (lo &lt;= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+}
+
+// Stream operations
+list.stream()
+    .filter(x -&gt; x &gt; 5)
+    .map(x -&gt; x * 2)
+    .sorted()
+    .distinct()
+    .collect(Collectors.toList());
+list.stream().mapToInt(i-&gt;i).sum();</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Graph &amp; Tree Patterns <span class="cs-badge">LC essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// Adjacency list
+List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+adj.get(u).add(v);
+
+// BFS
+Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+boolean[] visited = new boolean[n];
+q.offer(start); visited[start] = true;
+while (!q.isEmpty()) {
+    int node = q.poll();
+    for (int nei : adj.get(node)) {
+        if (!visited[nei]) {
+            visited[nei] = true;
+            q.offer(nei);
+        }
+    }
+}
+
+// DFS (recursive)
+void dfs(int node, boolean[] visited, List&lt;List&lt;Integer&gt;&gt; adj) {
+    visited[node] = true;
+    for (int nei : adj.get(node))
+        if (!visited[nei]) dfs(nei, visited, adj);
+}
+
+// TreeNode
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Common LC Patterns <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-java">// Two pointers
+int l = 0, r = arr.length - 1;
+while (l &lt; r) {
+    if (condition) l++;
+    else r--;
+}
+
+// Sliding window
+int l = 0;
+for (int r = 0; r &lt; n; r++) {
+    // expand
+    while (invalid) { l++; }
+    // update answer
+}
+
+// Prefix sum
+long[] pre = new long[n + 1];
+for (int i = 0; i &lt; n; i++)
+    pre[i+1] = pre[i] + arr[i];
+
+// Union-Find
+int[] parent = new int[n], rank = new int[n];
+for (int i = 0; i &lt; n; i++) parent[i] = i;
+int find(int x) {
+    if (parent[x] != x) parent[x] = find(parent[x]);
+    return parent[x];
+}
+void union(int x, int y) {
+    int px = find(x), py = find(y);
+    if (px == py) return;
+    if (rank[px] &lt; rank[py]) { int t=px; px=py; py=t; }
+    parent[py] = px;
+    if (rank[px] == rank[py]) rank[px]++;
+}
+
+// Bit manipulation
+x &amp; y  x | y  x ^ y  ~x  x &lt;&lt; n  x &gt;&gt; n
+Integer.bitCount(x)     // popcount
+x &amp; (x - 1)             // clear lowest set bit
+x &amp; (-x)                // isolate lowest set bit</code></pre>
+    </div>
+  </details></div>
+
+</div>

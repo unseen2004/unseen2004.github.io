@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Programming Cheat Sheets for LeetCode and general development (C++, Java, Python, Go) – Maksymilian Kułakowski.">
+  <title>Cheat Sheets – Maksymilian Kułakowski</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+  <div class="overlay"></div>
+  <button class="mobile-toggle" aria-label="Toggle navigation">☰</button>
+
+  <div class="page-wrapper">
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        Maksymilian Kułakowski
+        <span>Software Engineer</span>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html">Me</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="cheatsheets.html" class="active">Cheat Sheets</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="https://github.com/unseen2004" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/maksymilian-kulakowski" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="content-container">
+
+        <div class="page-header">
+          <h1 class="page-title">Cheat Sheets</h1>
+          <p class="page-subtitle">Quick reference guides for LeetCode and everyday programming.</p>
+        </div>
+
+        <div class="cs-controls">
+          <input type="text" class="cs-search" id="cs-search" placeholder="Search snippets… (Ctrl+K)" autocomplete="off">
+          <div class="cs-tabs">
+            <button class="cs-tab active" data-lang="python">Python</button>
+            <button class="cs-tab" data-lang="cpp">C++</button>
+            <button class="cs-tab" data-lang="go">Go</button>
+            <button class="cs-tab" data-lang="java">Java</button>
+          </div>
+        </div>
+
+        <div id="cs-panels"></div>
+        <p class="cs-no-results" id="cs-no-results">No matching sections found.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('cs-panels');
+    const tabs = document.querySelectorAll('.cs-tab');
+    const searchInput = document.getElementById('cs-search');
+    const noResults = document.getElementById('cs-no-results');
+    const files = ['cs-py.html','cs-cpp.html','cs-go.html','cs-java.html'];
+
+    // Load all panels
+    const fragments = await Promise.all(files.map(f => fetch(f).then(r => r.text())));
+    container.innerHTML = fragments.join('\n');
+
+    const panels = document.querySelectorAll('.cs-lang-panel');
+    Prism.highlightAll();
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const lang = tab.dataset.lang;
+        panels.forEach(p => p.classList.toggle('active', p.dataset.lang === lang));
+        searchInput.value = '';
+        filterSections('');
+        Prism.highlightAll();
+      });
+    });
+
+    function filterSections(query) {
+      const q = query.toLowerCase().trim();
+      let anyVisible = false;
+      panels.forEach(panel => {
+        if (!panel.classList.contains('active')) return;
+        panel.querySelectorAll('.cs-section').forEach(sec => {
+          const text = sec.textContent.toLowerCase();
+          const match = !q || text.includes(q);
+          sec.style.display = match ? '' : 'none';
+          if (match) anyVisible = true;
+        });
+      });
+      noResults.style.display = anyVisible ? 'none' : 'block';
+    }
+
+    searchInput.addEventListener('input', e => filterSections(e.target.value));
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+  });
+  </script>
+</body>
+</html>

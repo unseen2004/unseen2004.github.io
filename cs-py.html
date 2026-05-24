@@ -1,0 +1,376 @@
+<!-- Python Panel -->
+<div class="cs-lang-panel active" id="panel-python" data-lang="python">
+
+  <div class="cs-section"><details open>
+    <summary>Variables &amp; Types <span class="cs-badge">basics</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python">x = 10              # int
+pi = 3.14           # float
+s = "hello"         # str (immutable)
+flag = True         # bool
+none_val = None     # NoneType
+
+# Type conversion
+int("42")  # 42      str(42)  # "42"
+float("3.14")       # 3.14
+list("abc")         # ['a','b','c']
+tuple([1,2])        # (1, 2)
+set([1,1,2])        # {1, 2}
+
+# Multiple assignment
+a, b, c = 1, 2, 3
+a, b = b, a          # swap
+
+# f-strings
+f"{name!r} is {age:03d} | {pi:.2f}"</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Strings <span class="cs-badge">essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python">s = "Hello World"
+s.lower()  s.upper()  s.strip()
+s.split(" ")         # ['Hello','World']
+" ".join(["a","b"])  # "a b"
+s.replace("H","J")   # "Jello World"
+s.startswith("He")   # True
+s.find("lo")         # 3  (-1 if not found)
+s[1:4]               # "ell"  (slicing)
+s[::-1]              # reverse string
+s.isdigit()  s.isalpha()  s.isalnum()
+chr(97)  # 'a'       ord('a')  # 97
+
+# StringBuilder equivalent
+parts = []
+parts.append("hello")
+"".join(parts)</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Lists &amp; Tuples <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># List (mutable, dynamic array)
+a = [1, 2, 3]
+a.append(4)          # [1,2,3,4]
+a.pop()              # 4 (removes last)
+a.pop(0)             # 1 (removes at index)
+a.insert(1, 99)      # insert at index
+a.extend([5,6])      # append multiple
+a.remove(2)          # remove first occurrence
+a.index(3)           # find index
+a.sort()             # in-place sort
+a.sort(reverse=True)
+sorted(a, key=lambda x: -x)  # new sorted list
+a.reverse()          # in-place reverse
+len(a)  min(a)  max(a)  sum(a)
+
+# Slicing
+a[1:3]   a[::2]   a[::-1]  # reverse copy
+
+# List comprehension
+[x**2 for x in range(10) if x % 2 == 0]
+[[0]*cols for _ in range(rows)]  # 2D list
+
+# Tuple (immutable)
+t = (1, 2, 3)
+a, b, c = t          # unpacking
+t.count(1)  t.index(2)</code></pre>
+      <div class="cs-tip"><strong>LC Tip:</strong> Use <code>a[:]</code> for shallow copy. For deep copy: <code>import copy; copy.deepcopy(a)</code></div>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Dict, Set, Counter <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Dict - O(1) avg get/set
+d = {"a": 1, "b": 2}
+d["c"] = 3
+d.get("x", 0)        # default if missing
+d.setdefault("x", []).append(1)
+d.pop("a")            # remove key
+d.keys()  d.values()  d.items()
+"a" in d              # key existence
+
+# defaultdict
+from collections import defaultdict
+dd = defaultdict(list)
+dd["key"].append(1)   # auto-creates list
+dd = defaultdict(int) # auto 0
+
+# Counter
+from collections import Counter
+c = Counter("abracadabra")
+c.most_common(3)      # [('a',5),('b',2),('r',2)]
+c["a"]                # 5
+
+# Set - O(1) avg add/lookup
+s = {1, 2, 3}
+s.add(4)  s.remove(4)  s.discard(99)
+s1 & s2   # intersection
+s1 | s2   # union
+s1 - s2   # difference</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Stack, Queue, Heap <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Stack (use list)
+stack = []
+stack.append(1)       # push
+stack.pop()           # pop - O(1)
+stack[-1]             # peek
+
+# Queue (use deque)
+from collections import deque
+q = deque()
+q.append(1)           # enqueue right
+q.appendleft(0)       # enqueue left
+q.popleft()           # dequeue - O(1)
+q[0]                  # peek
+
+# Heap (min-heap by default)
+import heapq
+h = [3, 1, 4]
+heapq.heapify(h)      # O(n)
+heapq.heappush(h, 2)  # O(log n)
+heapq.heappop(h)      # smallest - O(log n)
+h[0]                  # peek min
+
+# Max-heap trick: negate values
+heapq.heappush(h, -val)
+-heapq.heappop(h)
+
+# N largest/smallest
+heapq.nlargest(3, arr)
+heapq.nsmallest(3, arr)</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Sorting &amp; Searching <span class="cs-badge">algorithms</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Sort
+sorted(arr)                      # new list
+arr.sort()                       # in-place
+arr.sort(key=lambda x: x[1])    # by 2nd element
+arr.sort(key=lambda x: (-x[0], x[1]))  # multi-key
+
+# Binary search
+import bisect
+bisect.bisect_left(arr, x)   # leftmost insert pos
+bisect.bisect_right(arr, x)  # rightmost insert pos
+bisect.insort(arr, x)        # insert maintaining order
+
+# Manual binary search
+def binary_search(arr, target):
+    lo, hi = 0, len(arr) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == target: return mid
+        elif arr[mid] < target: lo = mid + 1
+        else: hi = mid - 1
+    return -1</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Iteration Patterns <span class="cs-badge">idioms</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># enumerate
+for i, val in enumerate(arr):
+    print(i, val)
+
+# zip
+for a, b in zip(list1, list2):
+    print(a, b)
+
+# dict iteration
+for k, v in d.items():
+    print(k, v)
+
+# range
+range(10)          # 0..9
+range(2, 10)       # 2..9
+range(0, 10, 2)    # 0,2,4,6,8
+range(9, -1, -1)   # 9..0 (reverse)
+
+# any / all
+any(x > 5 for x in arr)
+all(x > 0 for x in arr)
+
+# itertools essentials
+from itertools import permutations, combinations, product, accumulate
+list(permutations([1,2,3]))       # all perms
+list(combinations([1,2,3], 2))    # C(3,2)
+list(product([0,1], repeat=3))    # cartesian
+list(accumulate([1,2,3]))         # prefix sums [1,3,6]</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Graph &amp; Tree Patterns <span class="cs-badge">LC essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Adjacency list
+graph = defaultdict(list)
+graph[u].append(v)
+
+# BFS
+from collections import deque
+def bfs(graph, start):
+    visited = {start}
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        for nei in graph[node]:
+            if nei not in visited:
+                visited.add(nei)
+                q.append(nei)
+
+# DFS (iterative)
+def dfs(graph, start):
+    visited = set()
+    stack = [start]
+    while stack:
+        node = stack.pop()
+        if node in visited: continue
+        visited.add(node)
+        for nei in graph[node]:
+            stack.append(nei)
+
+# DFS (recursive)
+def dfs(node, visited):
+    visited.add(node)
+    for nei in graph[node]:
+        if nei not in visited:
+            dfs(nei, visited)
+
+# Tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Inorder traversal
+def inorder(root):
+    if not root: return []
+    return inorder(root.left) + [root.val] + inorder(root.right)</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Common LC Patterns <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Two pointers
+l, r = 0, len(arr) - 1
+while l < r:
+    if condition: l += 1
+    else: r -= 1
+
+# Sliding window
+l = 0
+for r in range(len(arr)):
+    # expand window
+    while invalid:
+        # shrink from left
+        l += 1
+    # update answer
+
+# Prefix sum
+prefix = [0] * (len(arr) + 1)
+for i in range(len(arr)):
+    prefix[i+1] = prefix[i] + arr[i]
+# sum(arr[l:r]) = prefix[r] - prefix[l]
+
+# Union-Find
+parent = list(range(n))
+rank = [0] * n
+def find(x):
+    if parent[x] != x:
+        parent[x] = find(parent[x])  # path compression
+    return parent[x]
+def union(x, y):
+    px, py = find(x), find(y)
+    if px == py: return
+    if rank[px] < rank[py]: px, py = py, px
+    parent[py] = px
+    if rank[px] == rank[py]: rank[px] += 1
+
+# Backtracking template
+def backtrack(path, choices):
+    if is_solution(path):
+        result.append(path[:])
+        return
+    for c in choices:
+        path.append(c)
+        backtrack(path, next_choices)
+        path.pop()</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Math &amp; Bit Manipulation <span class="cs-badge">tricks</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Math
+abs(x)  pow(x, n)  pow(x, n, mod)  # modular exp
+float('inf')  float('-inf')
+divmod(10, 3)     # (3, 1) -> quotient, remainder
+math.gcd(12, 8)   # 4
+math.lcm(4, 6)    # 12  (Python 3.9+)
+math.log2(8)      # 3.0
+math.ceil(2.3)    # 3
+math.floor(2.7)   # 2
+
+# Bit manipulation
+x & y    # AND
+x | y    # OR
+x ^ y    # XOR
+~x       # NOT
+x << n   # left shift
+x >> n   # right shift
+x & (x-1)  # clear lowest set bit
+x & (-x)   # isolate lowest set bit
+bin(x).count('1')  # popcount
+n.bit_length()     # number of bits</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Useful Builtins &amp; Tricks <span class="cs-badge">misc</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-python"># Infinity
+float('inf')  float('-inf')
+import sys; sys.maxsize
+
+# Ternary
+x = a if condition else b
+
+# Walrus operator (3.8+)
+if (n := len(arr)) > 10: print(n)
+
+# Unpacking
+first, *rest = [1,2,3,4]  # first=1, rest=[2,3,4]
+*init, last = [1,2,3,4]   # init=[1,2,3], last=4
+
+# Dictionary merge (3.9+)
+merged = d1 | d2
+
+# functools
+from functools import lru_cache
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2: return n
+    return fib(n-1) + fib(n-2)
+
+# String to list of ints
+nums = list(map(int, input().split()))
+
+# Matrix rotation 90° clockwise
+rotated = [list(row) for row in zip(*matrix[::-1])]</code></pre>
+    </div>
+  </details></div>
+
+</div>

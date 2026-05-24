@@ -1,0 +1,326 @@
+<!-- C++ Panel -->
+<div class="cs-lang-panel" id="panel-cpp" data-lang="cpp">
+
+  <div class="cs-section"><details open>
+    <summary>Variables &amp; Types <span class="cs-badge">basics</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">int x = 10;           long long ll = 1e18;
+double pi = 3.14;     char c = 'a';
+bool flag = true;     string s = "hello";
+auto val = 42;        // type inference
+
+// Constants
+const int MOD = 1e9 + 7;
+constexpr int N = 1e5 + 5;
+
+// Casting
+(int)3.14              // C-style
+static_cast&lt;int&gt;(3.14) // C++ style
+stoi("42")  stol("42") stoll("42")
+to_string(42)
+(char)('a' + 3)        // 'd'
+
+// Limits
+INT_MAX  INT_MIN  LLONG_MAX
+numeric_limits&lt;int&gt;::max()</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Strings <span class="cs-badge">essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">string s = "Hello";
+s.size()  s.length()   // same
+s.empty()              // bool
+s += " World";         // append
+s.substr(1, 3)         // "ell" (pos, len)
+s.find("lo")           // 3 (string::npos if not found)
+s.compare("Hello")     // 0 if equal
+s[0] = 'J';            // mutable
+reverse(s.begin(), s.end());
+sort(s.begin(), s.end());
+
+// Char operations
+isdigit(c)  isalpha(c)  isalnum(c)
+tolower(c)  toupper(c)
+c - '0'     // char to int
+c - 'a'     // char to 0-25
+
+// String stream
+#include &lt;sstream&gt;
+stringstream ss("1 2 3");
+int x; while(ss >> x) { /* ... */ }
+
+// StringBuilder equivalent
+string result;
+result.reserve(1000);  // pre-allocate
+result += "chunk";</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Containers: vector, array, pair <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// vector
+vector&lt;int&gt; v = {1, 2, 3};
+v.push_back(4);        v.pop_back();
+v.front()  v.back()    v[i]
+v.size()   v.empty()   v.clear()
+v.insert(v.begin()+1, 99);
+v.erase(v.begin()+1);
+v.resize(10, 0);       // resize with fill
+
+// 2D vector
+vector&lt;vector&lt;int&gt;&gt; grid(rows, vector&lt;int&gt;(cols, 0));
+
+// pair
+pair&lt;int,int&gt; p = {1, 2};
+p.first   p.second
+auto [a, b] = p;       // structured binding (C++17)
+make_pair(1, 2)
+
+// tuple
+auto t = make_tuple(1, "hi", 3.14);
+auto [x, y, z] = t;    // C++17
+get&lt;0&gt;(t)              // access
+
+// Sorting
+sort(v.begin(), v.end());                    // asc
+sort(v.begin(), v.end(), greater&lt;int&gt;());    // desc
+sort(v.begin(), v.end(), [](int a, int b){
+    return a &gt; b;
+});</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Map, Set, Unordered <span class="cs-badge">core DS</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// map (ordered, O(log n))
+map&lt;string, int&gt; m;
+m["key"] = 42;
+m.count("key")         // 0 or 1
+m.erase("key");
+for (auto& [k, v] : m) { /* ... */ }
+
+// unordered_map (hash, O(1) avg)
+unordered_map&lt;string, int&gt; um;
+um["key"] = 42;
+um.count("key");
+// ⚠️ um[key] creates entry! Use .count() or .find() first
+
+// set (ordered, O(log n))
+set&lt;int&gt; s = {3, 1, 4};
+s.insert(2);  s.erase(2);  s.count(2);
+*s.begin()    *s.rbegin()   // min / max
+s.lower_bound(3)  // >= 3
+s.upper_bound(3)  // > 3
+
+// multiset (allows duplicates)
+multiset&lt;int&gt; ms;
+ms.insert(1); ms.insert(1);
+ms.erase(ms.find(1));  // erase ONE occurrence
+
+// unordered_set (hash, O(1) avg)
+unordered_set&lt;int&gt; us;</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Stack, Queue, Heap <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// Stack
+stack&lt;int&gt; st;
+st.push(1);  st.pop();  st.top();  st.empty();
+
+// Queue
+queue&lt;int&gt; q;
+q.push(1);   q.pop();   q.front();  q.back();
+
+// Deque
+deque&lt;int&gt; dq;
+dq.push_front(0);  dq.push_back(1);
+dq.pop_front();    dq.pop_back();
+dq.front()         dq.back()
+
+// Priority Queue (max-heap by default)
+priority_queue&lt;int&gt; maxpq;
+maxpq.push(3);  maxpq.top();  maxpq.pop();
+
+// Min-heap
+priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; minpq;
+
+// Custom comparator heap
+auto cmp = [](pair&lt;int,int&gt;& a, pair&lt;int,int&gt;& b){
+    return a.second &gt; b.second;  // min by second
+};
+priority_queue&lt;pair&lt;int,int&gt;, vector&lt;pair&lt;int,int&gt;&gt;, decltype(cmp)&gt; pq(cmp);</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Sorting &amp; Searching <span class="cs-badge">algorithms</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// Binary search
+sort(v.begin(), v.end());
+binary_search(v.begin(), v.end(), x);        // bool
+lower_bound(v.begin(), v.end(), x);          // iter >= x
+upper_bound(v.begin(), v.end(), x);          // iter > x
+
+// Manual binary search
+int lo = 0, hi = n - 1;
+while (lo &lt;= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+}
+
+// Other algorithms
+reverse(v.begin(), v.end());
+rotate(v.begin(), v.begin()+k, v.end());
+unique(v.begin(), v.end());    // remove adj dups
+next_permutation(v.begin(), v.end());
+accumulate(v.begin(), v.end(), 0LL);  // sum
+*max_element(v.begin(), v.end());
+*min_element(v.begin(), v.end());
+count(v.begin(), v.end(), x);
+fill(v.begin(), v.end(), 0);</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Graph &amp; Tree Patterns <span class="cs-badge">LC essential</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// Adjacency list
+vector&lt;vector&lt;int&gt;&gt; adj(n);
+adj[u].push_back(v);
+
+// BFS
+queue&lt;int&gt; q;
+vector&lt;bool&gt; visited(n, false);
+q.push(start); visited[start] = true;
+while (!q.empty()) {
+    int node = q.front(); q.pop();
+    for (int nei : adj[node]) {
+        if (!visited[nei]) {
+            visited[nei] = true;
+            q.push(nei);
+        }
+    }
+}
+
+// DFS (recursive)
+void dfs(int node, vector&lt;bool&gt;& visited) {
+    visited[node] = true;
+    for (int nei : adj[node])
+        if (!visited[nei]) dfs(nei, visited);
+}
+
+// Tree Node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Common LC Patterns <span class="cs-badge">patterns</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// Two pointers
+int l = 0, r = n - 1;
+while (l &lt; r) {
+    if (condition) l++;
+    else r--;
+}
+
+// Sliding window
+int l = 0;
+for (int r = 0; r &lt; n; r++) {
+    // expand window
+    while (invalid) {
+        // shrink
+        l++;
+    }
+    // update answer
+}
+
+// Prefix sum
+vector&lt;long long&gt; pre(n+1, 0);
+for (int i = 0; i &lt; n; i++)
+    pre[i+1] = pre[i] + arr[i];
+// sum [l,r) = pre[r] - pre[l]
+
+// Union-Find
+vector&lt;int&gt; parent(n), rank_(n, 0);
+iota(parent.begin(), parent.end(), 0);
+function&lt;int(int)&gt; find = [&](int x) {
+    return parent[x] == x ? x : parent[x] = find(parent[x]);
+};
+auto unite = [&](int x, int y) {
+    int px = find(x), py = find(y);
+    if (px == py) return;
+    if (rank_[px] &lt; rank_[py]) swap(px, py);
+    parent[py] = px;
+    if (rank_[px] == rank_[py]) rank_[px]++;
+};</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>Bit Manipulation &amp; Math <span class="cs-badge">tricks</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">x &amp; y    x | y    x ^ y    ~x
+x &lt;&lt; n   x &gt;&gt; n
+x &amp; (x-1)           // clear lowest set bit
+x &amp; (-x)            // isolate lowest set bit
+__builtin_popcount(x)    // count set bits (int)
+__builtin_popcountll(x)  // long long
+__builtin_clz(x)         // leading zeros
+__builtin_ctz(x)         // trailing zeros
+
+// GCD / LCM (C++17)
+#include &lt;numeric&gt;
+__gcd(a, b)              // or gcd(a, b) C++17
+lcm(a, b)                // C++17
+
+// Power mod
+long long power(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = result * base % mod;
+        base = base * base % mod;
+        exp &gt;&gt;= 1;
+    }
+    return result;
+}</code></pre>
+    </div>
+  </details></div>
+
+  <div class="cs-section"><details>
+    <summary>I/O &amp; Tricks <span class="cs-badge">competitive</span></summary>
+    <div class="cs-body">
+      <pre><code class="language-cpp">// Fast I/O
+ios::sync_with_stdio(false);
+cin.tie(nullptr);
+
+// Read until EOF
+while (cin &gt;&gt; x) { /* ... */ }
+
+// Read full line
+getline(cin, s);
+
+// Common macros for competitive
+#define all(x) (x).begin(), (x).end()
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair&lt;int,int&gt; pii;
+typedef vector&lt;int&gt; vi;</code></pre>
+      <div class="cs-tip"><strong>LC Tip:</strong> Use <code>INT_MAX/2</code> instead of <code>INT_MAX</code> to avoid overflow in DP/distances.</div>
+    </div>
+  </details></div>
+
+</div>
